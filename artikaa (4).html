@@ -1,0 +1,768 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Artikaa.com — كراسي فاخرة</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800&family=Amiri:wght@700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --gold:#B8963E; --gold-dark:#9A7C2E; --gold-light:#D9C48A;
+  --cream:#F6F1E6; --cream-2:#FBF8F1;
+  --navy:#1E2A44; --navy-2:#28365A;
+  --ink:#2B2B2B; --gray:#8A8A8A; --line:#E9E3D5;
+  --white:#fff;
+}
+*{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{font-family:'Tajawal',sans-serif;color:var(--ink);background:var(--white)}
+img{max-width:100%}
+button{font-family:inherit;cursor:pointer}
+a{text-decoration:none;color:inherit}
+
+/* ===== شريط الإعلان الذهبي ===== */
+.announce{background:linear-gradient(90deg,var(--gold),var(--gold-dark));color:#fff;text-align:center;font-size:13px;padding:7px 12px;letter-spacing:.3px}
+
+/* ===== الهيدر ===== */
+header{background:#fff;border-bottom:1px solid var(--line);position:sticky;top:0;z-index:50}
+.header-in{max-width:1200px;margin:auto;display:flex;align-items:center;justify-content:space-between;padding:14px 22px;gap:18px}
+.logo{display:flex;align-items:center;gap:10px;font-family:"Amiri",serif;font-size:24px;font-weight:700;color:var(--ink);letter-spacing:.5px}
+.logo svg{width:34px;height:34px}
+nav.main{display:flex;gap:26px;font-size:15px;font-weight:500}
+nav.main a{color:#555;padding:6px 2px;border-bottom:2px solid transparent;transition:.2s}
+nav.main a:hover,nav.main a.active{color:var(--gold);border-color:var(--gold)}
+.header-actions{display:flex;align-items:center;gap:18px;font-size:14px;font-weight:500}
+.cart-btn{position:relative;display:flex;align-items:center;gap:6px;background:none;border:none;font-size:14px;font-weight:500;color:#444}
+.cart-badge{position:absolute;top:-8px;left:-10px;background:var(--gold);color:#fff;font-size:11px;font-weight:700;width:18px;height:18px;border-radius:50%;display:flex;align-items:center;justify-content:center}
+.burger{display:none;background:none;border:none;font-size:24px}
+
+/* ===== الصفحات ===== */
+.page{display:none}
+.page.active{display:block;animation:fadeIn .35s ease}
+@keyframes fadeIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+
+/* ===== الهيرو ===== */
+.hero{position:relative;max-width:1200px;margin:18px auto 0;border-radius:14px;overflow:hidden;background:linear-gradient(180deg,#EDE9DF,#E3DCCB)}
+.hero-scene{position:relative;height:440px}
+.hero-text{position:absolute;top:50%;right:6%;transform:translateY(-50%);text-align:right;max-width:380px;z-index:5}
+.hero-text h1{font-family:'Amiri',serif;font-size:44px;color:var(--ink);margin-bottom:12px}
+.hero-text p{font-size:16px;color:#5a5548;line-height:1.9;margin-bottom:22px}
+.btn-gold{display:inline-block;background:var(--gold);color:#fff;border:none;padding:12px 34px;border-radius:6px;font-size:16px;font-weight:700;transition:.2s}
+.btn-gold:hover{background:var(--gold-dark);transform:translateY(-2px)}
+.hero-dots{position:absolute;bottom:16px;right:0;left:0;display:flex;justify-content:center;gap:8px;z-index:5}
+.hero-dots span{width:8px;height:8px;border-radius:50%;background:#bbb;cursor:pointer}
+.hero-dots span.on{background:var(--ink)}
+.hero-art{position:absolute;inset:0}
+
+/* ===== كروت الفئات ===== */
+.cats{max-width:1200px;margin:26px auto;display:grid;grid-template-columns:repeat(3,1fr);gap:20px;padding:0 22px}
+.cat-card{background:var(--cream);border:1px solid var(--line);border-radius:10px;padding:26px;display:flex;align-items:center;justify-content:center;gap:14px;font-size:19px;font-weight:700;color:var(--ink);cursor:pointer;transition:.25s}
+.cat-card:hover{background:#fff;border-color:var(--gold);box-shadow:0 8px 24px rgba(184,150,62,.15);transform:translateY(-3px)}
+.cat-card svg{width:40px;height:40px}
+
+/* ===== المميزات ===== */
+.feats{background:var(--cream-2);border-top:1px solid var(--line);border-bottom:1px solid var(--line);margin-top:34px}
+.feats-in{max-width:1200px;margin:auto;display:grid;grid-template-columns:repeat(4,1fr);gap:16px;padding:28px 22px;text-align:center}
+.feat b{display:block;margin:8px 0 3px;font-size:15px}
+.feat span{font-size:13px;color:var(--gray)}
+.feat svg{width:30px;height:30px}
+
+/* ===== الأكثر مبيعاً ===== */
+.section-title{max-width:1200px;margin:40px auto 8px;padding:0 22px;display:flex;align-items:center;justify-content:space-between}
+.section-title h2{font-family:'Amiri',serif;font-size:30px}
+.section-title a{color:var(--gold);font-weight:700;font-size:14px}
+
+/* ===== شبكة المنتجات ===== */
+.grid{display:grid;gap:20px}
+.home-grid{max-width:1200px;margin:14px auto 50px;padding:0 22px;grid-template-columns:repeat(4,1fr)}
+.card{background:#fff;border:1px solid var(--line);border-radius:10px;overflow:hidden;position:relative;transition:.25s;cursor:pointer}
+.card:hover{box-shadow:0 10px 28px rgba(0,0,0,.09);transform:translateY(-3px)}
+.card .heart{position:absolute;top:10px;left:10px;background:#fff;border:1px solid var(--line);width:32px;height:32px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:15px;color:#999;z-index:3;transition:.2s}
+.card .heart.on,.card .heart:hover{color:#D24A4A;border-color:#D24A4A}
+.card .thumb{background:var(--cream-2);height:190px;display:flex;align-items:center;justify-content:center;padding:14px}
+.card .thumb svg{height:100%;max-height:160px}
+.card .info{padding:12px 14px 16px;text-align:center}
+.card .name{font-size:15px;font-weight:700;margin-bottom:5px}
+.stars{color:var(--gold);font-size:13px;letter-spacing:2px;margin-bottom:6px}
+.price{font-size:16px;font-weight:800;color:var(--ink)}
+.price .old{color:#b5b5b5;text-decoration:line-through;font-weight:500;font-size:13px;margin-inline-start:7px}
+.price small{font-size:12px;font-weight:500}
+.badge-sale{position:absolute;top:10px;right:10px;background:var(--navy);color:#fff;font-size:11px;font-weight:700;padding:3px 10px;border-radius:20px;z-index:3}
+
+/* ===== صفحة الفئة ===== */
+.crumb{max-width:1200px;margin:16px auto 4px;padding:0 22px;font-size:13px;color:var(--gray)}
+.crumb b{color:var(--ink)}
+.cat-layout{max-width:1200px;margin:8px auto 50px;padding:0 22px;display:grid;grid-template-columns:250px 1fr;gap:26px;align-items:start}
+.side{background:#fff;border:1px solid var(--line);border-radius:10px;padding:20px;position:sticky;top:86px}
+.side h3{font-family:'Amiri',serif;font-size:22px;margin-bottom:14px}
+.f-group{border-top:1px solid var(--line);padding:14px 0}
+.f-group h4{font-size:15px;margin-bottom:10px}
+.f-group label{display:flex;align-items:center;gap:8px;font-size:14px;color:#555;margin-bottom:8px;cursor:pointer}
+.f-group input[type=checkbox]{accent-color:var(--gold);width:15px;height:15px}
+.range{width:100%;accent-color:var(--gold)}
+.range-vals{display:flex;justify-content:space-between;font-size:12px;color:var(--gray);margin-top:4px}
+.swatches{display:flex;gap:8px;flex-wrap:wrap}
+.sw{width:24px;height:24px;border-radius:50%;border:2px solid #fff;box-shadow:0 0 0 1px var(--line);cursor:pointer;transition:.15s}
+.sw.on{box-shadow:0 0 0 2px var(--gold)}
+.cat-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:14px}
+.cat-head h1{font-family:'Amiri',serif;font-size:32px}
+.cat-head select{border:1px solid var(--line);border-radius:6px;padding:8px 12px;font-family:inherit;font-size:13px;color:#555;background:#fff}
+.cat-grid{grid-template-columns:repeat(3,1fr)}
+.count{font-size:13px;color:var(--gray);margin-bottom:12px}
+
+/* ===== صفحة المنتج ===== */
+.product{max-width:1200px;margin:20px auto 50px;padding:0 22px;display:grid;grid-template-columns:1fr 1fr;gap:44px;align-items:start}
+.gallery .main-img{background:var(--cream-2);border:1px solid var(--line);border-radius:12px;height:420px;display:flex;align-items:center;justify-content:center;padding:24px}
+.gallery .main-img svg{height:100%}
+.thumbs{display:flex;gap:10px;margin-top:12px}
+.thumbs .t{background:var(--cream-2);border:1px solid var(--line);border-radius:8px;width:76px;height:76px;display:flex;align-items:center;justify-content:center;padding:8px;cursor:pointer;transition:.15s}
+.thumbs .t.on{border-color:var(--gold);box-shadow:0 0 0 1px var(--gold)}
+.thumbs .t svg{height:100%}
+.p-info h1{font-family:'Amiri',serif;font-size:34px;margin-bottom:8px}
+.p-info .stars{font-size:15px}
+.p-desc{font-size:15px;color:#666;line-height:2;margin:12px 0 16px}
+.p-price{font-size:30px;font-weight:800;color:var(--ink);margin-bottom:18px}
+.p-price small{font-size:15px;font-weight:600}
+.p-label{font-size:14px;font-weight:700;margin-bottom:8px}
+.p-colors{display:flex;gap:10px;margin-bottom:20px}
+.p-colors .sw{width:30px;height:30px}
+.qty{display:flex;align-items:center;border:1px solid var(--line);border-radius:8px;width:fit-content;margin-bottom:22px;overflow:hidden}
+.qty button{background:var(--cream);border:none;width:40px;height:40px;font-size:18px;font-weight:700;color:var(--ink)}
+.qty button:hover{background:var(--gold-light)}
+.qty span{width:52px;text-align:center;font-weight:700;font-size:16px}
+.cta-row{display:flex;gap:12px;margin-bottom:24px}
+.btn-navy{flex:1;background:var(--navy);color:#fff;border:none;padding:14px;border-radius:8px;font-size:16px;font-weight:700;transition:.2s}
+.btn-navy:hover{background:var(--navy-2)}
+.btn-navy.outline{background:#fff;color:var(--navy);border:2px solid var(--navy)}
+.btn-navy.outline:hover{background:var(--navy);color:#fff}
+.p-feats{border-top:1px solid var(--line);padding-top:16px;display:grid;gap:10px}
+.p-feats div{display:flex;align-items:center;gap:10px;font-size:14px;color:#555}
+.p-feats svg{width:20px;height:20px;flex-shrink:0}
+
+/* ===== الفوتر ===== */
+footer{background:var(--navy);color:#cfd4e2;margin-top:20px}
+.footer-in{max-width:1200px;margin:auto;padding:44px 22px 28px;display:grid;grid-template-columns:1.4fr 1fr 1fr 1fr;gap:30px}
+footer h4{color:#fff;font-size:16px;margin-bottom:14px}
+footer a{display:block;font-size:14px;margin-bottom:9px;color:#aeb6ca;transition:.2s}
+footer a:hover{color:var(--gold-light)}
+.f-brand{font-family:'Amiri',serif;font-size:24px;color:#fff;display:flex;align-items:center;gap:10px;margin-bottom:12px}
+.f-brand svg{width:30px;height:30px}
+.f-about{font-size:13px;line-height:1.9;color:#aeb6ca}
+.copy{border-top:1px solid rgba(255,255,255,.12);text-align:center;font-size:13px;padding:16px;color:#8e97ad}
+
+/* ===== الدردشة والتوست ===== */
+.chat-fab{position:fixed;bottom:24px;left:24px;width:54px;height:54px;border-radius:50%;background:var(--navy);color:#fff;border:none;font-size:22px;box-shadow:0 8px 24px rgba(0,0,0,.25);z-index:80;transition:.2s}
+.chat-fab:hover{transform:scale(1.08);background:var(--gold)}
+.toast{position:fixed;bottom:28px;right:50%;transform:translate(50%,20px);background:var(--ink);color:#fff;padding:12px 26px;border-radius:30px;font-size:14px;opacity:0;pointer-events:none;transition:.3s;z-index:99}
+.toast.show{opacity:1;transform:translate(50%,0)}
+
+/* ===== سلة التسوق (درج جانبي) ===== */
+.cart-overlay{position:fixed;inset:0;background:rgba(20,25,40,.5);opacity:0;pointer-events:none;transition:.3s;z-index:90}
+.cart-overlay.on{opacity:1;pointer-events:auto}
+.cart-drawer{position:fixed;top:0;left:0;height:100vh;width:380px;max-width:92vw;background:#fff;z-index:95;transform:translateX(-100%);transition:.35s ease;display:flex;flex-direction:column;box-shadow:8px 0 30px rgba(0,0,0,.15)}
+.cart-drawer.on{transform:none}
+.cart-head{display:flex;align-items:center;justify-content:space-between;padding:18px 20px;border-bottom:1px solid var(--line);background:var(--cream-2)}
+.cart-head h3{font-family:'Amiri',serif;font-size:22px}
+.cart-head .x{background:none;border:none;font-size:20px;color:#999}
+.cart-items{flex:1;overflow-y:auto;padding:14px 18px}
+.c-item{display:flex;gap:12px;border:1px solid var(--line);border-radius:10px;padding:10px;margin-bottom:12px;align-items:center}
+.c-item .c-img{width:64px;height:64px;background:var(--cream-2);border-radius:8px;display:flex;align-items:center;justify-content:center;padding:6px;flex-shrink:0}
+.c-item .c-img svg{height:100%}
+.c-item .c-info{flex:1}
+.c-item .c-name{font-size:14px;font-weight:700}
+.c-item .c-color{font-size:12px;color:var(--gray);margin:2px 0 6px}
+.c-item .c-price{font-size:14px;font-weight:800;color:var(--gold-dark)}
+.c-qty{display:flex;align-items:center;gap:6px}
+.c-qty button{width:26px;height:26px;border:1px solid var(--line);background:var(--cream);border-radius:6px;font-weight:700}
+.c-qty button:hover{background:var(--gold-light)}
+.c-qty span{min-width:22px;text-align:center;font-weight:700;font-size:14px}
+.c-rm{background:none;border:none;color:#c66;font-size:16px;align-self:flex-start}
+.cart-empty{text-align:center;color:var(--gray);padding:50px 20px;font-size:15px}
+.cart-empty .big{font-size:44px;margin-bottom:10px}
+.cart-foot{border-top:1px solid var(--line);padding:16px 20px;background:var(--cream-2)}
+.cart-total{display:flex;justify-content:space-between;font-size:17px;font-weight:800;margin-bottom:12px}
+.cart-foot .btn-gold{width:100%;text-align:center}
+
+/* ===== صفحة إتمام الطلب ===== */
+.checkout{max-width:1000px;margin:24px auto 50px;padding:0 22px;display:grid;grid-template-columns:1.2fr .9fr;gap:28px;align-items:start}
+.co-form{background:#fff;border:1px solid var(--line);border-radius:12px;padding:24px}
+.co-form h2{font-family:'Amiri',serif;font-size:26px;margin-bottom:18px}
+.co-field{margin-bottom:16px}
+.co-field label{display:block;font-size:14px;font-weight:700;margin-bottom:6px}
+.co-field label i{color:var(--red,#C0392B);font-style:normal}
+.co-field input,.co-field select,.co-field textarea{width:100%;border:1px solid var(--line);border-radius:8px;padding:11px 13px;font-family:inherit;font-size:14px;background:var(--cream-2)}
+.co-field input:focus,.co-field select:focus,.co-field textarea:focus{outline:2px solid var(--gold-light);border-color:var(--gold)}
+.co-field .err{display:none;font-size:12px;color:#C0392B;margin-top:4px}
+.co-field.bad input{border-color:#C0392B}
+.co-field.bad .err{display:block}
+.co-row{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+.co-sum{background:#fff;border:1px solid var(--line);border-radius:12px;padding:22px;position:sticky;top:90px}
+.co-sum h3{font-family:'Amiri',serif;font-size:22px;margin-bottom:14px}
+.co-line{display:flex;justify-content:space-between;font-size:14px;padding:8px 0;border-bottom:1px dashed var(--line);color:#555}
+.co-line b{color:var(--ink)}
+.co-grand{display:flex;justify-content:space-between;font-size:18px;font-weight:800;padding-top:14px}
+.btn-wa{width:100%;display:flex;align-items:center;justify-content:center;gap:10px;background:#25D366;color:#fff;border:none;padding:14px;border-radius:8px;font-size:16px;font-weight:700;margin-top:16px;transition:.2s}
+.btn-wa:hover{background:#1DA851;transform:translateY(-2px)}
+.btn-wa svg{width:22px;height:22px;fill:#fff}
+.co-note{font-size:12px;color:var(--gray);text-align:center;margin-top:10px;line-height:1.8}
+
+/* ===== ريسبونسف ===== */
+@media(max-width:960px){
+  .home-grid,.cat-grid{grid-template-columns:repeat(2,1fr)}
+  .cat-layout{grid-template-columns:1fr}
+  .side{position:static}
+  .product{grid-template-columns:1fr}
+  .feats-in{grid-template-columns:repeat(2,1fr)}
+  .footer-in{grid-template-columns:1fr 1fr}
+  nav.main{display:none}
+  nav.main.open{display:flex;flex-direction:column;gap:0;position:absolute;top:100%;right:0;left:0;background:#fff;border-bottom:1px solid var(--line);box-shadow:0 12px 24px rgba(0,0,0,.08);padding:8px 0}
+  nav.main.open a{padding:13px 22px;border-bottom:1px solid #f3efe4;border-right:3px solid transparent}
+  nav.main.open a.active{border-right-color:var(--gold);background:var(--cream-2)}
+  .burger{display:block}
+  .header-in{position:relative}
+  .checkout{grid-template-columns:1fr}
+  .co-sum{position:static}
+  .hero-text h1{font-size:32px}
+}
+@media(max-width:560px){
+  .cats{grid-template-columns:1fr}
+  .home-grid,.cat-grid{grid-template-columns:1fr}
+  .hero-scene{height:380px}
+  .hero-text{right:5%;left:5%;max-width:none;text-align:center}
+  .cta-row{flex-direction:column}
+}
+</style>
+</head>
+<body>
+
+<div class="announce">✦ شحن مجاني للطلبات فوق 1,000 ج.م — خصومات تصل إلى 30% على مجموعة المكاتب ✦</div>
+
+<header>
+  <div class="header-in">
+    <a class="logo" href="#" onclick="go('home');return false">
+      <svg viewBox="0 0 48 48" fill="none" stroke="#B8963E" stroke-width="2.4" stroke-linecap="round"><path d="M12 20c0-7 5-12 12-12s12 5 12 12v6H12v-6z"/><path d="M10 26h28v6H10z"/><path d="M13 32v8M35 32v8M24 32v8"/></svg>
+      Artikaa
+    </a>
+    <nav class="main">
+      <a href="#" id="nav-home" class="active" onclick="go('home');return false">الرئيسية</a>
+      <a href="#" id="nav-cat" onclick="go('cat');return false">المنتجات</a>
+      <a href="#" onclick="toast('خدمة التصميم المخصص — تواصل معنا');return false">تصميم مخصص</a>
+      <a href="#" onclick="toast('Artikaa — فخامة الجلوس منذ 2015');return false">من نحن</a>
+    </nav>
+    <div class="header-actions">
+      <button class="cart-btn" onclick="openCart()">
+        🛒 سلة التسوق <span class="cart-badge" id="cartBadge">0</span>
+      </button>
+      <a href="#" onclick="toast('تسجيل الدخول إلى حسابي');return false">👤 حسابي</a>
+      <button class="burger" onclick="toggleMenu()">☰</button>
+    </div>
+  </div>
+</header>
+
+<!-- ================= الصفحة الرئيسية ================= -->
+<div class="page active" id="page-home">
+
+  <div class="hero">
+    <div class="hero-scene">
+      <svg class="hero-art" viewBox="0 0 1160 440" preserveAspectRatio="xMidYMax slice">
+        <!-- نافذة وأفق المدينة -->
+        <rect x="0" y="0" width="620" height="330" fill="#DCE6EC"/>
+        <g fill="#B9C9D4">
+          <rect x="40" y="120" width="34" height="210"/><rect x="86" y="70" width="26" height="260"/>
+          <rect x="120" y="150" width="44" height="180"/><rect x="176" y="40" width="20" height="290"/>
+          <rect x="204" y="110" width="38" height="220"/><rect x="252" y="90" width="30" height="240"/>
+          <rect x="292" y="160" width="48" height="170"/><rect x="350" y="60" width="24" height="270"/>
+          <rect x="384" y="130" width="40" height="200"/><rect x="434" y="100" width="30" height="230"/>
+          <rect x="474" y="170" width="46" height="160"/><rect x="530" y="80" width="26" height="250"/>
+          <rect x="566" y="140" width="40" height="190"/>
+        </g>
+        <!-- إطارات النافذة -->
+        <g stroke="#8f8a7c" stroke-width="6"><line x1="0" y1="0" x2="0" y2="330"/><line x1="206" y1="0" x2="206" y2="330"/><line x1="412" y1="0" x2="412" y2="330"/><line x1="620" y1="0" x2="620" y2="330"/><line x1="0" y1="0" x2="620" y2="0"/></g>
+        <!-- أرضية وسجادة -->
+        <rect x="0" y="330" width="1160" height="110" fill="#D8CDB8"/>
+        <ellipse cx="360" cy="392" rx="330" ry="42" fill="#EDE7D8"/>
+        <!-- نبتة كبيرة -->
+        <g transform="translate(590,210)">
+          <path d="M20 130h44l-6 46H26z" fill="#2f2f2f"/>
+          <g stroke="#3E7A4E" stroke-width="9" stroke-linecap="round" fill="none">
+            <path d="M42 130C42 70 20 60 6 30"/><path d="M42 130C42 66 66 58 80 26"/>
+            <path d="M42 130C40 80 34 50 42 14"/><path d="M42 130C48 84 62 74 88 60"/>
+            <path d="M42 130C36 86 20 74 -2 66"/>
+          </g>
+        </g>
+        <!-- الكرسي الكحلي المخملي -->
+        <g transform="translate(120,196)">
+          <path d="M18 60 C10 8 60 -12 105 -6 C150 -12 200 8 192 60 L192 130 L18 130 Z" fill="#25406B"/>
+          <path d="M40 62 C36 26 66 12 105 14 C144 12 174 26 170 62 L170 96 L40 96 Z" fill="#2E4E82"/>
+          <ellipse cx="105" cy="104" rx="66" ry="22" fill="#25406B"/>
+          <path d="M18 60 C4 60 0 84 12 94 L26 128 L40 122 L30 74 Z" fill="#1F3557"/>
+          <path d="M192 60 C206 60 210 84 198 94 L184 128 L170 122 L180 74 Z" fill="#1F3557"/>
+          <g stroke="#6b4a2a" stroke-width="7" stroke-linecap="round"><line x1="42" y1="130" x2="34" y2="168"/><line x1="168" y1="130" x2="176" y2="168"/><line x1="82" y1="132" x2="80" y2="168"/><line x1="128" y1="132" x2="130" y2="168"/></g>
+        </g>
+        <!-- طاولة القهوة -->
+        <g transform="translate(330,300)">
+          <rect x="0" y="0" width="180" height="12" rx="4" fill="#7A5638"/>
+          <rect x="10" y="12" width="10" height="58" fill="#6b4a2f"/><rect x="160" y="12" width="10" height="58" fill="#6b4a2f"/>
+          <rect x="8" y="42" width="164" height="8" rx="3" fill="#7A5638"/>
+          <!-- كتاب وورد -->
+          <rect x="56" y="-10" width="46" height="8" rx="2" fill="#fff" stroke="#ddd"/>
+          <g transform="translate(120,-16)"><rect x="6" y="4" width="14" height="14" rx="3" fill="#cfd8d3"/><circle cx="8" cy="0" r="5" fill="#fff" stroke="#e5c9c9"/><circle cx="17" cy="-3" r="5" fill="#fff" stroke="#e5c9c9"/><circle cx="22" cy="2" r="5" fill="#fff" stroke="#e5c9c9"/></g>
+        </g>
+        <!-- الكرسي الكريمي -->
+        <g transform="translate(470,238)">
+          <path d="M12 40 C8 2 40 -14 78 -8 C116 -14 148 2 144 40 L144 96 L12 96 Z" fill="#E7DECB"/>
+          <path d="M30 42 C28 16 50 6 78 8 C106 6 128 16 126 42 L126 70 L30 70 Z" fill="#F1EADA"/>
+          <ellipse cx="78" cy="76" rx="50" ry="17" fill="#E7DECB"/>
+          <path d="M12 40 C0 42 -2 62 8 70 L18 94 L30 90 L22 52 Z" fill="#DDD2BA"/>
+          <path d="M144 40 C156 42 158 62 148 70 L138 94 L126 90 L134 52 Z" fill="#DDD2BA"/>
+          <g stroke="#8a6b45" stroke-width="6" stroke-linecap="round"><line x1="30" y1="96" x2="24" y2="126"/><line x1="126" y1="96" x2="132" y2="126"/></g>
+        </g>
+        <!-- نبتة صغيرة يسار -->
+        <g transform="translate(30,300)">
+          <path d="M10 60h36l-5 34H15z" fill="#1f1f1f"/>
+          <g stroke="#4C8A5C" stroke-width="7" stroke-linecap="round" fill="none"><path d="M28 60C28 26 14 20 8 4"/><path d="M28 60C28 24 44 18 50 2"/><path d="M28 60C26 30 28 16 28 0"/></g>
+        </g>
+      </svg>
+      <div class="hero-text">
+        <h1>كراسي جلوس فاخرة</h1>
+        <p>تصميم عصري. راحة لا تُضاهى. من الكلاسيكي إلى العصري، اكتشف مجموعتنا الراقية.</p>
+        <button class="btn-gold" onclick="go('cat')">تسوق الآن</button>
+      </div>
+      <div class="hero-dots"><span class="on"></span><span></span><span></span><span></span></div>
+    </div>
+  </div>
+
+  <div class="cats">
+    <div class="cat-card" onclick="go('cat')">
+      <svg viewBox="0 0 48 48" fill="none" stroke="#B8963E" stroke-width="2.4" stroke-linecap="round"><path d="M8 26c0-4 3-6 6-6h14c6 0 10 4 10 10v6H12z"/><path d="M8 26v10h4M38 36v6M14 36v6"/></svg>
+      كراسي استرخاء
+    </div>
+    <div class="cat-card" onclick="go('cat')">
+      <svg viewBox="0 0 48 48" fill="none" stroke="#B8963E" stroke-width="2.4" stroke-linecap="round"><rect x="16" y="8" width="16" height="18" rx="4"/><path d="M16 30h16M24 30v8M14 42h20M24 38l-8 4M24 38l8 4"/></svg>
+      كراسي مكتب
+    </div>
+    <div class="cat-card" onclick="go('cat')">
+      <svg viewBox="0 0 48 48" fill="none" stroke="#B8963E" stroke-width="2.4" stroke-linecap="round"><path d="M16 6v18M32 6v18M16 14h16M14 24h20v4H14zM16 28v14M32 28v14"/></svg>
+      كراسي طعام
+    </div>
+  </div>
+
+  <div class="feats">
+    <div class="feats-in">
+      <div class="feat"><svg viewBox="0 0 24 24" fill="none" stroke="#B8963E" stroke-width="2"><path d="M3 8h13v9H3zM16 11h4l2 3v3h-6zM7 20a2 2 0 100-4 2 2 0 000 4zM18 20a2 2 0 100-4 2 2 0 000 4z"/></svg><b>توصيل سريع</b><span>لجميع محافظات مصر</span></div>
+      <div class="feat"><svg viewBox="0 0 24 24" fill="none" stroke="#B8963E" stroke-width="2"><path d="M12 3l8 4v5c0 5-3.5 8-8 9-4.5-1-8-4-8-9V7z"/><path d="M9 12l2 2 4-4"/></svg><b>ضمان 5 سنوات</b><span>على جميع المنتجات</span></div>
+      <div class="feat"><svg viewBox="0 0 24 24" fill="none" stroke="#B8963E" stroke-width="2"><path d="M4 12a8 8 0 0116 0M4 12v5a2 2 0 002 2h2v-7H4zM20 12v5a2 2 0 01-2 2h-2v-7h4z"/></svg><b>دعم 24/7</b><span>خدمة عملاء متواصلة</span></div>
+      <div class="feat"><svg viewBox="0 0 24 24" fill="none" stroke="#B8963E" stroke-width="2"><path d="M3 12h18M3 12l4-4M3 12l4 4M21 6v12"/></svg><b>إرجاع مجاني</b><span>خلال 14 يوم</span></div>
+    </div>
+  </div>
+
+  <div class="section-title">
+    <h2>الأكثر مبيعاً</h2>
+    <a href="#" onclick="go('cat');return false">عرض الكل ←</a>
+  </div>
+  <div class="grid home-grid" id="homeGrid"></div>
+</div>
+
+<!-- ================= صفحة كراسي مكتبية ================= -->
+<div class="page" id="page-cat">
+  <div class="crumb">الرئيسية &nbsp;›&nbsp; المنتجات &nbsp;›&nbsp; <b>كراسي مكتبية</b></div>
+  <div class="cat-layout">
+    <aside class="side">
+      <h3>تصفية النتائج</h3>
+      <div class="f-group">
+        <h4>الفئات</h4>
+        <label><input type="checkbox"> كراسي طعام</label>
+        <label><input type="checkbox" checked> كراسي مكتب</label>
+        <label><input type="checkbox"> كراسي ألعاب</label>
+        <label><input type="checkbox"> كراسي استرخاء</label>
+      </div>
+      <div class="f-group">
+        <h4>السعر</h4>
+        <input type="range" class="range" min="500" max="6000" value="4000" oninput="document.getElementById('rv').textContent=Number(this.value).toLocaleString('en')+' ج.م'">
+        <div class="range-vals"><span>500 ج.م</span><span id="rv">4,000 ج.م</span></div>
+      </div>
+      <div class="f-group">
+        <h4>اللون</h4>
+        <div class="swatches">
+          <div class="sw on" style="background:#2b2b2b" onclick="pick(this)"></div>
+          <div class="sw" style="background:#D9C48A" onclick="pick(this)"></div>
+          <div class="sw" style="background:#25406B" onclick="pick(this)"></div>
+          <div class="sw" style="background:#C0392B" onclick="pick(this)"></div>
+          <div class="sw" style="background:#8a8a8a" onclick="pick(this)"></div>
+          <div class="sw" style="background:#7A5638" onclick="pick(this)"></div>
+        </div>
+      </div>
+    </aside>
+    <div>
+      <div class="cat-head">
+        <h1>كراسي مكتبية</h1>
+        <select><option>الأكثر مبيعاً</option><option>السعر: من الأقل للأعلى</option><option>السعر: من الأعلى للأقل</option><option>الأحدث</option></select>
+      </div>
+      <div class="count">عرض 8 من 24 منتج</div>
+      <div class="grid cat-grid" id="catGrid"></div>
+    </div>
+  </div>
+</div>
+
+<!-- ================= صفحة المنتج ================= -->
+<div class="page" id="page-product">
+  <div class="crumb">الرئيسية &nbsp;›&nbsp; كراسي ألعاب &nbsp;›&nbsp; <b>كرسي جوبيتر للألعاب</b></div>
+  <div class="product">
+    <div class="gallery">
+      <div class="main-img" id="mainImg"></div>
+      <div class="thumbs" id="thumbs"></div>
+    </div>
+    <div class="p-info">
+      <h1>كرسي جوبيتر للألعاب</h1>
+      <div class="stars">★★★★★ <span style="color:#999;font-size:13px;letter-spacing:0">(127 تقييم)</span></div>
+      <p class="p-desc">راحة فائقة لجلسات اللعب الطويلة. تصميم مريح داعم للعمود الفقري، مصنوع من الجلد الفاخر المقاوم للاحتكاك، مع مساند ذراعين قابلة للتعديل بأربعة اتجاهات وآلية إمالة حتى 160 درجة.</p>
+      <div class="p-price">1,899 <small>ج.م</small> <span class="old" style="color:#b5b5b5;text-decoration:line-through;font-size:17px;font-weight:500">2,400 ج.م</span></div>
+      <div class="p-label">اللون:</div>
+      <div class="p-colors" id="pColors">
+        <div class="sw on" data-color="أسود" style="background:#2b2b2b" onclick="pick(this)"></div>
+        <div class="sw" data-color="أحمر" style="background:#C0392B" onclick="pick(this)"></div>
+        <div class="sw" data-color="كحلي" style="background:#25406B" onclick="pick(this)"></div>
+        <div class="sw" data-color="بني" style="background:#7A5638" onclick="pick(this)"></div>
+      </div>
+      <div class="p-label">الكمية:</div>
+      <div class="qty">
+        <button onclick="qty(1)">+</button><span id="qtyVal">1</span><button onclick="qty(-1)">−</button>
+      </div>
+      <div class="cta-row">
+        <button class="btn-navy" onclick="addCart()">أضف إلى السلة</button>
+        <button class="btn-navy outline" onclick="buyNow()">شراء الآن</button>
+      </div>
+      <div class="p-feats">
+        <div><svg viewBox="0 0 24 24" fill="none" stroke="#B8963E" stroke-width="2"><path d="M12 3l8 4v5c0 5-3.5 8-8 9-4.5-1-8-4-8-9V7z"/><path d="M9 12l2 2 4-4"/></svg> ضمان 5 سنوات على الهيكل والآليات</div>
+        <div><svg viewBox="0 0 24 24" fill="none" stroke="#B8963E" stroke-width="2"><path d="M3 8h13v9H3zM16 11h4l2 3v3h-6zM7 20a2 2 0 100-4 2 2 0 000 4zM18 20a2 2 0 100-4 2 2 0 000 4z"/></svg> توصيل وتركيب مجاني داخل المدينة</div>
+        <div><svg viewBox="0 0 24 24" fill="none" stroke="#B8963E" stroke-width="2"><path d="M3 12h18M3 12l4-4M3 12l4 4M21 6v12"/></svg> إمكانية الإرجاع خلال 14 يوم</div>
+      </div>
+    </div>
+  </div>
+  <div class="section-title"><h2>منتجات مشابهة</h2><a href="#" onclick="go('cat');return false">عرض الكل ←</a></div>
+  <div class="grid home-grid" id="relGrid"></div>
+</div>
+
+<!-- ================= صفحة إتمام الطلب (بيانات العميل) ================= -->
+<div class="page" id="page-checkout">
+  <div class="crumb">الرئيسية &nbsp;›&nbsp; سلة التسوق &nbsp;›&nbsp; <b>إتمام الطلب</b></div>
+  <div class="checkout">
+    <div class="co-form">
+      <h2>بيانات التوصيل</h2>
+      <div class="co-row">
+        <div class="co-field" id="cf-name">
+          <label>الاسم الكامل <i>*</i></label>
+          <input id="coName" placeholder="مثال: أحمد محمد">
+          <div class="err">من فضلك اكتب الاسم</div>
+        </div>
+        <div class="co-field" id="cf-phone">
+          <label>رقم الجوال (واتساب) <i>*</i></label>
+          <input id="coPhone" dir="ltr" style="text-align:right" placeholder="01XXXXXXXXX">
+          <div class="err">اكتب رقم جوال صحيح (٨ أرقام على الأقل)</div>
+        </div>
+      </div>
+      <div class="co-row">
+        <div class="co-field" id="cf-city">
+          <label>المدينة <i>*</i></label>
+          <input id="coCity" placeholder="القاهرة، الجيزة، الإسكندرية…">
+          <div class="err">اكتب المدينة</div>
+        </div>
+        <div class="co-field">
+          <label>طريقة الدفع</label>
+          <select id="coPay">
+            <option>الدفع عند الاستلام</option>
+            <option>تحويل بنكي</option>
+            <option>فودافون كاش</option><option>انستاباي</option>
+          </select>
+        </div>
+      </div>
+      <div class="co-field" id="cf-addr">
+        <label>العنوان بالتفصيل <i>*</i></label>
+        <input id="coAddr" placeholder="الحي، الشارع، رقم المبنى / الشقة">
+        <div class="err">اكتب العنوان</div>
+      </div>
+      <div class="co-field">
+        <label>ملاحظات على الطلب — اختياري</label>
+        <textarea id="coNotes" rows="3" placeholder="مثال: التوصيل بعد العصر…"></textarea>
+      </div>
+    </div>
+    <div class="co-sum">
+      <h3>ملخص الطلب</h3>
+      <div id="coSummary"></div>
+      <div class="co-grand"><span>الإجمالي</span><span id="coGrand">0 ج.م</span></div>
+      <button class="btn-wa" onclick="sendWhatsApp()">
+        <svg viewBox="0 0 32 32"><path d="M16 3C9.4 3 4 8.4 4 15c0 2.3.7 4.5 1.9 6.4L4 29l7.8-1.8c1.8 1 3.9 1.6 6.2 1.6 6.6 0 12-5.4 12-12S22.6 3 16 3zm0 21.8c-2 0-3.9-.6-5.5-1.6l-.4-.2-4.1 1 1-4-.3-.4c-1.1-1.7-1.7-3.6-1.7-5.6 0-5.5 4.5-10 10-10s10 4.5 10 10-4.5 9.8-9 9.8zm5.5-7.3c-.3-.2-1.8-.9-2.1-1-.3-.1-.5-.2-.7.2s-.8 1-1 1.2c-.2.2-.4.2-.7.1-.3-.2-1.3-.5-2.4-1.5-.9-.8-1.5-1.8-1.7-2.1-.2-.3 0-.5.1-.6l.5-.6c.2-.2.2-.4.3-.6.1-.2 0-.4 0-.6-.1-.2-.7-1.7-1-2.3-.3-.6-.5-.5-.7-.5h-.6c-.2 0-.6.1-.9.4-.3.3-1.1 1.1-1.1 2.7s1.2 3.1 1.3 3.3c.2.2 2.3 3.5 5.6 4.9.8.3 1.4.5 1.9.7.8.2 1.5.2 2.1.1.6-.1 1.8-.7 2.1-1.5.3-.7.3-1.3.2-1.5-.1-.1-.3-.2-.6-.3z"/></svg>
+        تأكيد الطلب عبر واتساب
+      </button>
+      <p class="co-note">بعد الضغط سيتم فتح واتساب مع تفاصيل طلبك كاملة —<br>فقط اضغط إرسال لتأكيد الطلب ✓</p>
+    </div>
+  </div>
+</div>
+
+<!-- ================= درج سلة التسوق ================= -->
+<div class="cart-overlay" id="cartOverlay" onclick="closeCart()"></div>
+<div class="cart-drawer" id="cartDrawer">
+  <div class="cart-head">
+    <h3>🛒 سلة التسوق</h3>
+    <button class="x" onclick="closeCart()">✕</button>
+  </div>
+  <div class="cart-items" id="cartItems"></div>
+  <div class="cart-foot" id="cartFoot">
+    <div class="cart-total"><span>الإجمالي</span><span id="cartTotal">0 ج.م</span></div>
+    <button class="btn-gold" onclick="goCheckout()">إتمام الطلب</button>
+  </div>
+</div>
+
+<footer>
+  <div class="footer-in">
+    <div>
+      <div class="f-brand">
+        <svg viewBox="0 0 48 48" fill="none" stroke="#D9C48A" stroke-width="2.4" stroke-linecap="round"><path d="M12 20c0-7 5-12 12-12s12 5 12 12v6H12v-6z"/><path d="M10 26h28v6H10z"/><path d="M13 32v8M35 32v8M24 32v8"/></svg>
+        Artikaa
+      </div>
+      <p class="f-about">وجهتك الأولى للكراسي الفاخرة. نجمع بين التصميم العصري والحرفية العالية لنمنحك جلسة تليق بك — في المنزل والمكتب.</p>
+    </div>
+    <div><h4>تسوق</h4><a href="#" onclick="go('cat');return false">كراسي مكتب</a><a href="#" onclick="go('cat');return false">كراسي استرخاء</a><a href="#" onclick="go('cat');return false">كراسي طعام</a><a href="#" onclick="go('cat');return false">كراسي ألعاب</a></div>
+    <div><h4>الشركة</h4><a href="#">من نحن</a><a href="#">تصميم مخصص</a><a href="#">فروعنا</a><a href="#">وظائف</a></div>
+    <div><h4>المساعدة</h4><a href="#">الشحن والتوصيل</a><a href="#">سياسة الإرجاع</a><a href="#">الأسئلة الشائعة</a><a href="#">تواصل معنا</a></div>
+  </div>
+  <div class="copy">© 2026 Artikaa.com — جميع الحقوق محفوظة</div>
+</footer>
+
+<button class="chat-fab" onclick="toast('مرحباً! كيف نقدر نساعدك؟ 💬')">💬</button>
+<div class="toast" id="toast"></div>
+
+<script>
+/* ====== رسم كرسي مكتب SVG بألوان مختلفة ====== */
+function officeChair(seat, accent, head){
+  head = head===undefined ? true : head;
+  return `<svg viewBox="0 0 120 150" fill="none">
+    ${head?`<rect x="42" y="4" width="36" height="16" rx="7" fill="${seat}"/><rect x="56" y="18" width="8" height="8" fill="${accent}"/>`:''}
+    <rect x="34" y="${head?26:12}" width="52" height="${head?52:66}" rx="12" fill="${seat}"/>
+    <rect x="42" y="${head?34:20}" width="36" height="${head?36:50}" rx="8" fill="${accent}" opacity=".5"/>
+    <rect x="22" y="58" width="8" height="26" rx="4" fill="#3a3a3a"/><rect x="90" y="58" width="8" height="26" rx="4" fill="#3a3a3a"/>
+    <rect x="18" y="54" width="16" height="7" rx="3.5" fill="#2c2c2c"/><rect x="86" y="54" width="16" height="7" rx="3.5" fill="#2c2c2c"/>
+    <rect x="28" y="82" width="64" height="16" rx="8" fill="${seat}"/>
+    <rect x="56" y="98" width="8" height="24" fill="#4a4a4a"/>
+    <path d="M60 122 L26 138 M60 122 L94 138 M60 122 L60 142 M60 122 L38 142 M60 122 L82 142" stroke="#3a3a3a" stroke-width="6" stroke-linecap="round"/>
+    <circle cx="26" cy="140" r="4" fill="#222"/><circle cx="94" cy="140" r="4" fill="#222"/><circle cx="60" cy="144" r="4" fill="#222"/><circle cx="38" cy="144" r="4" fill="#222"/><circle cx="82" cy="144" r="4" fill="#222"/>
+  </svg>`;
+}
+/* ====== كرسي ألعاب ====== */
+function gamingChair(main, stripe){
+  return `<svg viewBox="0 0 130 160" fill="none">
+    <rect x="38" y="2" width="54" height="20" rx="9" fill="${main}"/><rect x="52" y="8" width="26" height="8" rx="4" fill="${stripe}"/>
+    <path d="M32 26 C32 22 36 20 40 20 H90 C94 20 98 22 98 26 L96 86 C96 92 92 96 86 96 H44 C38 96 34 92 34 86 Z" fill="${main}"/>
+    <path d="M44 28 H86 L84 88 H46 Z" fill="#1c1c1c"/>
+    <path d="M50 32 C50 30 52 28 56 28 L60 88 H52 Z" fill="${stripe}"/><path d="M80 32 C80 30 78 28 74 28 L70 88 H78 Z" fill="${stripe}"/>
+    <rect x="20" y="60" width="10" height="30" rx="5" fill="#2c2c2c"/><rect x="100" y="60" width="10" height="30" rx="5" fill="#2c2c2c"/>
+    <path d="M28 96 C28 92 32 90 38 90 H92 C98 90 102 92 102 96 L100 106 C100 110 96 112 92 112 H38 C34 112 30 110 30 106 Z" fill="${main}"/>
+    <rect x="44" y="94" width="42" height="10" rx="5" fill="${stripe}" opacity=".7"/>
+    <rect x="60" y="112" width="10" height="24" fill="#4a4a4a"/>
+    <path d="M65 136 L28 152 M65 136 L102 152 M65 136 L65 156 M65 136 L42 156 M65 136 L88 156" stroke="#3a3a3a" stroke-width="6" stroke-linecap="round"/>
+    <circle cx="28" cy="154" r="4" fill="#111"/><circle cx="102" cy="154" r="4" fill="#111"/><circle cx="65" cy="158" r="4" fill="#111"/><circle cx="42" cy="158" r="4" fill="#111"/><circle cx="88" cy="158" r="4" fill="#111"/>
+  </svg>`;
+}
+/* ====== كرسي استرخاء ====== */
+function loungeChair(main, dark){
+  return `<svg viewBox="0 0 130 140" fill="none">
+    <path d="M18 52 C12 12 48 -4 65 0 C82 -4 118 12 112 52 L112 100 L18 100 Z" fill="${main}"/>
+    <path d="M34 52 C32 26 48 16 65 18 C82 16 98 26 96 52 L96 76 L34 76 Z" fill="#fff" opacity=".35"/>
+    <ellipse cx="65" cy="84" rx="46" ry="16" fill="${main}"/>
+    <path d="M18 52 C6 54 4 76 14 84 L24 108 L36 104 L28 62 Z" fill="${dark}"/>
+    <path d="M112 52 C124 54 126 76 116 84 L106 108 L94 104 L102 62 Z" fill="${dark}"/>
+    <path d="M36 104 L30 132 M94 104 L100 132 M56 106 L54 132 M74 106 L76 132" stroke="#6b4a2a" stroke-width="6" stroke-linecap="round"/>
+  </svg>`;
+}
+
+/* ====== بيانات المنتجات ====== */
+const office = [
+  {n:'كرسي "فيدن" عصري', p:'2,100', o:'2,450', img:officeChair('#4a4a4a','#8a8a8a')},
+  {n:'كرسي "ألفا" جلدي', p:'3,450', o:'', img:officeChair('#2b2b2b','#B8963E')},
+  {n:'كرسي "ألفا" جلدي — بيج', p:'3,100', o:'3,450', img:officeChair('#C9A870','#E7DECB')},
+  {n:'كرسي "أرغو" مريح', p:'3,450', o:'', img:officeChair('#33415C','#5C6E91')},
+  {n:'كرسي "برو" شبكي', p:'1,850', o:'2,200', img:officeChair('#555','#9aa5b1',false)},
+  {n:'كرسي "لينا" التنفيذي', p:'4,200', o:'', img:officeChair('#3b2f2f','#7A5638')},
+  {n:'كرسي "موجا" دوّار', p:'1,600', o:'1,900', img:officeChair('#607466','#93A99A',false)},
+  {n:'كرسي "تيتان" رياضي', p:'2,750', o:'', img:gamingChair('#2b2b2b','#B8963E')},
+];
+const best = [
+  {n:'كرسي جوبيتر للألعاب', p:'1,899', o:'2,400', img:gamingChair('#1c1c1c','#C0392B'), pp:true},
+  {n:'كرسي "ألفا" جلدي', p:'3,450', o:'', img:officeChair('#2b2b2b','#B8963E')},
+  {n:'كرسي استرخاء "سحاب"', p:'2,950', o:'3,400', img:loungeChair('#25406B','#1F3557')},
+  {n:'كرسي استرخاء "رمال"', p:'2,600', o:'', img:loungeChair('#E7DECB','#DDD2BA')},
+];
+const related = [
+  {n:'كرسي "تيتان" رياضي', p:'2,750', o:'', img:gamingChair('#2b2b2b','#B8963E')},
+  {n:'كرسي "نيون" للألعاب', p:'1,650', o:'1,990', img:gamingChair('#1c2b4a','#3E7A4E')},
+  {n:'كرسي "فيدن" عصري', p:'2,100', o:'2,450', img:officeChair('#4a4a4a','#8a8a8a')},
+  {n:'كرسي "أرغو" مريح', p:'3,450', o:'', img:officeChair('#33415C','#5C6E91')},
+];
+
+function card(p){
+  return `<div class="card" onclick="go('product')">
+    ${p.o?'<span class="badge-sale">خصم</span>':''}
+    <button class="heart" onclick="event.stopPropagation();this.classList.toggle('on');this.textContent=this.classList.contains('on')?'♥':'♡'">♡</button>
+    <div class="thumb">${p.img}</div>
+    <div class="info">
+      <div class="name">${p.n}</div>
+      <div class="stars">★★★★★</div>
+      <div class="price">${p.p} <small>ج.م</small>${p.o?`<span class="old">${p.o}</span>`:''}</div>
+    </div>
+  </div>`;
+}
+document.getElementById('homeGrid').innerHTML = best.map(card).join('');
+document.getElementById('catGrid').innerHTML = office.map(card).join('');
+document.getElementById('relGrid').innerHTML = related.map(card).join('');
+
+/* ====== معرض المنتج ====== */
+const views = [gamingChair('#1c1c1c','#C0392B'), gamingChair('#C0392B','#1c1c1c'), gamingChair('#1c1c1c','#B8963E'), gamingChair('#25406B','#8fa3c8')];
+document.getElementById('mainImg').innerHTML = views[0];
+document.getElementById('thumbs').innerHTML = views.map((v,i)=>`<div class="t ${i==0?'on':''}" onclick="setView(${i},this)">${v}</div>`).join('');
+function setView(i,el){
+  document.getElementById('mainImg').innerHTML = views[i];
+  document.querySelectorAll('.thumbs .t').forEach(t=>t.classList.remove('on'));
+  el.classList.add('on');
+}
+
+/* ====== التنقل والحالة ====== */
+/* ⚠️ ضع هنا رقم الواتساب الذي ستستقبل عليه الطلبات — بصيغة دولية بدون + أو مسافات — مصر تبدأ بـ 20 */
+const WHATSAPP_NUMBER = '201095983744';
+
+let cartItems = [], q = 1;
+const fmt = n => Number(n).toLocaleString('en');
+
+function go(p){
+  document.querySelectorAll('.page').forEach(x=>x.classList.remove('active'));
+  document.getElementById('page-'+p).classList.add('active');
+  document.getElementById('nav-home').classList.toggle('active', p==='home');
+  document.getElementById('nav-cat').classList.toggle('active', p!=='home');
+  document.querySelector('nav.main').classList.remove('open');
+  window.scrollTo({top:0});
+}
+function toggleMenu(){ document.querySelector('nav.main').classList.toggle('open'); }
+function pick(el){
+  el.parentElement.querySelectorAll('.sw').forEach(s=>s.classList.remove('on'));
+  el.classList.add('on');
+}
+function qty(d){ q = Math.max(1, q+d); document.getElementById('qtyVal').textContent = q; }
+
+/* ====== السلة ====== */
+function selectedColor(){
+  const sw = document.querySelector('#pColors .sw.on');
+  return sw ? sw.dataset.color : '';
+}
+function addCart(silent){
+  const color = selectedColor();
+  const key = 'jupiter-'+color;
+  const found = cartItems.find(i=>i.key===key);
+  if(found) found.qty += q;
+  else cartItems.push({key, name:'كرسي جوبيتر للألعاب', color, price:1899, qty:q, img:views[0]});
+  q = 1; document.getElementById('qtyVal').textContent = 1;
+  updateCart();
+  if(!silent){ toast('تمت الإضافة إلى السلة ✓'); openCart(); }
+}
+function buyNow(){ addCart(true); goCheckout(); }
+function changeQty(key, d){
+  const it = cartItems.find(i=>i.key===key);
+  it.qty += d;
+  if(it.qty <= 0) cartItems = cartItems.filter(i=>i.key!==key);
+  updateCart();
+}
+function removeItem(key){ cartItems = cartItems.filter(i=>i.key!==key); updateCart(); }
+function cartTotal(){ return cartItems.reduce((s,i)=>s+i.price*i.qty, 0); }
+
+function updateCart(){
+  const count = cartItems.reduce((s,i)=>s+i.qty, 0);
+  document.getElementById('cartBadge').textContent = count;
+  const box = document.getElementById('cartItems');
+  if(!cartItems.length){
+    box.innerHTML = '<div class="cart-empty"><div class="big">🛒</div>سلتك فارغة<br>ابدأ التسوق وأضف ما يعجبك!</div>';
+    document.getElementById('cartFoot').style.display = 'none';
+  } else {
+    box.innerHTML = cartItems.map(i=>`
+      <div class="c-item">
+        <div class="c-img">${i.img}</div>
+        <div class="c-info">
+          <div class="c-name">${i.name}</div>
+          <div class="c-color">اللون: ${i.color}</div>
+          <div style="display:flex;align-items:center;justify-content:space-between">
+            <div class="c-qty">
+              <button onclick="changeQty('${i.key}',1)">+</button><span>${i.qty}</span><button onclick="changeQty('${i.key}',-1)">−</button>
+            </div>
+            <div class="c-price">${fmt(i.price*i.qty)} ج.م</div>
+          </div>
+        </div>
+        <button class="c-rm" onclick="removeItem('${i.key}')" title="حذف">🗑</button>
+      </div>`).join('');
+    document.getElementById('cartFoot').style.display = 'block';
+    document.getElementById('cartTotal').textContent = fmt(cartTotal())+' ج.م';
+  }
+  renderSummary();
+}
+function openCart(){
+  document.getElementById('cartDrawer').classList.add('on');
+  document.getElementById('cartOverlay').classList.add('on');
+}
+function closeCart(){
+  document.getElementById('cartDrawer').classList.remove('on');
+  document.getElementById('cartOverlay').classList.remove('on');
+}
+
+/* ====== إتمام الطلب ====== */
+function goCheckout(){
+  if(!cartItems.length){ toast('سلتك فارغة — أضف منتجاً أولاً'); return; }
+  closeCart(); go('checkout'); renderSummary();
+}
+function renderSummary(){
+  const box = document.getElementById('coSummary');
+  if(!box) return;
+  box.innerHTML = cartItems.map(i=>`<div class="co-line"><span>${i.name} — ${i.color} ×${i.qty}</span><b>${fmt(i.price*i.qty)} ج.م</b></div>`).join('')
+    + '<div class="co-line"><span>الشحن</span><b style="color:var(--gold-dark)">مجاني</b></div>';
+  document.getElementById('coGrand').textContent = fmt(cartTotal())+' ج.م';
+}
+function markBad(id, bad){ document.getElementById(id).classList.toggle('bad', bad); return bad; }
+function sendWhatsApp(){
+  if(!cartItems.length){ toast('سلتك فارغة'); go('cat'); return; }
+  const name  = document.getElementById('coName').value.trim();
+  const phone = document.getElementById('coPhone').value.trim();
+  const city  = document.getElementById('coCity').value.trim();
+  const addr  = document.getElementById('coAddr').value.trim();
+  const pay   = document.getElementById('coPay').value;
+  const notes = document.getElementById('coNotes').value.trim();
+  let bad = false;
+  bad = markBad('cf-name', !name) || bad;
+  bad = markBad('cf-phone', phone.replace(/\D/g,'').length < 8) || bad;
+  bad = markBad('cf-city', !city) || bad;
+  bad = markBad('cf-addr', !addr) || bad;
+  if(bad){ toast('أكمل البيانات المطلوبة أولاً'); return; }
+
+  const lines = cartItems.map(i=>`• ${i.name} — ${i.color} ×${i.qty} = ${fmt(i.price*i.qty)} ج.م`).join('\n');
+  const msg =
+`🪑 *طلب جديد من Artikaa.com*
+━━━━━━━━━━━━━━
+📦 *المنتجات:*
+${lines}
+━━━━━━━━━━━━━━
+💰 *الإجمالي:* ${fmt(cartTotal())} ج.م (شحن مجاني)
+━━━━━━━━━━━━━━
+👤 *الاسم:* ${name}
+📱 *الجوال:* ${phone}
+🏙️ *المدينة:* ${city}
+📍 *العنوان:* ${addr}
+💳 *الدفع:* ${pay}${notes ? '\n📝 *ملاحظات:* '+notes : ''}`;
+
+  window.open('https://wa.me/'+WHATSAPP_NUMBER+'?text='+encodeURIComponent(msg), '_blank');
+  toast('تم تجهيز طلبك — اضغط إرسال في واتساب ✓');
+}
+let tt;
+function toast(msg){
+  const t = document.getElementById('toast');
+  t.textContent = msg; t.classList.add('show');
+  clearTimeout(tt); tt = setTimeout(()=>t.classList.remove('show'), 2200);
+}
+updateCart();
+</script>
+</body>
+</html>
