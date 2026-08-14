@@ -35,6 +35,8 @@ nav.main a:hover,nav.main a.active{color:var(--gold);border-color:var(--gold)}
 .cart-btn{position:relative;display:flex;align-items:center;gap:6px;background:none;border:none;font-size:14px;font-weight:500;color:#444}
 .cart-badge{position:absolute;top:-8px;left:-10px;background:var(--gold);color:#fff;font-size:11px;font-weight:700;width:18px;height:18px;border-radius:50%;display:flex;align-items:center;justify-content:center}
 .burger{display:none;background:none;border:none;font-size:24px}
+.lang-sel{border:1px solid var(--line);border-radius:20px;padding:6px 12px;font-family:inherit;font-size:13px;background:var(--cream-2);color:#555;cursor:pointer}
+.lang-sel:focus{outline:2px solid var(--gold-light)}
 
 .page{display:none}
 .page.active{display:block;animation:fadeIn .35s ease}
@@ -47,6 +49,8 @@ nav.main a:hover,nav.main a.active{color:var(--gold);border-color:var(--gold)}
 .hero-text h1{font-family:'Amiri',serif;font-size:44px;color:var(--ink);margin-bottom:12px;transition:.4s}
 .hero-text p{font-size:16px;color:#5a5548;line-height:1.9;margin-bottom:22px;transition:.4s}
 .hero-text.fading h1,.hero-text.fading p{opacity:0;transform:translateY(8px)}
+html[dir="ltr"] .hero-text{text-align:left}
+html[dir="ltr"] body{font-family:'Tajawal','Segoe UI',sans-serif}
 .btn-gold{display:inline-block;background:var(--gold);color:#fff;border:none;padding:12px 34px;border-radius:6px;font-size:16px;font-weight:700;transition:.2s}
 .btn-gold:hover{background:var(--gold-dark);transform:translateY(-2px)}
 .hero-dots{position:absolute;bottom:16px;right:0;left:0;display:flex;justify-content:center;gap:8px;z-index:5}
@@ -260,7 +264,7 @@ footer a:hover{color:var(--gold-light)}
 </head>
 <body>
 
-<div class="announce">✦ شحن مجاني لجميع محافظات مصر للطلبات فوق 5000 ج.م — خصومات تصل إلى 30% ✦</div>
+<div class="announce" data-k="announce">✦ شحن مجاني لجميع محافظات مصر للطلبات فوق 5000 ج.م — خصومات تصل إلى 30% ✦</div>
 
 <header>
   <div class="header-in">
@@ -269,16 +273,19 @@ footer a:hover{color:var(--gold-light)}
       Artikaa
     </a>
     <nav class="main" id="mainNav">
-      <a href="#" id="nav-home" class="active" onclick="go('home');return false">الرئيسية</a>
-      <a href="#" id="nav-cat" onclick="showCat('all');return false">المنتجات</a>
-      <a href="#" id="nav-custom" onclick="go('custom');return false">تصميم مخصص</a>
-      <a href="#" id="nav-about" onclick="go('about');return false">من نحن</a>
-      <a href="#" id="nav-help" onclick="go('help');return false">المساعدة</a>
+      <a href="#" id="nav-home" class="active" onclick="go('home');return false" data-k="nav_home">الرئيسية</a>
+      <a href="#" id="nav-cat" onclick="showCat('all');return false" data-k="nav_products">المنتجات</a>
+      <a href="#" id="nav-custom" onclick="go('custom');return false" data-k="nav_custom">تصميم مخصص</a>
+      <a href="#" id="nav-about" onclick="go('about');return false" data-k="nav_about">من نحن</a>
+      <a href="#" id="nav-help" onclick="go('help');return false" data-k="nav_help">المساعدة</a>
     </nav>
     <div class="header-actions">
       <button class="cart-btn" onclick="openCart()">
-        🛒 سلة التسوق <span class="cart-badge" id="cartBadge">0</span>
+        🛒 <span data-k="cart_lbl">سلة التسوق</span> <span class="cart-badge" id="cartBadge">0</span>
       </button>
+      <select id="langSel" class="lang-sel" onchange="setLang(this.value)">
+        <option value="ar">🌐 العربية</option><option value="en">English</option><option value="fr">Français</option><option value="de">Deutsch</option><option value="it">Italiano</option><option value="es">Español</option><option value="ru">Русский</option><option value="tr">Türkçe</option><option value="pl">Polski</option><option value="zh">中文</option>
+      </select>
       <button class="burger" onclick="toggleMenu()">☰</button>
     </div>
   </div>
@@ -350,70 +357,70 @@ footer a:hover{color:var(--gold-light)}
   <div class="cats">
     <div class="cat-card" onclick="showCat('lounge')">
       <svg viewBox="0 0 48 48" fill="none" stroke="#B8963E" stroke-width="2.4" stroke-linecap="round"><path d="M8 26c0-4 3-6 6-6h14c6 0 10 4 10 10v6H12z"/><path d="M8 26v10h4M38 36v6M14 36v6"/></svg>
-      كراسي استرخاء
+      <span data-k="cat_lounge">كراسي استرخاء</span>
     </div>
     <div class="cat-card" onclick="showCat('office')">
       <svg viewBox="0 0 48 48" fill="none" stroke="#B8963E" stroke-width="2.4" stroke-linecap="round"><rect x="16" y="8" width="16" height="18" rx="4"/><path d="M16 30h16M24 30v8M14 42h20M24 38l-8 4M24 38l8 4"/></svg>
-      كراسي مكتب
+      <span data-k="cat_office">كراسي مكتب</span>
     </div>
     <div class="cat-card" onclick="showCat('gaming')">
       <svg viewBox="0 0 48 48" fill="none" stroke="#B8963E" stroke-width="2.4" stroke-linecap="round"><rect x="14" y="6" width="20" height="22" rx="6"/><path d="M18 12v10M14 32h20M24 32v8M14 44h20M24 40l-8 4M24 40l8 4"/></svg>
-      كراسي ألعاب
+      <span data-k="cat_gaming">كراسي ألعاب</span>
     </div>
     <div class="cat-card" onclick="showCat('dining')">
       <svg viewBox="0 0 48 48" fill="none" stroke="#B8963E" stroke-width="2.4" stroke-linecap="round"><path d="M16 6v18M32 6v18M16 14h16M14 24h20v4H14zM16 28v14M32 28v14"/></svg>
-      كراسي طعام
+      <span data-k="cat_dining">كراسي طعام</span>
     </div>
   </div>
 
   <div class="feats">
     <div class="feats-in">
-      <div class="feat"><svg viewBox="0 0 24 24" fill="none" stroke="#B8963E" stroke-width="2"><path d="M3 8h13v9H3zM16 11h4l2 3v3h-6zM7 20a2 2 0 100-4 2 2 0 000 4zM18 20a2 2 0 100-4 2 2 0 000 4z"/></svg><b>توصيل سريع</b><span>لجميع محافظات مصر</span></div>
-      <div class="feat"><svg viewBox="0 0 24 24" fill="none" stroke="#B8963E" stroke-width="2"><path d="M12 3l8 4v5c0 5-3.5 8-8 9-4.5-1-8-4-8-9V7z"/><path d="M9 12l2 2 4-4"/></svg><b>ضمان 5 سنوات</b><span>على جميع المنتجات</span></div>
-      <div class="feat"><svg viewBox="0 0 24 24" fill="none" stroke="#B8963E" stroke-width="2"><path d="M4 12a8 8 0 0116 0M4 12v5a2 2 0 002 2h2v-7H4zM20 12v5a2 2 0 01-2 2h-2v-7h4z"/></svg><b>دعم 24/7</b><span>واتساب مباشر</span></div>
-      <div class="feat"><svg viewBox="0 0 24 24" fill="none" stroke="#B8963E" stroke-width="2"><path d="M3 12h18M3 12l4-4M3 12l4 4M21 6v12"/></svg><b>إرجاع مجاني</b><span>خلال 14 يوم</span></div>
+      <div class="feat"><svg viewBox="0 0 24 24" fill="none" stroke="#B8963E" stroke-width="2"><path d="M3 8h13v9H3zM16 11h4l2 3v3h-6zM7 20a2 2 0 100-4 2 2 0 000 4zM18 20a2 2 0 100-4 2 2 0 000 4z"/></svg><b data-k="f1t">توصيل سريع</b><span data-k="f1s">لجميع محافظات مصر</span></div>
+      <div class="feat"><svg viewBox="0 0 24 24" fill="none" stroke="#B8963E" stroke-width="2"><path d="M12 3l8 4v5c0 5-3.5 8-8 9-4.5-1-8-4-8-9V7z"/><path d="M9 12l2 2 4-4"/></svg><b data-k="f2t">ضمان 5 سنوات</b><span data-k="f2s">على جميع المنتجات</span></div>
+      <div class="feat"><svg viewBox="0 0 24 24" fill="none" stroke="#B8963E" stroke-width="2"><path d="M4 12a8 8 0 0116 0M4 12v5a2 2 0 002 2h2v-7H4zM20 12v5a2 2 0 01-2 2h-2v-7h4z"/></svg><b data-k="f3t">دعم 24/7</b><span data-k="f3s">واتساب مباشر</span></div>
+      <div class="feat"><svg viewBox="0 0 24 24" fill="none" stroke="#B8963E" stroke-width="2"><path d="M3 12h18M3 12l4-4M3 12l4 4M21 6v12"/></svg><b data-k="f4t">إرجاع مجاني</b><span data-k="f4s">خلال 14 يوم</span></div>
     </div>
   </div>
 
   <div class="section-title">
-    <h2>الأكثر مبيعاً</h2>
-    <a href="#" onclick="showCat('all');return false">عرض الكل ←</a>
+    <h2 data-k="best">الأكثر مبيعاً</h2>
+    <a href="#" onclick="showCat('all');return false" data-k="view_all">عرض الكل ←</a>
   </div>
   <div class="grid home-grid" id="homeGrid"></div>
 </div>
 
 <!-- ================= المنتجات ================= -->
 <div class="page" id="page-cat">
-  <div class="crumb"><a href="#" onclick="go('home');return false">الرئيسية</a> &nbsp;›&nbsp; <b id="crumbCat">المنتجات</b></div>
+  <div class="crumb"><a href="#" onclick="go('home');return false" data-k="crumb_home">الرئيسية</a> &nbsp;›&nbsp; <b id="crumbCat">المنتجات</b></div>
   <div class="cat-layout">
     <aside class="side">
-      <h3>تصفية النتائج</h3>
+      <h3 data-k="flt_t">تصفية النتائج</h3>
       <div class="f-group">
-        <h4>الفئات</h4>
-        <label><input type="checkbox" value="office" onchange="applyFilters()"> كراسي مكتب</label>
-        <label><input type="checkbox" value="gaming" onchange="applyFilters()"> كراسي ألعاب</label>
-        <label><input type="checkbox" value="lounge" onchange="applyFilters()"> كراسي استرخاء</label>
-        <label><input type="checkbox" value="dining" onchange="applyFilters()"> كراسي طعام</label>
+        <h4 data-k="flt_cats">الفئات</h4>
+        <label><input type="checkbox" value="office" onchange="applyFilters()"> <span data-k="cat_office">كراسي مكتب</span></label>
+        <label><input type="checkbox" value="gaming" onchange="applyFilters()"> <span data-k="cat_gaming">كراسي ألعاب</span></label>
+        <label><input type="checkbox" value="lounge" onchange="applyFilters()"> <span data-k="cat_lounge">كراسي استرخاء</span></label>
+        <label><input type="checkbox" value="dining" onchange="applyFilters()"> <span data-k="cat_dining">كراسي طعام</span></label>
       </div>
       <div class="f-group">
-        <h4>السعر الأقصى</h4>
+        <h4 data-k="flt_price">السعر الأقصى</h4>
         <input type="range" class="range" id="priceRange" min="500" max="5000" step="100" value="5000" oninput="applyFilters()">
-        <div class="range-vals"><span>500 ج.م</span><span id="rv">5,000 ج.م</span></div>
+        <div class="range-vals"><span id="minPrice">500 ج.م</span><span id="rv">5,000 ج.م</span></div>
       </div>
       <div class="f-group">
-        <h4>اللون</h4>
+        <h4 data-k="flt_color">اللون</h4>
         <div class="swatches" id="colorFilters"></div>
       </div>
-      <button class="clear-f" onclick="clearFilters()">✕ مسح كل الفلاتر</button>
+      <button class="clear-f" onclick="clearFilters()" data-k="flt_clear">✕ مسح كل الفلاتر</button>
     </aside>
     <div>
       <div class="cat-head">
         <h1 id="catTitle">المنتجات</h1>
         <select id="sortSel" onchange="applyFilters()">
-          <option value="featured">الأكثر مبيعاً</option>
-          <option value="asc">السعر: من الأقل للأعلى</option>
-          <option value="desc">السعر: من الأعلى للأقل</option>
-          <option value="new">الأحدث</option>
+          <option value="featured" data-k="best">الأكثر مبيعاً</option>
+          <option value="asc" data-k="sort_asc">السعر: من الأقل للأعلى</option>
+          <option value="desc" data-k="sort_desc">السعر: من الأعلى للأقل</option>
+          <option value="new" data-k="sort_new">الأحدث</option>
         </select>
       </div>
       <div class="count" id="catCount"></div>
@@ -424,7 +431,7 @@ footer a:hover{color:var(--gold-light)}
 
 <!-- ================= صفحة المنتج ================= -->
 <div class="page" id="page-product">
-  <div class="crumb"><a href="#" onclick="go('home');return false">الرئيسية</a> &nbsp;›&nbsp; <a href="#" id="crumbPCat" onclick="return false"></a> &nbsp;›&nbsp; <b id="crumbPName"></b></div>
+  <div class="crumb"><a href="#" onclick="go('home');return false" data-k="crumb_home">الرئيسية</a> &nbsp;›&nbsp; <a href="#" id="crumbPCat" onclick="return false"></a> &nbsp;›&nbsp; <b id="crumbPName"></b></div>
   <div class="product">
     <div class="gallery">
       <div class="main-img" id="mainImg"></div>
@@ -435,117 +442,117 @@ footer a:hover{color:var(--gold-light)}
       <div class="stars" id="pStars"></div>
       <p class="p-desc" id="pDesc"></p>
       <div class="p-price" id="pPrice"></div>
-      <div class="p-label">اللون: <span id="pColorName"></span></div>
+      <div class="p-label"><span data-k="color_lbl">اللون:</span> <span id="pColorName"></span></div>
       <div class="p-colors" id="pColors"></div>
-      <div class="p-label">الكمية:</div>
+      <div class="p-label" data-k="qty_lbl">الكمية:</div>
       <div class="qty">
         <button onclick="qty(1)">+</button><span id="qtyVal">1</span><button onclick="qty(-1)">−</button>
       </div>
       <div class="cta-row">
-        <button class="btn-navy" onclick="addCart()">أضف إلى السلة</button>
-        <button class="btn-navy outline" onclick="buyNow()">شراء الآن</button>
+        <button class="btn-navy" onclick="addCart()" data-k="add_cart">أضف إلى السلة</button>
+        <button class="btn-navy outline" onclick="buyNow()" data-k="buy_now">شراء الآن</button>
       </div>
       <div class="p-feats">
-        <div><svg viewBox="0 0 24 24" fill="none" stroke="#B8963E" stroke-width="2"><path d="M12 3l8 4v5c0 5-3.5 8-8 9-4.5-1-8-4-8-9V7z"/><path d="M9 12l2 2 4-4"/></svg> ضمان 5 سنوات على الهيكل والآليات</div>
-        <div><svg viewBox="0 0 24 24" fill="none" stroke="#B8963E" stroke-width="2"><path d="M3 8h13v9H3zM16 11h4l2 3v3h-6zM7 20a2 2 0 100-4 2 2 0 000 4zM18 20a2 2 0 100-4 2 2 0 000 4z"/></svg> توصيل لجميع محافظات مصر</div>
-        <div><svg viewBox="0 0 24 24" fill="none" stroke="#B8963E" stroke-width="2"><path d="M3 12h18M3 12l4-4M3 12l4 4M21 6v12"/></svg> إمكانية الإرجاع خلال 14 يوم</div>
+        <div><svg viewBox="0 0 24 24" fill="none" stroke="#B8963E" stroke-width="2"><path d="M12 3l8 4v5c0 5-3.5 8-8 9-4.5-1-8-4-8-9V7z"/><path d="M9 12l2 2 4-4"/></svg> <span data-k="pf1">ضمان 5 سنوات على الهيكل والآليات</span></div>
+        <div><svg viewBox="0 0 24 24" fill="none" stroke="#B8963E" stroke-width="2"><path d="M3 8h13v9H3zM16 11h4l2 3v3h-6zM7 20a2 2 0 100-4 2 2 0 000 4zM18 20a2 2 0 100-4 2 2 0 000 4z"/></svg> <span data-k="pf2">توصيل لجميع محافظات مصر</span></div>
+        <div><svg viewBox="0 0 24 24" fill="none" stroke="#B8963E" stroke-width="2"><path d="M3 12h18M3 12l4-4M3 12l4 4M21 6v12"/></svg> <span data-k="pf3">إمكانية الإرجاع خلال 14 يوم</span></div>
       </div>
     </div>
   </div>
-  <div class="section-title"><h2>منتجات مشابهة</h2><a href="#" onclick="showCat('all');return false">عرض الكل ←</a></div>
+  <div class="section-title"><h2 data-k="similar">منتجات مشابهة</h2><a href="#" onclick="showCat('all');return false" data-k="view_all">عرض الكل ←</a></div>
   <div class="grid home-grid" id="relGrid"></div>
 </div>
 
 <!-- ================= إتمام الطلب ================= -->
 <div class="page" id="page-checkout">
-  <div class="crumb"><a href="#" onclick="go('home');return false">الرئيسية</a> &nbsp;›&nbsp; سلة التسوق &nbsp;›&nbsp; <b>إتمام الطلب</b></div>
+  <div class="crumb"><a href="#" onclick="go('home');return false" data-k="crumb_home">الرئيسية</a> &nbsp;›&nbsp; <span data-k="cart_lbl">سلة التسوق</span> &nbsp;›&nbsp; <b data-k="crumb_co">إتمام الطلب</b></div>
   <div class="checkout">
     <div class="co-form">
-      <h2>بيانات التوصيل</h2>
+      <h2 data-k="co_t">بيانات التوصيل</h2>
       <div class="co-row">
         <div class="co-field" id="cf-name">
-          <label>الاسم الكامل <i>*</i></label>
-          <input id="coName" placeholder="مثال: أحمد محمد">
-          <div class="err">من فضلك اكتب الاسم</div>
+          <label data-k="l_name" data-star="1">الاسم الكامل</label>
+          <input id="coName" data-kp="ph_name" placeholder="مثال: أحمد محمد">
+          <div class="err" data-k="e_name">من فضلك اكتب الاسم</div>
         </div>
         <div class="co-field" id="cf-phone">
-          <label>رقم الموبايل (واتساب) <i>*</i></label>
+          <label data-k="l_phone" data-star="1">رقم الموبايل (واتساب)</label>
           <input id="coPhone" dir="ltr" style="text-align:right" placeholder="01XXXXXXXXX">
-          <div class="err">اكتب رقم موبايل صحيح (٨ أرقام على الأقل)</div>
+          <div class="err" data-k="e_phone">اكتب رقم موبايل صحيح (٨ أرقام على الأقل)</div>
         </div>
       </div>
       <div class="co-row">
         <div class="co-field" id="cf-city">
-          <label>المحافظة / المدينة <i>*</i></label>
-          <input id="coCity" placeholder="القاهرة، الجيزة، الإسكندرية…">
-          <div class="err">اكتب المدينة</div>
+          <label data-k="l_city" data-star="1">المحافظة / المدينة</label>
+          <input id="coCity" data-kp="ph_city" placeholder="القاهرة، الجيزة، الإسكندرية…">
+          <div class="err" data-k="e_city">اكتب المدينة</div>
         </div>
         <div class="co-field">
-          <label>طريقة الدفع</label>
+          <label data-k="l_pay">طريقة الدفع</label>
           <select id="coPay">
-            <option>الدفع عند الاستلام</option>
-            <option>فودافون كاش</option>
-            <option>انستاباي</option>
-            <option>تحويل بنكي</option>
+            <option data-k="pay1">الدفع عند الاستلام</option>
+            <option data-k="pay2">فودافون كاش</option>
+            <option data-k="pay3">انستاباي</option>
+            <option data-k="pay4">تحويل بنكي</option>
           </select>
         </div>
       </div>
       <div class="co-field" id="cf-addr">
-        <label>العنوان بالتفصيل <i>*</i></label>
-        <input id="coAddr" placeholder="الحي، الشارع، رقم العمارة / الشقة">
-        <div class="err">اكتب العنوان</div>
+        <label data-k="l_addr" data-star="1">العنوان بالتفصيل</label>
+        <input id="coAddr" data-kp="ph_addr" placeholder="الحي، الشارع، رقم العمارة / الشقة">
+        <div class="err" data-k="e_addr">اكتب العنوان</div>
       </div>
       <div class="co-field">
-        <label>ملاحظات على الطلب — اختياري</label>
-        <textarea id="coNotes" rows="3" placeholder="مثال: التوصيل بعد العصر…"></textarea>
+        <label data-k="l_notes">ملاحظات على الطلب — اختياري</label>
+        <textarea id="coNotes" rows="3" data-kp="ph_notes" placeholder="مثال: التوصيل بعد العصر…"></textarea>
       </div>
     </div>
     <div class="co-sum">
-      <h3>ملخص الطلب</h3>
+      <h3 data-k="sum_t">ملخص الطلب</h3>
       <div id="coSummary"></div>
-      <div class="co-grand"><span>الإجمالي</span><span id="coGrand">0 ج.م</span></div>
+      <div class="co-grand"><span data-k="grand">الإجمالي</span><span id="coGrand">0 ج.م</span></div>
       <button class="btn-wa" onclick="sendWhatsApp()">
         <svg viewBox="0 0 32 32"><path d="M16 3C9.4 3 4 8.4 4 15c0 2.3.7 4.5 1.9 6.4L4 29l7.8-1.8c1.8 1 3.9 1.6 6.2 1.6 6.6 0 12-5.4 12-12S22.6 3 16 3zm0 21.8c-2 0-3.9-.6-5.5-1.6l-.4-.2-4.1 1 1-4-.3-.4c-1.1-1.7-1.7-3.6-1.7-5.6 0-5.5 4.5-10 10-10s10 4.5 10 10-4.5 9.8-9 9.8zm5.5-7.3c-.3-.2-1.8-.9-2.1-1-.3-.1-.5-.2-.7.2s-.8 1-1 1.2c-.2.2-.4.2-.7.1-.3-.2-1.3-.5-2.4-1.5-.9-.8-1.5-1.8-1.7-2.1-.2-.3 0-.5.1-.6l.5-.6c.2-.2.2-.4.3-.6.1-.2 0-.4 0-.6-.1-.2-.7-1.7-1-2.3-.3-.6-.5-.5-.7-.5h-.6c-.2 0-.6.1-.9.4-.3.3-1.1 1.1-1.1 2.7s1.2 3.1 1.3 3.3c.2.2 2.3 3.5 5.6 4.9.8.3 1.4.5 1.9.7.8.2 1.5.2 2.1.1.6-.1 1.8-.7 2.1-1.5.3-.7.3-1.3.2-1.5-.1-.1-.3-.2-.6-.3z"/></svg>
-        تأكيد الطلب عبر واتساب
+        <span data-k="wa_btn">تأكيد الطلب عبر واتساب</span>
       </button>
-      <p class="co-note">بعد الضغط سيتم فتح واتساب مع تفاصيل طلبك كاملة —<br>فقط اضغط إرسال لتأكيد الطلب ✓</p>
+      <p class="co-note" data-k="wa_note">بعد الضغط سيتم فتح واتساب مع تفاصيل طلبك كاملة —<br>فقط اضغط إرسال لتأكيد الطلب ✓</p>
     </div>
   </div>
 </div>
 
 <!-- ================= تصميم مخصص ================= -->
 <div class="page" id="page-custom">
-  <div class="crumb"><a href="#" onclick="go('home');return false">الرئيسية</a> &nbsp;›&nbsp; <b>تصميم مخصص</b></div>
+  <div class="crumb"><a href="#" onclick="go('home');return false" data-k="crumb_home">الرئيسية</a> &nbsp;›&nbsp; <b data-k="nav_custom">تصميم مخصص</b></div>
   <div class="content-page">
-    <h1>صمّم كرسيك على ذوقك 🪑✨</h1>
-    <p class="lead">عندنا ورشة تصنيع خاصة — اختار الخامة واللون والمقاس واحنا ننفذلك كرسي فريد يليق بمساحتك. املأ البيانات وهنرد عليك على واتساب بعرض سعر خلال 24 ساعة.</p>
+    <h1 data-k="cu_t">صمّم كرسيك على ذوقك 🪑✨</h1>
+    <p class="lead" data-k="cu_lead">عندنا ورشة تصنيع خاصة — اختار الخامة واللون والمقاس واحنا ننفذلك كرسي فريد يليق بمساحتك. املأ البيانات وهنرد عليك على واتساب بعرض سعر خلال 24 ساعة.</p>
     <div class="co-form" style="max-width:640px">
       <div class="co-row">
         <div class="co-field" id="cu-name">
-          <label>الاسم <i>*</i></label>
-          <input id="cuName" placeholder="اسمك">
-          <div class="err">اكتب اسمك</div>
+          <label data-k="cu_name" data-star="1">الاسم</label>
+          <input id="cuName" data-kp="cu_name_ph" placeholder="اسمك">
+          <div class="err" data-k="e_name">اكتب اسمك</div>
         </div>
         <div class="co-field" id="cu-phone">
-          <label>رقم الموبايل <i>*</i></label>
+          <label data-k="cu_phone" data-star="1">رقم الموبايل</label>
           <input id="cuPhone" dir="ltr" style="text-align:right" placeholder="01XXXXXXXXX">
-          <div class="err">اكتب رقم صحيح</div>
+          <div class="err" data-k="e_phone2">اكتب رقم صحيح</div>
         </div>
       </div>
       <div class="co-field">
-        <label>نوع الكرسي</label>
+        <label data-k="cu_type">نوع الكرسي</label>
         <select id="cuType">
-          <option>كرسي استرخاء</option><option>كرسي مكتب</option><option>كرسي ألعاب</option><option>كرسي طعام (طقم)</option><option>تصميم آخر</option>
+          <option data-k="ct1">كرسي استرخاء</option><option data-k="ct2">كرسي مكتب</option><option data-k="ct3">كرسي ألعاب</option><option data-k="ct4">كرسي طعام (طقم)</option><option data-k="ct5">تصميم آخر</option>
         </select>
       </div>
       <div class="co-field" id="cu-desc">
-        <label>وصف التصميم المطلوب <i>*</i></label>
-        <textarea id="cuDesc" rows="4" placeholder="الخامة، اللون، المقاس، أي صورة مرجعية هتبعتها لنا على واتساب…"></textarea>
-        <div class="err">اوصف التصميم ولو بجملة واحدة</div>
+        <label data-k="cu_dlbl" data-star="1">وصف التصميم المطلوب</label>
+        <textarea id="cuDesc" rows="4" data-kp="cu_dph" placeholder="الخامة، اللون، المقاس، أي صورة مرجعية هتبعتها لنا على واتساب…"></textarea>
+        <div class="err" data-k="e_desc">اوصف التصميم ولو بجملة واحدة</div>
       </div>
       <button class="btn-wa" onclick="sendCustom()">
         <svg viewBox="0 0 32 32"><path d="M16 3C9.4 3 4 8.4 4 15c0 2.3.7 4.5 1.9 6.4L4 29l7.8-1.8c1.8 1 3.9 1.6 6.2 1.6 6.6 0 12-5.4 12-12S22.6 3 16 3zm0 21.8c-2 0-3.9-.6-5.5-1.6l-.4-.2-4.1 1 1-4-.3-.4c-1.1-1.7-1.7-3.6-1.7-5.6 0-5.5 4.5-10 10-10s10 4.5 10 10-4.5 9.8-9 9.8z"/></svg>
-        إرسال الطلب على واتساب
+        <span data-k="cu_send">إرسال الطلب على واتساب</span>
       </button>
     </div>
   </div>
@@ -553,48 +560,48 @@ footer a:hover{color:var(--gold-light)}
 
 <!-- ================= من نحن ================= -->
 <div class="page" id="page-about">
-  <div class="crumb"><a href="#" onclick="go('home');return false">الرئيسية</a> &nbsp;›&nbsp; <b>من نحن</b></div>
+  <div class="crumb"><a href="#" onclick="go('home');return false" data-k="crumb_home">الرئيسية</a> &nbsp;›&nbsp; <b data-k="nav_about">من نحن</b></div>
   <div class="content-page">
-    <h1>Artikaa — فخامة الجلوس</h1>
-    <p class="lead">بدأنا في القاهرة بحلم بسيط: إن كل بيت ومكتب مصري يستاهل كرسي يجمع بين الشياكة والراحة والخامة اللي تعيش. النهارده Artikaa بتوصّل لكل محافظات مصر، بتشكيلة تغطي المكتب والألعاب والاسترخاء والسفرة — وورشة تصميم مخصص تنفذ اللي في خيالك.</p>
+    <h1 data-k="ab_t">Artikaa — فخامة الجلوس</h1>
+    <p class="lead" data-k="ab_lead">بدأنا في القاهرة بحلم بسيط: إن كل بيت ومكتب مصري يستاهل كرسي يجمع بين الشياكة والراحة والخامة اللي تعيش. النهارده Artikaa بتوصّل لكل محافظات مصر، بتشكيلة تغطي المكتب والألعاب والاسترخاء والسفرة — وورشة تصميم مخصص تنفذ اللي في خيالك.</p>
     <div class="about-grid">
-      <div class="about-box"><div class="n">+5000</div><span>عميل سعيد</span></div>
-      <div class="about-box"><div class="n">27</div><span>محافظة نوصّلها</span></div>
-      <div class="about-box"><div class="n">5 سنوات</div><span>ضمان حقيقي</span></div>
+      <div class="about-box"><div class="n">+5000</div><span data-k="ab1">عميل سعيد</span></div>
+      <div class="about-box"><div class="n">27</div><span data-k="ab2">محافظة نوصّلها</span></div>
+      <div class="about-box"><div class="n" data-k="ab_n3">5 سنوات</div><span data-k="ab3">ضمان حقيقي</span></div>
     </div>
     <div class="help-sec">
-      <h2>ليه تختار Artikaa؟</h2>
-      <p>خاماتنا مستوردة ومجربة، التنجيد بيتم في ورشتنا بإشراف مباشر، وكل كرسي بيعدي فحص جودة قبل الشحن. ولو حصلت أي مشكلة — الضمان بيغطيك 5 سنين كاملة، وخدمة العملاء على واتساب طول الأسبوع.</p>
+      <h2 data-k="ab_why">ليه تختار Artikaa؟</h2>
+      <p data-k="ab_whyp">خاماتنا مستوردة ومجربة، التنجيد بيتم في ورشتنا بإشراف مباشر، وكل كرسي بيعدي فحص جودة قبل الشحن. ولو حصلت أي مشكلة — الضمان بيغطيك 5 سنين كاملة، وخدمة العملاء على واتساب طول الأسبوع.</p>
     </div>
-    <button class="btn-gold" onclick="showCat('all')">اكتشف منتجاتنا</button>
+    <button class="btn-gold" onclick="showCat('all')" data-k="ab_shop">اكتشف منتجاتنا</button>
     &nbsp;
-    <button class="btn-navy" style="flex:none;padding:12px 30px" onclick="openWa('أهلاً Artikaa 👋 حابب أعرف أكتر عنكم')">كلمنا على واتساب</button>
+    <button class="btn-navy" style="flex:none;padding:12px 30px" onclick="openWa(t('m_support'))" data-k="ab_wa">كلمنا على واتساب</button>
   </div>
 </div>
 
 <!-- ================= المساعدة ================= -->
 <div class="page" id="page-help">
-  <div class="crumb"><a href="#" onclick="go('home');return false">الرئيسية</a> &nbsp;›&nbsp; <b>المساعدة</b></div>
+  <div class="crumb"><a href="#" onclick="go('home');return false" data-k="crumb_home">الرئيسية</a> &nbsp;›&nbsp; <b data-k="nav_help">المساعدة</b></div>
   <div class="content-page">
-    <h1>مركز المساعدة</h1>
+    <h1 data-k="h_t">مركز المساعدة</h1>
     <div class="help-sec" id="shipping">
-      <h2>🚚 الشحن والتوصيل</h2>
-      <p>بنوصّل لجميع محافظات مصر خلال 2–5 أيام عمل. الشحن <b>مجاني</b> للطلبات فوق 5000 ج.م، وأقل من كده بيتحسب حسب المحافظة (يتأكد معاك خدمة العملاء على واتساب قبل الشحن). التركيب بسيط ومرفق معاه دليل مصور، ولو احتجت مساعدة كلمنا وهنوجهك خطوة بخطوة.</p>
+      <h2 data-k="hs_t">🚚 الشحن والتوصيل</h2>
+      <p data-k="hs_p">بنوصّل لجميع محافظات مصر خلال 2–5 أيام عمل. الشحن <b>مجاني</b> للطلبات فوق 5000 ج.م، وأقل من كده بيتحسب حسب المحافظة (يتأكد معاك خدمة العملاء على واتساب قبل الشحن). التركيب بسيط ومرفق معاه دليل مصور، ولو احتجت مساعدة كلمنا وهنوجهك خطوة بخطوة.</p>
     </div>
     <div class="help-sec" id="returns">
-      <h2>↩️ سياسة الإرجاع</h2>
-      <p>ليك 14 يوم من تاريخ الاستلام ترجّع المنتج بحالته الأصلية وتسترد فلوسك كاملة. لو المنتج وصل فيه عيب مصنع، بنستبدله فوراً على حسابنا. ابعتلنا صورة على واتساب وهنتصرف في نفس اليوم.</p>
+      <h2 data-k="hr_t">↩️ سياسة الإرجاع</h2>
+      <p data-k="hr_p">ليك 14 يوم من تاريخ الاستلام ترجّع المنتج بحالته الأصلية وتسترد فلوسك كاملة. لو المنتج وصل فيه عيب مصنع، بنستبدله فوراً على حسابنا. ابعتلنا صورة على واتساب وهنتصرف في نفس اليوم.</p>
     </div>
     <div class="help-sec">
-      <h2>❓ الأسئلة الشائعة</h2>
-      <div class="faq-q"><button class="q" onclick="toggleFaq(this)">هل الدفع عند الاستلام متاح؟ <span class="arrow">▾</span></button><div class="a">أيوه، متاح لكل المحافظات. وكمان بنقبل فودافون كاش وانستاباي والتحويل البنكي.</div></div>
-      <div class="faq-q"><button class="q" onclick="toggleFaq(this)">الكراسي بتيجي متجمعة ولا محتاجة تركيب؟ <span class="arrow">▾</span></button><div class="a">كراسي الاسترخاء بتوصل جاهزة. كراسي المكتب والألعاب محتاجة تركيب بسيط (10 دقايق) بمفك واحد مرفق مع الكرسي.</div></div>
-      <div class="faq-q"><button class="q" onclick="toggleFaq(this)">الضمان بيغطي إيه بالظبط؟ <span class="arrow">▾</span></button><div class="a">الهيكل، المكبس الهيدروليكي، العجلات، وآليات الإمالة — 5 سنوات كاملة. التنجيد عليه ضمان سنة ضد عيوب الصناعة.</div></div>
-      <div class="faq-q"><button class="q" onclick="toggleFaq(this)">أقدر أشوف المنتجات على الطبيعة؟ <span class="arrow">▾</span></button><div class="a">حالياً بنشتغل أونلاين بس عشان نوفرلك أفضل سعر — وبنوفر فيديو تفصيلي لأي منتج تطلبه على واتساب قبل الشراء.</div></div>
+      <h2 data-k="hf_t">❓ الأسئلة الشائعة</h2>
+      <div class="faq-q"><button class="q" onclick="toggleFaq(this)"><span data-k="q1">هل الدفع عند الاستلام متاح؟</span> <span class="arrow">▾</span></button><div class="a" data-k="a1">أيوه، متاح لكل المحافظات. وكمان بنقبل فودافون كاش وانستاباي والتحويل البنكي.</div></div>
+      <div class="faq-q"><button class="q" onclick="toggleFaq(this)"><span data-k="q2">الكراسي بتيجي متجمعة ولا محتاجة تركيب؟</span> <span class="arrow">▾</span></button><div class="a" data-k="a2">كراسي الاسترخاء بتوصل جاهزة. كراسي المكتب والألعاب محتاجة تركيب بسيط (10 دقايق) بمفك واحد مرفق مع الكرسي.</div></div>
+      <div class="faq-q"><button class="q" onclick="toggleFaq(this)"><span data-k="q3">الضمان بيغطي إيه بالظبط؟</span> <span class="arrow">▾</span></button><div class="a" data-k="a3">الهيكل، المكبس الهيدروليكي، العجلات، وآليات الإمالة — 5 سنوات كاملة. التنجيد عليه ضمان سنة ضد عيوب الصناعة.</div></div>
+      <div class="faq-q"><button class="q" onclick="toggleFaq(this)"><span data-k="q4">أقدر أشوف المنتجات على الطبيعة؟</span> <span class="arrow">▾</span></button><div class="a" data-k="a4">حالياً بنشتغل أونلاين بس عشان نوفرلك أفضل سعر — وبنوفر فيديو تفصيلي لأي منتج تطلبه على واتساب قبل الشراء.</div></div>
     </div>
-    <button class="btn-wa" style="max-width:340px" onclick="openWa('أهلاً Artikaa 👋 عندي سؤال مش لاقي إجابته في صفحة المساعدة')">
+    <button class="btn-wa" style="max-width:340px" onclick="openWa(t('m_faq'))">
       <svg viewBox="0 0 32 32"><path d="M16 3C9.4 3 4 8.4 4 15c0 2.3.7 4.5 1.9 6.4L4 29l7.8-1.8c1.8 1 3.9 1.6 6.2 1.6 6.6 0 12-5.4 12-12S22.6 3 16 3z"/></svg>
-      لسه محتاج مساعدة؟ كلمنا
+      <span data-k="h_more">لسه محتاج مساعدة؟ كلمنا</span>
     </button>
   </div>
 </div>
@@ -603,13 +610,13 @@ footer a:hover{color:var(--gold-light)}
 <div class="cart-overlay" id="cartOverlay" onclick="closeCart()"></div>
 <div class="cart-drawer" id="cartDrawer">
   <div class="cart-head">
-    <h3>🛒 سلة التسوق</h3>
+    <h3>🛒 <span data-k="cart_lbl">سلة التسوق</span></h3>
     <button class="x" onclick="closeCart()">✕</button>
   </div>
   <div class="cart-items" id="cartItems"></div>
   <div class="cart-foot" id="cartFoot">
-    <div class="cart-total"><span>الإجمالي</span><span id="cartTotal">0 ج.م</span></div>
-    <button class="btn-gold" onclick="goCheckout()">إتمام الطلب</button>
+    <div class="cart-total"><span data-k="grand">الإجمالي</span><span id="cartTotal">0 ج.م</span></div>
+    <button class="btn-gold" onclick="goCheckout()" data-k="co_btn">إتمام الطلب</button>
   </div>
 </div>
 
@@ -620,30 +627,30 @@ footer a:hover{color:var(--gold-light)}
         <svg viewBox="0 0 48 48" fill="none" stroke="#D9C48A" stroke-width="2.4" stroke-linecap="round"><path d="M12 20c0-7 5-12 12-12s12 5 12 12v6H12v-6z"/><path d="M10 26h28v6H10z"/><path d="M13 32v8M35 32v8M24 32v8"/></svg>
         Artikaa
       </div>
-      <p class="f-about">وجهتك الأولى للكراسي الفاخرة في مصر. نجمع بين التصميم العصري والحرفية العالية لنمنحك جلسة تليق بك — في المنزل والمكتب.</p>
+      <p class="f-about" data-k="ft_about">وجهتك الأولى للكراسي الفاخرة في مصر. نجمع بين التصميم العصري والحرفية العالية لنمنحك جلسة تليق بك — في المنزل والمكتب.</p>
     </div>
-    <div><h4>تسوق</h4>
-      <a onclick="showCat('office')">كراسي مكتب</a>
-      <a onclick="showCat('gaming')">كراسي ألعاب</a>
-      <a onclick="showCat('lounge')">كراسي استرخاء</a>
-      <a onclick="showCat('dining')">كراسي طعام</a>
+    <div><h4 data-k="ft_shop">تسوق</h4>
+      <a onclick="showCat('office')" data-k="cat_office">كراسي مكتب</a>
+      <a onclick="showCat('gaming')" data-k="cat_gaming">كراسي ألعاب</a>
+      <a onclick="showCat('lounge')" data-k="cat_lounge">كراسي استرخاء</a>
+      <a onclick="showCat('dining')" data-k="cat_dining">كراسي طعام</a>
     </div>
-    <div><h4>الشركة</h4>
-      <a onclick="go('about')">من نحن</a>
-      <a onclick="go('custom')">تصميم مخصص</a>
-      <a onclick="openWa('أهلاً Artikaa 👋 حابب أعرف تفاصيل التعاون / التوريد بالجملة')">توريد بالجملة B2B</a>
+    <div><h4 data-k="ft_co">الشركة</h4>
+      <a onclick="go('about')" data-k="nav_about">من نحن</a>
+      <a onclick="go('custom')" data-k="nav_custom">تصميم مخصص</a>
+      <a onclick="openWa(t('m_b2b'))" data-k="b2b">توريد بالجملة B2B</a>
     </div>
-    <div><h4>المساعدة</h4>
-      <a onclick="goHelp('shipping')">الشحن والتوصيل</a>
-      <a onclick="goHelp('returns')">سياسة الإرجاع</a>
-      <a onclick="go('help')">الأسئلة الشائعة</a>
-      <a onclick="openWa('أهلاً Artikaa 👋')">تواصل معنا</a>
+    <div><h4 data-k="ft_help">المساعدة</h4>
+      <a onclick="goHelp('shipping')" data-k="ft_ship">الشحن والتوصيل</a>
+      <a onclick="goHelp('returns')" data-k="ft_ret">سياسة الإرجاع</a>
+      <a onclick="go('help')" data-k="ft_faq">الأسئلة الشائعة</a>
+      <a onclick="openWa(t('m_support'))" data-k="contact">تواصل معنا</a>
     </div>
   </div>
-  <div class="copy">© 2026 Artikaa.com — جميع الحقوق محفوظة</div>
+  <div class="copy" data-k="copy">© 2026 Artikaa.com — جميع الحقوق محفوظة</div>
 </footer>
 
-<button class="chat-fab" title="كلمنا على واتساب" onclick="openWa('أهلاً Artikaa 👋 عندي استفسار')">
+<button class="chat-fab" title="كلمنا على واتساب" onclick="openWa(t('m_support'))">
   <svg viewBox="0 0 32 32"><path d="M16 3C9.4 3 4 8.4 4 15c0 2.3.7 4.5 1.9 6.4L4 29l7.8-1.8c1.8 1 3.9 1.6 6.2 1.6 6.6 0 12-5.4 12-12S22.6 3 16 3zm0 21.8c-2 0-3.9-.6-5.5-1.6l-.4-.2-4.1 1 1-4-.3-.4c-1.1-1.7-1.7-3.6-1.7-5.6 0-5.5 4.5-10 10-10s10 4.5 10 10-4.5 9.8-9 9.8zm5.5-7.3c-.3-.2-1.8-.9-2.1-1-.3-.1-.5-.2-.7.2s-.8 1-1 1.2c-.2.2-.4.2-.7.1-.3-.2-1.3-.5-2.4-1.5-.9-.8-1.5-1.8-1.7-2.1-.2-.3 0-.5.1-.6l.5-.6c.2-.2.2-.4.3-.6.1-.2 0-.4 0-.6-.1-.2-.7-1.7-1-2.3-.3-.6-.5-.5-.7-.5h-.6c-.2 0-.6.1-.9.4-.3.3-1.1 1.1-1.1 2.7s1.2 3.1 1.3 3.3c.2.2 2.3 3.5 5.6 4.9.8.3 1.4.5 1.9.7.8.2 1.5.2 2.1.1.6-.1 1.8-.7 2.1-1.5.3-.7.3-1.3.2-1.5-.1-.1-.3-.2-.6-.3z"/></svg>
 </button>
 <div class="toast" id="toast"></div>
@@ -655,6 +662,675 @@ const fmt = n => Number(n).toLocaleString('en');
 function openWa(msg){
   window.open('https://wa.me/'+WHATSAPP_NUMBER+'?text='+encodeURIComponent(msg), '_blank');
 }
+
+/* ═══════════ الترجمات — 10 لغات ═══════════ */
+const I18N = {
+ar:{dir:'rtl',cur:'ج.م',title_tag:'كراسي فاخرة',
+announce:'✦ شحن مجاني لجميع محافظات مصر للطلبات فوق 5000 ج.م — خصومات تصل إلى 30% ✦',
+nav_home:'الرئيسية',nav_products:'المنتجات',nav_custom:'تصميم مخصص',nav_about:'من نحن',nav_help:'المساعدة',cart_lbl:'سلة التسوق',
+cat_all:'كل المنتجات',cat_office:'كراسي مكتب',cat_gaming:'كراسي ألعاب',cat_lounge:'كراسي استرخاء',cat_dining:'كراسي طعام',
+f1t:'توصيل سريع',f1s:'لجميع محافظات مصر',f2t:'ضمان 5 سنوات',f2s:'على جميع المنتجات',f3t:'دعم 24/7',f3s:'واتساب مباشر',f4t:'إرجاع مجاني',f4s:'خلال 14 يوم',
+best:'الأكثر مبيعاً',view_all:'عرض الكل ←',similar:'منتجات مشابهة',crumb_home:'الرئيسية',crumb_co:'إتمام الطلب',
+flt_t:'تصفية النتائج',flt_cats:'الفئات',flt_price:'السعر الأقصى',flt_color:'اللون',flt_clear:'✕ مسح كل الفلاتر',
+sort_asc:'السعر: من الأقل للأعلى',sort_desc:'السعر: من الأعلى للأقل',sort_new:'الأحدث',
+count:'عرض {n} من {m} منتج',no_res:'مفيش منتجات مطابقة للفلاتر دي',
+color_lbl:'اللون:',qty_lbl:'الكمية:',add_cart:'أضف إلى السلة',buy_now:'شراء الآن',
+pf1:'ضمان 5 سنوات على الهيكل والآليات',pf2:'توصيل لجميع محافظات مصر',pf3:'إمكانية الإرجاع خلال 14 يوم',
+reviews:'تقييم',badge:'خصم {p}%',
+cart_e1:'سلتك فارغة',cart_e2:'ابدأ التسوق وأضف ما يعجبك!',grand:'الإجمالي',co_btn:'إتمام الطلب',color_word:'اللون',
+co_t:'بيانات التوصيل',l_name:'الاسم الكامل',ph_name:'مثال: أحمد محمد',e_name:'من فضلك اكتب الاسم',
+l_phone:'رقم الموبايل (واتساب)',e_phone:'اكتب رقم موبايل صحيح (٨ أرقام على الأقل)',e_phone2:'اكتب رقم صحيح',
+l_city:'المحافظة / المدينة',ph_city:'القاهرة، الجيزة، الإسكندرية…',e_city:'اكتب المدينة',
+l_pay:'طريقة الدفع',pay1:'الدفع عند الاستلام',pay2:'فودافون كاش',pay3:'انستاباي',pay4:'تحويل بنكي',
+l_addr:'العنوان بالتفصيل',ph_addr:'الحي، الشارع، رقم العمارة / الشقة',e_addr:'اكتب العنوان',
+l_notes:'ملاحظات على الطلب — اختياري',ph_notes:'مثال: التوصيل بعد العصر…',
+sum_t:'ملخص الطلب',ship:'الشحن',ship_free:'مجاني',ship_tbd:'يُحدد مع خدمة العملاء',
+wa_btn:'تأكيد الطلب عبر واتساب',wa_note:'بعد الضغط سيتم فتح واتساب مع تفاصيل طلبك كاملة —<br>فقط اضغط إرسال لتأكيد الطلب ✓',
+cu_t:'صمّم كرسيك على ذوقك 🪑✨',cu_lead:'عندنا ورشة تصنيع خاصة — اختار الخامة واللون والمقاس واحنا ننفذلك كرسي فريد يليق بمساحتك. املأ البيانات وهنرد عليك على واتساب بعرض سعر خلال 24 ساعة.',
+cu_name:'الاسم',cu_name_ph:'اسمك',cu_phone:'رقم الموبايل',cu_type:'نوع الكرسي',
+ct1:'كرسي استرخاء',ct2:'كرسي مكتب',ct3:'كرسي ألعاب',ct4:'كرسي طعام (طقم)',ct5:'تصميم آخر',
+cu_dlbl:'وصف التصميم المطلوب',cu_dph:'الخامة، اللون، المقاس، أي صورة مرجعية هتبعتها لنا على واتساب…',e_desc:'اوصف التصميم ولو بجملة واحدة',
+cu_send:'إرسال الطلب على واتساب',cu_msg_t:'طلب تصميم مخصص — Artikaa',
+ab_t:'Artikaa — فخامة الجلوس',ab_lead:'بدأنا في القاهرة بحلم بسيط: إن كل بيت ومكتب مصري يستاهل كرسي يجمع بين الشياكة والراحة والخامة اللي تعيش. النهارده Artikaa بتوصّل لكل محافظات مصر، بتشكيلة تغطي المكتب والألعاب والاسترخاء والسفرة — وورشة تصميم مخصص تنفذ اللي في خيالك.',
+ab1:'عميل سعيد',ab2:'محافظة نوصّلها',ab3:'ضمان حقيقي',ab_n3:'5 سنوات',
+ab_why:'ليه تختار Artikaa؟',ab_whyp:'خاماتنا مستوردة ومجربة، التنجيد بيتم في ورشتنا بإشراف مباشر، وكل كرسي بيعدي فحص جودة قبل الشحن. ولو حصلت أي مشكلة — الضمان بيغطيك 5 سنين كاملة، وخدمة العملاء على واتساب طول الأسبوع.',
+ab_shop:'اكتشف منتجاتنا',ab_wa:'كلمنا على واتساب',
+h_t:'مركز المساعدة',hs_t:'🚚 الشحن والتوصيل',
+hs_p:'بنوصّل لجميع محافظات مصر خلال 2–5 أيام عمل. الشحن <b>مجاني</b> للطلبات فوق 5000 ج.م، وأقل من كده بيتحسب حسب المحافظة (يتأكد معاك خدمة العملاء على واتساب قبل الشحن). التركيب بسيط ومرفق معاه دليل مصور، ولو احتجت مساعدة كلمنا وهنوجهك خطوة بخطوة.',
+hr_t:'↩️ سياسة الإرجاع',hr_p:'ليك 14 يوم من تاريخ الاستلام ترجّع المنتج بحالته الأصلية وتسترد فلوسك كاملة. لو المنتج وصل فيه عيب مصنع، بنستبدله فوراً على حسابنا. ابعتلنا صورة على واتساب وهنتصرف في نفس اليوم.',
+hf_t:'❓ الأسئلة الشائعة',
+q1:'هل الدفع عند الاستلام متاح؟',a1:'أيوه، متاح لكل المحافظات. وكمان بنقبل فودافون كاش وانستاباي والتحويل البنكي.',
+q2:'الكراسي بتيجي متجمعة ولا محتاجة تركيب؟',a2:'كراسي الاسترخاء بتوصل جاهزة. كراسي المكتب والألعاب محتاجة تركيب بسيط (10 دقايق) بمفك واحد مرفق مع الكرسي.',
+q3:'الضمان بيغطي إيه بالظبط؟',a3:'الهيكل، المكبس الهيدروليكي، العجلات، وآليات الإمالة — 5 سنوات كاملة. التنجيد عليه ضمان سنة ضد عيوب الصناعة.',
+q4:'أقدر أشوف المنتجات على الطبيعة؟',a4:'حالياً بنشتغل أونلاين بس عشان نوفرلك أفضل سعر — وبنوفر فيديو تفصيلي لأي منتج تطلبه على واتساب قبل الشراء.',
+h_more:'لسه محتاج مساعدة؟ كلمنا',
+ft_about:'وجهتك الأولى للكراسي الفاخرة في مصر. نجمع بين التصميم العصري والحرفية العالية لنمنحك جلسة تليق بك — في المنزل والمكتب.',
+ft_shop:'تسوق',ft_co:'الشركة',ft_help:'المساعدة',ft_ship:'الشحن والتوصيل',ft_ret:'سياسة الإرجاع',ft_faq:'الأسئلة الشائعة',b2b:'توريد بالجملة B2B',contact:'تواصل معنا',
+copy:'© 2026 Artikaa.com — جميع الحقوق محفوظة',
+m_support:'أهلاً Artikaa 👋 عندي استفسار',m_b2b:'أهلاً Artikaa 👋 حابب أعرف تفاصيل التعاون / التوريد بالجملة',m_faq:'أهلاً Artikaa 👋 عندي سؤال مش لاقي إجابته في صفحة المساعدة',
+t_added:'تمت الإضافة إلى السلة ✓',t_empty:'سلتك فارغة — أضف منتجاً أولاً',t_fill:'أكمل البيانات المطلوبة أولاً',t_ready:'تم تجهيز طلبك — اضغط إرسال في واتساب ✓',t_ready2:'تم تجهيز طلب التصميم — اضغط إرسال في واتساب ✓',
+o_t:'طلب جديد من Artikaa.com',o_items:'المنتجات',o_total:'الإجمالي',o_free:'(شحن مجاني)',o_ship2:'(+ الشحن حسب المحافظة)',o_name:'الاسم',o_phone:'الموبايل',o_city:'المدينة',o_addr:'العنوان',o_pay:'الدفع',o_notes:'ملاحظات',
+s1h:'كراسي جلوس فاخرة',s1p:'تصميم عصري. راحة لا تُضاهى. من الكلاسيكي إلى العصري، اكتشف مجموعتنا الراقية.',s1b:'تسوق الآن',
+s2h:'أناقة مكتبك تبدأ من كرسيك',s2p:'خصومات حقيقية حتى 30% على كراسي المكتب — راحة تشتغل معاك طول اليوم.',s2b:'تسوق كراسي المكتب',
+s3h:'جيمينج بمستوى احترافي',s3p:'كرسي جوبيتر للألعاب بخصم 20% — دعم كامل للظهر في أطول الجلسات.',s3b:'اطلبه الآن',
+s4h:'صمّم كرسيك بنفسك',s4p:'ورشتنا تنفذ التصميم اللي في خيالك — اختار الخامة واللون والمقاس.',s4b:'ابدأ التصميم',
+colors:{'أسود':'أسود','رمادي':'رمادي','كحلي':'كحلي','أحمر':'أحمر','بني':'بني','بيج':'بيج','كريمي':'كريمي','أخضر':'أخضر','ذهبي':'ذهبي'}},
+
+en:{dir:'ltr',cur:'EGP',title_tag:'Luxury Chairs',
+announce:'✦ Free shipping all over Egypt on orders above 5000 EGP — discounts up to 30% ✦',
+nav_home:'Home',nav_products:'Products',nav_custom:'Custom Design',nav_about:'About Us',nav_help:'Help',cart_lbl:'Cart',
+cat_all:'All Products',cat_office:'Office Chairs',cat_gaming:'Gaming Chairs',cat_lounge:'Lounge Chairs',cat_dining:'Dining Chairs',
+f1t:'Fast Delivery',f1s:'To all Egyptian governorates',f2t:'5-Year Warranty',f2s:'On all products',f3t:'24/7 Support',f3s:'Direct WhatsApp',f4t:'Free Returns',f4s:'Within 14 days',
+best:'Best Sellers',view_all:'View all →',similar:'Similar Products',crumb_home:'Home',crumb_co:'Checkout',
+flt_t:'Filter Results',flt_cats:'Categories',flt_price:'Max Price',flt_color:'Color',flt_clear:'✕ Clear all filters',
+sort_asc:'Price: low to high',sort_desc:'Price: high to low',sort_new:'Newest',
+count:'Showing {n} of {m} products',no_res:'No products match these filters',
+color_lbl:'Color:',qty_lbl:'Quantity:',add_cart:'Add to Cart',buy_now:'Buy Now',
+pf1:'5-year warranty on frame & mechanisms',pf2:'Delivery to all Egyptian governorates',pf3:'Returns within 14 days',
+reviews:'reviews',badge:'-{p}%',
+cart_e1:'Your cart is empty',cart_e2:'Start shopping and add what you love!',grand:'Total',co_btn:'Checkout',color_word:'Color',
+co_t:'Delivery Details',l_name:'Full Name',ph_name:'e.g. John Smith',e_name:'Please enter your name',
+l_phone:'Mobile (WhatsApp)',e_phone:'Enter a valid mobile number (min 8 digits)',e_phone2:'Enter a valid number',
+l_city:'Governorate / City',ph_city:'Cairo, Giza, Alexandria…',e_city:'Enter your city',
+l_pay:'Payment Method',pay1:'Cash on delivery',pay2:'Vodafone Cash',pay3:'InstaPay',pay4:'Bank transfer',
+l_addr:'Detailed Address',ph_addr:'District, street, building / apartment no.',e_addr:'Enter your address',
+l_notes:'Order notes — optional',ph_notes:'e.g. deliver in the afternoon…',
+sum_t:'Order Summary',ship:'Shipping',ship_free:'Free',ship_tbd:'Confirmed with customer service',
+wa_btn:'Confirm Order via WhatsApp',wa_note:'WhatsApp will open with your full order details —<br>just press Send to confirm ✓',
+cu_t:'Design Your Own Chair 🪑✨',cu_lead:'We have our own workshop — pick the fabric, color and size and we will craft a unique chair for your space. Fill in the form and we reply on WhatsApp with a quote within 24 hours.',
+cu_name:'Name',cu_name_ph:'Your name',cu_phone:'Mobile Number',cu_type:'Chair Type',
+ct1:'Lounge chair',ct2:'Office chair',ct3:'Gaming chair',ct4:'Dining chairs (set)',ct5:'Other design',
+cu_dlbl:'Describe your design',cu_dph:'Fabric, color, size, any reference photo you will send us on WhatsApp…',e_desc:'Describe the design, even in one sentence',
+cu_send:'Send Request on WhatsApp',cu_msg_t:'Custom Design Request — Artikaa',
+ab_t:'Artikaa — The Luxury of Sitting',ab_lead:'We started in Cairo with a simple dream: every Egyptian home and office deserves a chair that combines style, comfort and materials that last. Today Artikaa delivers across all of Egypt with a range covering office, gaming, lounge and dining — plus a custom workshop that builds whatever you imagine.',
+ab1:'Happy customers',ab2:'Governorates covered',ab3:'Real warranty',ab_n3:'5 Years',
+ab_why:'Why choose Artikaa?',ab_whyp:'Imported, tested materials; upholstery done in our own workshop; every chair passes quality control before shipping. If anything goes wrong, a full 5-year warranty covers you — with customer service on WhatsApp all week.',
+ab_shop:'Explore our products',ab_wa:'Chat on WhatsApp',
+h_t:'Help Center',hs_t:'🚚 Shipping & Delivery',
+hs_p:'We deliver across Egypt within 2–5 working days. Shipping is <b>free</b> on orders above 5000 EGP; below that it depends on the governorate (confirmed with you on WhatsApp before shipping). Assembly is simple with an illustrated guide — and we can walk you through it on WhatsApp.',
+hr_t:'↩️ Return Policy',hr_p:'You have 14 days from delivery to return a product in its original condition for a full refund. Factory defects are replaced immediately at our cost — just send a photo on WhatsApp.',
+hf_t:'❓ FAQ',
+q1:'Is cash on delivery available?',a1:'Yes, in all governorates. We also accept Vodafone Cash, InstaPay and bank transfer.',
+q2:'Do chairs arrive assembled?',a2:'Lounge chairs arrive ready. Office and gaming chairs need simple 10-minute assembly with the included tool.',
+q3:'What exactly does the warranty cover?',a3:'Frame, gas lift, wheels and tilt mechanisms — 5 full years. Upholstery has a 1-year warranty against manufacturing defects.',
+q4:'Can I see the products in person?',a4:'We currently operate online only to keep prices low — we can send a detailed video of any product on WhatsApp before you buy.',
+h_more:'Still need help? Chat with us',
+ft_about:'Egypt’s first destination for luxury chairs. Modern design meets fine craftsmanship — for your home and office.',
+ft_shop:'Shop',ft_co:'Company',ft_help:'Help',ft_ship:'Shipping & delivery',ft_ret:'Return policy',ft_faq:'FAQ',b2b:'B2B wholesale',contact:'Contact us',
+copy:'© 2026 Artikaa.com — All rights reserved',
+m_support:'Hello Artikaa 👋 I have a question',m_b2b:'Hello Artikaa 👋 I’d like details about B2B / wholesale supply',m_faq:'Hello Artikaa 👋 I have a question not answered on the help page',
+t_added:'Added to cart ✓',t_empty:'Your cart is empty — add a product first',t_fill:'Please complete the required fields',t_ready:'Order ready — press Send in WhatsApp ✓',t_ready2:'Design request ready — press Send in WhatsApp ✓',
+o_t:'New order from Artikaa.com',o_items:'Products',o_total:'Total',o_free:'(free shipping)',o_ship2:'(+ shipping by governorate)',o_name:'Name',o_phone:'Mobile',o_city:'City',o_addr:'Address',o_pay:'Payment',o_notes:'Notes',
+s1h:'Luxury Seating',s1p:'Modern design. Unmatched comfort. From classic to contemporary — discover our refined collection.',s1b:'Shop Now',
+s2h:'Office elegance starts with your chair',s2p:'Real discounts up to 30% on office chairs — comfort that works as long as you do.',s2b:'Shop Office Chairs',
+s3h:'Pro-level gaming',s3p:'Jupiter gaming chair at 20% off — full back support for the longest sessions.',s3b:'Order Now',
+s4h:'Design your own chair',s4p:'Our workshop builds what you imagine — choose fabric, color and size.',s4b:'Start Designing',
+colors:{'أسود':'Black','رمادي':'Gray','كحلي':'Navy','أحمر':'Red','بني':'Brown','بيج':'Beige','كريمي':'Cream','أخضر':'Green','ذهبي':'Gold'},
+p:{jupiter:['Jupiter Gaming Chair','Supreme comfort for long sessions: premium leather, adjustable armrests, 160° recline.'],
+titan:['Titan Sport Chair','Wide-fit gaming chair, reinforced steel frame up to 150 kg, neck & lumbar pillows.'],
+neon:['Neon Gaming Chair','Great value: breathable mesh and a German hydraulic lift.'],
+alpha:['Alpha Leather Chair','Executive chair in premium leather with high-density plush padding.'],
+veden:['Veden Modern Chair','Light modern design with a comfy mesh back — ideal for long work-from-home days.'],
+ergo:['Ergo Comfort Chair','Ergonomist-designed: adjustable lumbar support, 2-angle headrest, seat-depth control.'],
+'pro-mesh':['Pro Mesh Chair','Our office best-seller — full mesh for airflow and light weight.'],
+lina:['Lina Executive Chair','Top luxury: Italian leather, polished aluminum base, silent synchro-tilt.'],
+moja:['Moja Swivel Chair','Compact and stylish for small spaces, soft easy-clean fabric.'],
+sahab:['Sahab Lounge Chair','Luxurious navy velvet with feather-soft filling — perfect for a reading corner.'],
+remal:['Remal Lounge Chair','Cream linen with natural beech legs — Scandinavian warmth for your living room.'],
+wisam:['Wisam Lounge Chair','Classic wingback with a modern touch, stain-resistant chenille fabric.'],
+maeda:['Maeda Dining Chair','Solid Egyptian beech with a padded seat — price per chair, extra discount for sets.'],
+nouran:['Nouran Dining Chair','Curved comfy back and velvet upholstery — elegance for your dining room.']}},
+
+fr:{dir:'ltr',cur:'EGP',title_tag:'Chaises de luxe',
+announce:'✦ Livraison gratuite dans toute l’Égypte dès 5000 EGP — remises jusqu’à 30% ✦',
+nav_home:'Accueil',nav_products:'Produits',nav_custom:'Design sur mesure',nav_about:'À propos',nav_help:'Aide',cart_lbl:'Panier',
+cat_all:'Tous les produits',cat_office:'Chaises de bureau',cat_gaming:'Chaises gaming',cat_lounge:'Fauteuils détente',cat_dining:'Chaises de salle à manger',
+f1t:'Livraison rapide',f1s:'Dans tous les gouvernorats',f2t:'Garantie 5 ans',f2s:'Sur tous les produits',f3t:'Support 24/7',f3s:'WhatsApp direct',f4t:'Retour gratuit',f4s:'Sous 14 jours',
+best:'Meilleures ventes',view_all:'Tout voir →',similar:'Produits similaires',crumb_home:'Accueil',crumb_co:'Commande',
+flt_t:'Filtrer',flt_cats:'Catégories',flt_price:'Prix max',flt_color:'Couleur',flt_clear:'✕ Effacer les filtres',
+sort_asc:'Prix : croissant',sort_desc:'Prix : décroissant',sort_new:'Nouveautés',
+count:'{n} sur {m} produits',no_res:'Aucun produit ne correspond à ces filtres',
+color_lbl:'Couleur :',qty_lbl:'Quantité :',add_cart:'Ajouter au panier',buy_now:'Acheter',
+pf1:'Garantie 5 ans (structure et mécanismes)',pf2:'Livraison dans toute l’Égypte',pf3:'Retour sous 14 jours',
+reviews:'avis',badge:'-{p}%',
+cart_e1:'Votre panier est vide',cart_e2:'Commencez vos achats !',grand:'Total',co_btn:'Commander',color_word:'Couleur',
+co_t:'Détails de livraison',l_name:'Nom complet',ph_name:'ex. Jean Dupont',e_name:'Veuillez saisir votre nom',
+l_phone:'Mobile (WhatsApp)',e_phone:'Numéro valide requis (min 8 chiffres)',e_phone2:'Numéro invalide',
+l_city:'Gouvernorat / Ville',ph_city:'Le Caire, Gizeh, Alexandrie…',e_city:'Saisissez la ville',
+l_pay:'Paiement',pay1:'Paiement à la livraison',pay2:'Vodafone Cash',pay3:'InstaPay',pay4:'Virement bancaire',
+l_addr:'Adresse détaillée',ph_addr:'Quartier, rue, immeuble / appartement',e_addr:'Saisissez l’adresse',
+l_notes:'Notes — facultatif',ph_notes:'ex. livrer l’après-midi…',
+sum_t:'Récapitulatif',ship:'Livraison',ship_free:'Gratuite',ship_tbd:'Confirmée par le service client',
+wa_btn:'Confirmer via WhatsApp',wa_note:'WhatsApp s’ouvrira avec votre commande complète —<br>appuyez sur Envoyer pour confirmer ✓',
+cu_t:'Créez votre chaise 🪑✨',cu_lead:'Notre atelier fabrique la chaise de vos rêves : tissu, couleur, dimensions. Remplissez le formulaire, devis sous 24 h sur WhatsApp.',
+cu_name:'Nom',cu_name_ph:'Votre nom',cu_phone:'Mobile',cu_type:'Type de chaise',
+ct1:'Fauteuil détente',ct2:'Chaise de bureau',ct3:'Chaise gaming',ct4:'Chaises de table (lot)',ct5:'Autre design',
+cu_dlbl:'Décrivez votre design',cu_dph:'Tissu, couleur, dimensions, photo de référence…',e_desc:'Décrivez le design, même en une phrase',
+cu_send:'Envoyer sur WhatsApp',cu_msg_t:'Demande de design sur mesure — Artikaa',
+ab_t:'Artikaa — Le luxe de s’asseoir',ab_lead:'Née au Caire, Artikaa livre aujourd’hui toute l’Égypte : bureau, gaming, détente et salle à manger — avec un atelier sur mesure qui réalise vos idées.',
+ab1:'Clients satisfaits',ab2:'Gouvernorats livrés',ab3:'Vraie garantie',ab_n3:'5 ans',
+ab_why:'Pourquoi Artikaa ?',ab_whyp:'Matériaux importés et testés, tapisserie faite dans notre atelier, contrôle qualité avant expédition. Garantie 5 ans et service client WhatsApp toute la semaine.',
+ab_shop:'Découvrir nos produits',ab_wa:'Écrivez-nous sur WhatsApp',
+h_t:'Centre d’aide',hs_t:'🚚 Livraison',
+hs_p:'Livraison dans toute l’Égypte sous 2–5 jours ouvrés. <b>Gratuite</b> dès 5000 EGP ; sinon selon le gouvernorat (confirmé sur WhatsApp). Montage simple avec guide illustré.',
+hr_t:'↩️ Retours',hr_p:'14 jours pour retourner le produit en état d’origine et être remboursé intégralement. Défaut d’usine : remplacement immédiat à nos frais.',
+hf_t:'❓ FAQ',
+q1:'Paiement à la livraison disponible ?',a1:'Oui, partout. Nous acceptons aussi Vodafone Cash, InstaPay et le virement.',
+q2:'Les chaises arrivent-elles montées ?',a2:'Les fauteuils arrivent prêts. Bureau et gaming : montage simple de 10 minutes, outil inclus.',
+q3:'Que couvre la garantie ?',a3:'Structure, vérin, roulettes et mécanismes — 5 ans. Tapisserie : 1 an contre défauts de fabrication.',
+q4:'Puis-je voir les produits ?',a4:'Nous vendons en ligne pour de meilleurs prix — vidéo détaillée sur WhatsApp avant l’achat.',
+h_more:'Besoin d’aide ? Écrivez-nous',
+ft_about:'La première destination des chaises de luxe en Égypte — design moderne et artisanat soigné.',
+ft_shop:'Boutique',ft_co:'Société',ft_help:'Aide',ft_ship:'Livraison',ft_ret:'Retours',ft_faq:'FAQ',b2b:'Vente en gros B2B',contact:'Contact',
+copy:'© 2026 Artikaa.com — Tous droits réservés',
+m_support:'Bonjour Artikaa 👋 j’ai une question',m_b2b:'Bonjour Artikaa 👋 je veux des infos sur la vente en gros',m_faq:'Bonjour Artikaa 👋 j’ai une question sans réponse dans l’aide',
+t_added:'Ajouté au panier ✓',t_empty:'Panier vide — ajoutez un produit',t_fill:'Complétez les champs requis',t_ready:'Commande prête — appuyez sur Envoyer ✓',t_ready2:'Demande prête — appuyez sur Envoyer ✓',
+o_t:'Nouvelle commande — Artikaa.com',o_items:'Produits',o_total:'Total',o_free:'(livraison gratuite)',o_ship2:'(+ livraison selon gouvernorat)',o_name:'Nom',o_phone:'Mobile',o_city:'Ville',o_addr:'Adresse',o_pay:'Paiement',o_notes:'Notes',
+s1h:'Assises de luxe',s1p:'Design moderne, confort inégalé — découvrez notre collection raffinée.',s1b:'Acheter',
+s2h:'L’élégance commence par votre chaise',s2p:'Jusqu’à -30% sur les chaises de bureau.',s2b:'Chaises de bureau',
+s3h:'Gaming de niveau pro',s3p:'Chaise Jupiter à -20% — soutien total du dos.',s3b:'Commander',
+s4h:'Créez votre chaise',s4p:'Notre atelier réalise vos idées — tissu, couleur, dimensions.',s4b:'Commencer',
+colors:{'أسود':'Noir','رمادي':'Gris','كحلي':'Bleu marine','أحمر':'Rouge','بني':'Marron','بيج':'Beige','كريمي':'Crème','أخضر':'Vert','ذهبي':'Doré'},
+p:{jupiter:['Chaise Gaming Jupiter','Confort suprême : cuir premium, accoudoirs réglables, inclinaison 160°.'],
+titan:['Chaise Titan Sport','Grand format, cadre acier renforcé jusqu’à 150 kg, coussins nuque et lombaires.'],
+neon:['Chaise Gaming Neon','Excellent rapport qualité-prix : maille respirante, vérin allemand.'],
+alpha:['Chaise Cuir Alpha','Fauteuil de direction en cuir premium, rembourrage haute densité.'],
+veden:['Chaise Moderne Veden','Design léger, dossier maille confortable — idéale pour le télétravail.'],
+ergo:['Chaise Ergo Confort','Soutien lombaire réglable, appui-tête 2 angles, assise réglable.'],
+'pro-mesh':['Chaise Pro Mesh','Notre best-seller bureau — maille intégrale, légère et aérée.'],
+lina:['Chaise Executive Lina','Cuir italien, base aluminium poli, bascule synchrone silencieuse.'],
+moja:['Chaise Pivotante Moja','Compacte et élégante, tissu doux facile à nettoyer.'],
+sahab:['Fauteuil Sahab','Velours bleu marine luxueux — parfait pour un coin lecture.'],
+remal:['Fauteuil Remal','Lin crème, pieds en hêtre naturel — chaleur scandinave.'],
+wisam:['Fauteuil Wisam','Bergère classique revisitée, chenille anti-taches.'],
+maeda:['Chaise Maeda','Hêtre égyptien massif, assise rembourrée — prix à l’unité, remise par lot.'],
+nouran:['Chaise Nouran','Dossier galbé et velours — l’élégance à votre table.']}},
+
+de:{dir:'ltr',cur:'EGP',title_tag:'Luxusstühle',
+announce:'✦ Kostenloser Versand in ganz Ägypten ab 5000 EGP — Rabatte bis 30% ✦',
+nav_home:'Start',nav_products:'Produkte',nav_custom:'Maßanfertigung',nav_about:'Über uns',nav_help:'Hilfe',cart_lbl:'Warenkorb',
+cat_all:'Alle Produkte',cat_office:'Bürostühle',cat_gaming:'Gaming-Stühle',cat_lounge:'Sessel',cat_dining:'Esszimmerstühle',
+f1t:'Schnelle Lieferung',f1s:'In alle Gouvernements',f2t:'5 Jahre Garantie',f2s:'Auf alle Produkte',f3t:'24/7 Support',f3s:'Direkt per WhatsApp',f4t:'Kostenlose Rückgabe',f4s:'Innerhalb 14 Tagen',
+best:'Bestseller',view_all:'Alle ansehen →',similar:'Ähnliche Produkte',crumb_home:'Start',crumb_co:'Kasse',
+flt_t:'Filter',flt_cats:'Kategorien',flt_price:'Maximalpreis',flt_color:'Farbe',flt_clear:'✕ Filter zurücksetzen',
+sort_asc:'Preis: aufsteigend',sort_desc:'Preis: absteigend',sort_new:'Neueste',
+count:'{n} von {m} Produkten',no_res:'Keine passenden Produkte gefunden',
+color_lbl:'Farbe:',qty_lbl:'Menge:',add_cart:'In den Warenkorb',buy_now:'Jetzt kaufen',
+pf1:'5 Jahre Garantie auf Rahmen & Mechanik',pf2:'Lieferung in ganz Ägypten',pf3:'Rückgabe innerhalb 14 Tagen',
+reviews:'Bewertungen',badge:'-{p}%',
+cart_e1:'Ihr Warenkorb ist leer',cart_e2:'Beginnen Sie mit dem Einkauf!',grand:'Gesamt',co_btn:'Zur Kasse',color_word:'Farbe',
+co_t:'Lieferdaten',l_name:'Vollständiger Name',ph_name:'z. B. Max Mustermann',e_name:'Bitte Namen eingeben',
+l_phone:'Handy (WhatsApp)',e_phone:'Gültige Nummer eingeben (min. 8 Ziffern)',e_phone2:'Gültige Nummer eingeben',
+l_city:'Gouvernement / Stadt',ph_city:'Kairo, Gizeh, Alexandria…',e_city:'Stadt eingeben',
+l_pay:'Zahlungsart',pay1:'Nachnahme',pay2:'Vodafone Cash',pay3:'InstaPay',pay4:'Banküberweisung',
+l_addr:'Genaue Adresse',ph_addr:'Viertel, Straße, Gebäude / Wohnung',e_addr:'Adresse eingeben',
+l_notes:'Anmerkungen — optional',ph_notes:'z. B. nachmittags liefern…',
+sum_t:'Bestellübersicht',ship:'Versand',ship_free:'Kostenlos',ship_tbd:'Wird mit dem Service bestätigt',
+wa_btn:'Bestellung per WhatsApp bestätigen',wa_note:'WhatsApp öffnet sich mit allen Bestelldetails —<br>einfach Senden drücken ✓',
+cu_t:'Gestalten Sie Ihren Stuhl 🪑✨',cu_lead:'Unsere Werkstatt fertigt Ihren Traumstuhl: Stoff, Farbe, Maße. Formular ausfüllen — Angebot per WhatsApp innerhalb 24 Stunden.',
+cu_name:'Name',cu_name_ph:'Ihr Name',cu_phone:'Handynummer',cu_type:'Stuhltyp',
+ct1:'Sessel',ct2:'Bürostuhl',ct3:'Gaming-Stuhl',ct4:'Esszimmerstühle (Set)',ct5:'Anderes Design',
+cu_dlbl:'Beschreiben Sie Ihr Design',cu_dph:'Stoff, Farbe, Maße, Referenzfoto…',e_desc:'Beschreiben Sie das Design, auch in einem Satz',
+cu_send:'Anfrage per WhatsApp senden',cu_msg_t:'Maßanfertigung — Artikaa',
+ab_t:'Artikaa — Luxus des Sitzens',ab_lead:'Gegründet in Kairo, liefert Artikaa heute in ganz Ägypten: Büro, Gaming, Lounge und Esszimmer — plus Maßanfertigung nach Ihren Wünschen.',
+ab1:'Zufriedene Kunden',ab2:'Belieferte Gouvernements',ab3:'Echte Garantie',ab_n3:'5 Jahre',
+ab_why:'Warum Artikaa?',ab_whyp:'Importierte, geprüfte Materialien; Polsterung in eigener Werkstatt; Qualitätskontrolle vor dem Versand. 5 Jahre Garantie und WhatsApp-Service die ganze Woche.',
+ab_shop:'Produkte entdecken',ab_wa:'Auf WhatsApp schreiben',
+h_t:'Hilfe-Center',hs_t:'🚚 Versand & Lieferung',
+hs_p:'Lieferung in ganz Ägypten in 2–5 Werktagen. <b>Kostenlos</b> ab 5000 EGP; darunter je nach Gouvernement (Bestätigung per WhatsApp). Einfache Montage mit bebilderter Anleitung.',
+hr_t:'↩️ Rückgabe',hr_p:'14 Tage Rückgaberecht im Originalzustand mit voller Erstattung. Fabrikfehler ersetzen wir sofort auf unsere Kosten.',
+hf_t:'❓ FAQ',
+q1:'Ist Nachnahme möglich?',a1:'Ja, überall. Außerdem Vodafone Cash, InstaPay und Überweisung.',
+q2:'Kommen die Stühle montiert an?',a2:'Sessel kommen fertig. Büro- und Gaming-Stühle: einfache 10-Minuten-Montage, Werkzeug inklusive.',
+q3:'Was deckt die Garantie ab?',a3:'Rahmen, Gasfeder, Rollen und Mechanik — 5 Jahre. Polster: 1 Jahr gegen Fabrikationsfehler.',
+q4:'Kann ich die Produkte ansehen?',a4:'Wir verkaufen nur online für beste Preise — Detailvideo per WhatsApp vor dem Kauf.',
+h_more:'Noch Fragen? Schreiben Sie uns',
+ft_about:'Die erste Adresse für Luxusstühle in Ägypten — modernes Design trifft Handwerkskunst.',
+ft_shop:'Shop',ft_co:'Unternehmen',ft_help:'Hilfe',ft_ship:'Versand',ft_ret:'Rückgabe',ft_faq:'FAQ',b2b:'B2B-Großhandel',contact:'Kontakt',
+copy:'© 2026 Artikaa.com — Alle Rechte vorbehalten',
+m_support:'Hallo Artikaa 👋 ich habe eine Frage',m_b2b:'Hallo Artikaa 👋 ich interessiere mich für Großhandel',m_faq:'Hallo Artikaa 👋 meine Frage steht nicht in der Hilfe',
+t_added:'Zum Warenkorb hinzugefügt ✓',t_empty:'Warenkorb leer — erst ein Produkt hinzufügen',t_fill:'Bitte Pflichtfelder ausfüllen',t_ready:'Bestellung bereit — in WhatsApp auf Senden drücken ✓',t_ready2:'Anfrage bereit — in WhatsApp auf Senden drücken ✓',
+o_t:'Neue Bestellung — Artikaa.com',o_items:'Produkte',o_total:'Gesamt',o_free:'(Versand kostenlos)',o_ship2:'(+ Versand je Gouvernement)',o_name:'Name',o_phone:'Handy',o_city:'Stadt',o_addr:'Adresse',o_pay:'Zahlung',o_notes:'Notizen',
+s1h:'Luxuriöses Sitzen',s1p:'Modernes Design, unvergleichlicher Komfort — entdecken Sie unsere Kollektion.',s1b:'Jetzt shoppen',
+s2h:'Eleganz beginnt mit Ihrem Stuhl',s2p:'Bis zu 30% Rabatt auf Bürostühle.',s2b:'Bürostühle shoppen',
+s3h:'Gaming auf Profi-Niveau',s3p:'Jupiter Gaming-Stuhl mit 20% Rabatt.',s3b:'Jetzt bestellen',
+s4h:'Ihr eigener Stuhl',s4p:'Unsere Werkstatt fertigt nach Ihren Wünschen.',s4b:'Jetzt gestalten',
+colors:{'أسود':'Schwarz','رمادي':'Grau','كحلي':'Marineblau','أحمر':'Rot','بني':'Braun','بيج':'Beige','كريمي':'Creme','أخضر':'Grün','ذهبي':'Gold'},
+p:{jupiter:['Jupiter Gaming-Stuhl','Höchster Komfort: Premiumleder, verstellbare Armlehnen, 160°-Neigung.'],
+titan:['Titan Sport-Stuhl','Breite Passform, Stahlrahmen bis 150 kg, Nacken- und Lendenkissen.'],
+neon:['Neon Gaming-Stuhl','Top Preis-Leistung: atmungsaktives Mesh, deutsche Gasfeder.'],
+alpha:['Alpha Lederstuhl','Chefsessel aus Premiumleder mit dichter Polsterung.'],
+veden:['Veden Modern-Stuhl','Leichtes Design mit bequemer Mesh-Lehne — ideal fürs Homeoffice.'],
+ergo:['Ergo Komfort-Stuhl','Verstellbare Lordosenstütze, Kopfstütze, Sitztiefenverstellung.'],
+'pro-mesh':['Pro Mesh-Stuhl','Unser Büro-Bestseller — Voll-Mesh, luftig und leicht.'],
+lina:['Lina Executive-Stuhl','Italienisches Leder, polierte Alu-Basis, leise Synchronmechanik.'],
+moja:['Moja Drehstuhl','Kompakt und stilvoll, pflegeleichter Stoff.'],
+sahab:['Sahab Sessel','Luxuriöser marineblauer Samt — perfekt für die Leseecke.'],
+remal:['Remal Sessel','Cremefarbenes Leinen, Beine aus Buche — skandinavische Wärme.'],
+wisam:['Wisam Sessel','Klassischer Ohrensessel, fleckenabweisender Chenille-Stoff.'],
+maeda:['Maeda Esszimmerstuhl','Massive ägyptische Buche, gepolsterte Sitzfläche — Set-Rabatt.'],
+nouran:['Nouran Esszimmerstuhl','Geschwungene Lehne, Samtbezug — Eleganz am Esstisch.']}},
+
+it:{dir:'ltr',cur:'EGP',title_tag:'Sedie di lusso',
+announce:'✦ Spedizione gratuita in tutto l’Egitto sopra 5000 EGP — sconti fino al 30% ✦',
+nav_home:'Home',nav_products:'Prodotti',nav_custom:'Design su misura',nav_about:'Chi siamo',nav_help:'Aiuto',cart_lbl:'Carrello',
+cat_all:'Tutti i prodotti',cat_office:'Sedie da ufficio',cat_gaming:'Sedie gaming',cat_lounge:'Poltrone',cat_dining:'Sedie da pranzo',
+f1t:'Consegna rapida',f1s:'In tutti i governatorati',f2t:'Garanzia 5 anni',f2s:'Su tutti i prodotti',f3t:'Supporto 24/7',f3s:'WhatsApp diretto',f4t:'Reso gratuito',f4s:'Entro 14 giorni',
+best:'I più venduti',view_all:'Vedi tutti →',similar:'Prodotti simili',crumb_home:'Home',crumb_co:'Checkout',
+flt_t:'Filtra',flt_cats:'Categorie',flt_price:'Prezzo max',flt_color:'Colore',flt_clear:'✕ Rimuovi filtri',
+sort_asc:'Prezzo: crescente',sort_desc:'Prezzo: decrescente',sort_new:'Novità',
+count:'{n} di {m} prodotti',no_res:'Nessun prodotto corrisponde ai filtri',
+color_lbl:'Colore:',qty_lbl:'Quantità:',add_cart:'Aggiungi al carrello',buy_now:'Compra ora',
+pf1:'Garanzia 5 anni su struttura e meccanismi',pf2:'Consegna in tutto l’Egitto',pf3:'Reso entro 14 giorni',
+reviews:'recensioni',badge:'-{p}%',
+cart_e1:'Il carrello è vuoto',cart_e2:'Inizia lo shopping!',grand:'Totale',co_btn:'Checkout',color_word:'Colore',
+co_t:'Dati di consegna',l_name:'Nome completo',ph_name:'es. Mario Rossi',e_name:'Inserisci il nome',
+l_phone:'Cellulare (WhatsApp)',e_phone:'Numero valido richiesto (min 8 cifre)',e_phone2:'Numero non valido',
+l_city:'Governatorato / Città',ph_city:'Il Cairo, Giza, Alessandria…',e_city:'Inserisci la città',
+l_pay:'Pagamento',pay1:'Contrassegno',pay2:'Vodafone Cash',pay3:'InstaPay',pay4:'Bonifico',
+l_addr:'Indirizzo dettagliato',ph_addr:'Quartiere, via, edificio / interno',e_addr:'Inserisci l’indirizzo',
+l_notes:'Note — facoltative',ph_notes:'es. consegnare nel pomeriggio…',
+sum_t:'Riepilogo ordine',ship:'Spedizione',ship_free:'Gratuita',ship_tbd:'Confermata dal servizio clienti',
+wa_btn:'Conferma su WhatsApp',wa_note:'WhatsApp si aprirà con i dettagli completi —<br>premi Invia per confermare ✓',
+cu_t:'Disegna la tua sedia 🪑✨',cu_lead:'Il nostro laboratorio realizza la sedia dei tuoi sogni: tessuto, colore, misure. Compila il modulo — preventivo su WhatsApp entro 24 ore.',
+cu_name:'Nome',cu_name_ph:'Il tuo nome',cu_phone:'Cellulare',cu_type:'Tipo di sedia',
+ct1:'Poltrona',ct2:'Sedia da ufficio',ct3:'Sedia gaming',ct4:'Sedie da pranzo (set)',ct5:'Altro design',
+cu_dlbl:'Descrivi il tuo design',cu_dph:'Tessuto, colore, misure, foto di riferimento…',e_desc:'Descrivi il design, anche in una frase',
+cu_send:'Invia su WhatsApp',cu_msg_t:'Richiesta design su misura — Artikaa',
+ab_t:'Artikaa — Il lusso di sedersi',ab_lead:'Nata al Cairo, oggi Artikaa consegna in tutto l’Egitto: ufficio, gaming, relax e pranzo — con un laboratorio su misura che realizza le tue idee.',
+ab1:'Clienti felici',ab2:'Governatorati serviti',ab3:'Garanzia vera',ab_n3:'5 anni',
+ab_why:'Perché Artikaa?',ab_whyp:'Materiali importati e testati, tappezzeria nel nostro laboratorio, controllo qualità prima della spedizione. Garanzia di 5 anni e assistenza WhatsApp tutta la settimana.',
+ab_shop:'Scopri i prodotti',ab_wa:'Scrivici su WhatsApp',
+h_t:'Centro assistenza',hs_t:'🚚 Spedizione',
+hs_p:'Consegniamo in tutto l’Egitto in 2–5 giorni lavorativi. <b>Gratis</b> sopra 5000 EGP; sotto, dipende dal governatorato (confermato su WhatsApp). Montaggio semplice con guida illustrata.',
+hr_t:'↩️ Resi',hr_p:'Hai 14 giorni per restituire il prodotto in condizioni originali con rimborso completo. Difetti di fabbrica: sostituzione immediata a nostre spese.',
+hf_t:'❓ FAQ',
+q1:'Contrassegno disponibile?',a1:'Sì, ovunque. Accettiamo anche Vodafone Cash, InstaPay e bonifico.',
+q2:'Le sedie arrivano montate?',a2:'Le poltrone arrivano pronte. Ufficio e gaming: montaggio semplice di 10 minuti, attrezzo incluso.',
+q3:'Cosa copre la garanzia?',a3:'Struttura, pistone, ruote e meccanismi — 5 anni. Tappezzeria: 1 anno contro difetti di fabbrica.',
+q4:'Posso vedere i prodotti dal vivo?',a4:'Vendiamo solo online per prezzi migliori — video dettagliato su WhatsApp prima dell’acquisto.',
+h_more:'Serve aiuto? Scrivici',
+ft_about:'La prima destinazione per sedie di lusso in Egitto — design moderno e artigianato di qualità.',
+ft_shop:'Shop',ft_co:'Azienda',ft_help:'Aiuto',ft_ship:'Spedizione',ft_ret:'Resi',ft_faq:'FAQ',b2b:'Ingrosso B2B',contact:'Contattaci',
+copy:'© 2026 Artikaa.com — Tutti i diritti riservati',
+m_support:'Ciao Artikaa 👋 ho una domanda',m_b2b:'Ciao Artikaa 👋 vorrei informazioni sull’ingrosso',m_faq:'Ciao Artikaa 👋 ho una domanda senza risposta nell’aiuto',
+t_added:'Aggiunto al carrello ✓',t_empty:'Carrello vuoto — aggiungi un prodotto',t_fill:'Completa i campi obbligatori',t_ready:'Ordine pronto — premi Invia su WhatsApp ✓',t_ready2:'Richiesta pronta — premi Invia su WhatsApp ✓',
+o_t:'Nuovo ordine — Artikaa.com',o_items:'Prodotti',o_total:'Totale',o_free:'(spedizione gratuita)',o_ship2:'(+ spedizione per governatorato)',o_name:'Nome',o_phone:'Cellulare',o_city:'Città',o_addr:'Indirizzo',o_pay:'Pagamento',o_notes:'Note',
+s1h:'Sedute di lusso',s1p:'Design moderno, comfort senza pari — scopri la nostra collezione.',s1b:'Acquista ora',
+s2h:'L’eleganza inizia dalla tua sedia',s2p:'Sconti fino al 30% sulle sedie da ufficio.',s2b:'Sedie da ufficio',
+s3h:'Gaming da professionisti',s3p:'Sedia Jupiter al 20% di sconto.',s3b:'Ordina ora',
+s4h:'Disegna la tua sedia',s4p:'Il nostro laboratorio realizza le tue idee.',s4b:'Inizia',
+colors:{'أسود':'Nero','رمادي':'Grigio','كحلي':'Blu navy','أحمر':'Rosso','بني':'Marrone','بيج':'Beige','كريمي':'Crema','أخضر':'Verde','ذهبي':'Oro'},
+p:{jupiter:['Sedia Gaming Jupiter','Comfort supremo: pelle premium, braccioli regolabili, reclinazione 160°.'],
+titan:['Sedia Titan Sport','Seduta ampia, telaio in acciaio fino a 150 kg, cuscini collo e lombari.'],
+neon:['Sedia Gaming Neon','Ottimo rapporto qualità-prezzo: rete traspirante, pistone tedesco.'],
+alpha:['Sedia in Pelle Alpha','Poltrona direzionale in pelle premium, imbottitura densa.'],
+veden:['Sedia Moderna Veden','Design leggero con schienale in rete — ideale per lo smart working.'],
+ergo:['Sedia Ergo Comfort','Supporto lombare regolabile, poggiatesta, profondità seduta regolabile.'],
+'pro-mesh':['Sedia Pro Mesh','La più venduta per ufficio — tutta rete, leggera e fresca.'],
+lina:['Sedia Executive Lina','Pelle italiana, base in alluminio lucido, meccanismo silenzioso.'],
+moja:['Sedia Girevole Moja','Compatta ed elegante, tessuto facile da pulire.'],
+sahab:['Poltrona Sahab','Velluto blu navy di lusso — perfetta per l’angolo lettura.'],
+remal:['Poltrona Remal','Lino crema, gambe in faggio naturale — calore scandinavo.'],
+wisam:['Poltrona Wisam','Bergère classica rivisitata, ciniglia antimacchia.'],
+maeda:['Sedia da Pranzo Maeda','Faggio egiziano massello, seduta imbottita — sconto per set.'],
+nouran:['Sedia da Pranzo Nouran','Schienale curvo e velluto — eleganza a tavola.']}},
+
+es:{dir:'ltr',cur:'EGP',title_tag:'Sillas de lujo',
+announce:'✦ Envío gratis en todo Egipto en pedidos superiores a 5000 EGP — descuentos hasta el 30% ✦',
+nav_home:'Inicio',nav_products:'Productos',nav_custom:'Diseño a medida',nav_about:'Nosotros',nav_help:'Ayuda',cart_lbl:'Carrito',
+cat_all:'Todos los productos',cat_office:'Sillas de oficina',cat_gaming:'Sillas gaming',cat_lounge:'Sillones',cat_dining:'Sillas de comedor',
+f1t:'Entrega rápida',f1s:'A todas las gobernaciones',f2t:'Garantía de 5 años',f2s:'En todos los productos',f3t:'Soporte 24/7',f3s:'WhatsApp directo',f4t:'Devolución gratis',f4s:'En 14 días',
+best:'Más vendidos',view_all:'Ver todo →',similar:'Productos similares',crumb_home:'Inicio',crumb_co:'Pago',
+flt_t:'Filtrar',flt_cats:'Categorías',flt_price:'Precio máx.',flt_color:'Color',flt_clear:'✕ Borrar filtros',
+sort_asc:'Precio: menor a mayor',sort_desc:'Precio: mayor a menor',sort_new:'Novedades',
+count:'{n} de {m} productos',no_res:'Ningún producto coincide con estos filtros',
+color_lbl:'Color:',qty_lbl:'Cantidad:',add_cart:'Añadir al carrito',buy_now:'Comprar ahora',
+pf1:'Garantía de 5 años en estructura y mecanismos',pf2:'Entrega en todo Egipto',pf3:'Devolución en 14 días',
+reviews:'reseñas',badge:'-{p}%',
+cart_e1:'Tu carrito está vacío',cart_e2:'¡Empieza a comprar!',grand:'Total',co_btn:'Finalizar compra',color_word:'Color',
+co_t:'Datos de entrega',l_name:'Nombre completo',ph_name:'ej. Juan Pérez',e_name:'Escribe tu nombre',
+l_phone:'Móvil (WhatsApp)',e_phone:'Número válido requerido (mín. 8 dígitos)',e_phone2:'Número no válido',
+l_city:'Gobernación / Ciudad',ph_city:'El Cairo, Guiza, Alejandría…',e_city:'Escribe la ciudad',
+l_pay:'Método de pago',pay1:'Contra reembolso',pay2:'Vodafone Cash',pay3:'InstaPay',pay4:'Transferencia bancaria',
+l_addr:'Dirección detallada',ph_addr:'Barrio, calle, edificio / piso',e_addr:'Escribe la dirección',
+l_notes:'Notas — opcional',ph_notes:'ej. entregar por la tarde…',
+sum_t:'Resumen del pedido',ship:'Envío',ship_free:'Gratis',ship_tbd:'Se confirma con atención al cliente',
+wa_btn:'Confirmar por WhatsApp',wa_note:'WhatsApp se abrirá con tu pedido completo —<br>pulsa Enviar para confirmar ✓',
+cu_t:'Diseña tu propia silla 🪑✨',cu_lead:'Nuestro taller fabrica la silla de tus sueños: tela, color y medidas. Rellena el formulario — presupuesto por WhatsApp en 24 horas.',
+cu_name:'Nombre',cu_name_ph:'Tu nombre',cu_phone:'Móvil',cu_type:'Tipo de silla',
+ct1:'Sillón',ct2:'Silla de oficina',ct3:'Silla gaming',ct4:'Sillas de comedor (set)',ct5:'Otro diseño',
+cu_dlbl:'Describe tu diseño',cu_dph:'Tela, color, medidas, foto de referencia…',e_desc:'Describe el diseño, aunque sea en una frase',
+cu_send:'Enviar por WhatsApp',cu_msg_t:'Solicitud de diseño a medida — Artikaa',
+ab_t:'Artikaa — El lujo de sentarse',ab_lead:'Nacida en El Cairo, hoy Artikaa entrega en todo Egipto: oficina, gaming, descanso y comedor — con un taller a medida que hace realidad tus ideas.',
+ab1:'Clientes felices',ab2:'Gobernaciones cubiertas',ab3:'Garantía real',ab_n3:'5 años',
+ab_why:'¿Por qué Artikaa?',ab_whyp:'Materiales importados y probados, tapicería en nuestro propio taller, control de calidad antes del envío. Garantía de 5 años y atención por WhatsApp toda la semana.',
+ab_shop:'Descubre los productos',ab_wa:'Escríbenos por WhatsApp',
+h_t:'Centro de ayuda',hs_t:'🚚 Envío y entrega',
+hs_p:'Entregamos en todo Egipto en 2–5 días laborables. <b>Gratis</b> a partir de 5000 EGP; por debajo depende de la gobernación (se confirma por WhatsApp). Montaje sencillo con guía ilustrada.',
+hr_t:'↩️ Devoluciones',hr_p:'Tienes 14 días para devolver el producto en su estado original con reembolso completo. Defectos de fábrica: sustitución inmediata a nuestro cargo.',
+hf_t:'❓ Preguntas frecuentes',
+q1:'¿Hay pago contra reembolso?',a1:'Sí, en todas partes. También aceptamos Vodafone Cash, InstaPay y transferencia.',
+q2:'¿Las sillas llegan montadas?',a2:'Los sillones llegan listos. Oficina y gaming: montaje sencillo de 10 minutos, herramienta incluida.',
+q3:'¿Qué cubre la garantía?',a3:'Estructura, pistón, ruedas y mecanismos — 5 años. Tapicería: 1 año contra defectos de fábrica.',
+q4:'¿Puedo ver los productos en persona?',a4:'Vendemos solo online para dar mejores precios — vídeo detallado por WhatsApp antes de comprar.',
+h_more:'¿Aún necesitas ayuda? Escríbenos',
+ft_about:'El primer destino de sillas de lujo en Egipto — diseño moderno y buena artesanía.',
+ft_shop:'Tienda',ft_co:'Empresa',ft_help:'Ayuda',ft_ship:'Envíos',ft_ret:'Devoluciones',ft_faq:'FAQ',b2b:'Mayorista B2B',contact:'Contacto',
+copy:'© 2026 Artikaa.com — Todos los derechos reservados',
+m_support:'Hola Artikaa 👋 tengo una pregunta',m_b2b:'Hola Artikaa 👋 quiero información sobre venta al por mayor',m_faq:'Hola Artikaa 👋 tengo una duda sin respuesta en la ayuda',
+t_added:'Añadido al carrito ✓',t_empty:'Carrito vacío — añade un producto',t_fill:'Completa los campos obligatorios',t_ready:'Pedido listo — pulsa Enviar en WhatsApp ✓',t_ready2:'Solicitud lista — pulsa Enviar en WhatsApp ✓',
+o_t:'Nuevo pedido — Artikaa.com',o_items:'Productos',o_total:'Total',o_free:'(envío gratis)',o_ship2:'(+ envío según gobernación)',o_name:'Nombre',o_phone:'Móvil',o_city:'Ciudad',o_addr:'Dirección',o_pay:'Pago',o_notes:'Notas',
+s1h:'Asientos de lujo',s1p:'Diseño moderno, confort inigualable — descubre nuestra colección.',s1b:'Comprar ahora',
+s2h:'La elegancia empieza en tu silla',s2p:'Descuentos de hasta el 30% en sillas de oficina.',s2b:'Sillas de oficina',
+s3h:'Gaming de nivel profesional',s3p:'Silla Jupiter con 20% de descuento.',s3b:'Pedir ahora',
+s4h:'Diseña tu silla',s4p:'Nuestro taller hace realidad tus ideas.',s4b:'Empezar',
+colors:{'أسود':'Negro','رمادي':'Gris','كحلي':'Azul marino','أحمر':'Rojo','بني':'Marrón','بيج':'Beige','كريمي':'Crema','أخضر':'Verde','ذهبي':'Dorado'},
+p:{jupiter:['Silla Gaming Jupiter','Confort supremo: piel premium, reposabrazos ajustables, reclinado 160°.'],
+titan:['Silla Titan Sport','Asiento amplio, chasis de acero hasta 150 kg, cojines cervical y lumbar.'],
+neon:['Silla Gaming Neon','Gran relación calidad-precio: malla transpirable, pistón alemán.'],
+alpha:['Silla de Piel Alpha','Sillón ejecutivo de piel premium con acolchado denso.'],
+veden:['Silla Moderna Veden','Diseño ligero con respaldo de malla — ideal para teletrabajo.'],
+ergo:['Silla Ergo Confort','Soporte lumbar ajustable, reposacabezas y asiento regulables.'],
+'pro-mesh':['Silla Pro Mesh','La más vendida para oficina — malla completa, ligera y fresca.'],
+lina:['Silla Executive Lina','Piel italiana, base de aluminio pulido, mecanismo silencioso.'],
+moja:['Silla Giratoria Moja','Compacta y elegante, tela fácil de limpiar.'],
+sahab:['Sillón Sahab','Terciopelo azul marino de lujo — perfecto para leer.'],
+remal:['Sillón Remal','Lino crema con patas de haya — calidez escandinava.'],
+wisam:['Sillón Wisam','Orejero clásico renovado, chenilla antimanchas.'],
+maeda:['Silla de Comedor Maeda','Haya egipcia maciza, asiento acolchado — descuento por set.'],
+nouran:['Silla de Comedor Nouran','Respaldo curvo y terciopelo — elegancia en tu mesa.']}},
+
+ru:{dir:'ltr',cur:'EGP',title_tag:'Роскошные кресла',
+announce:'✦ Бесплатная доставка по всему Египту при заказе от 5000 EGP — скидки до 30% ✦',
+nav_home:'Главная',nav_products:'Товары',nav_custom:'Дизайн на заказ',nav_about:'О нас',nav_help:'Помощь',cart_lbl:'Корзина',
+cat_all:'Все товары',cat_office:'Офисные кресла',cat_gaming:'Игровые кресла',cat_lounge:'Кресла для отдыха',cat_dining:'Обеденные стулья',
+f1t:'Быстрая доставка',f1s:'Во все губернаторства',f2t:'Гарантия 5 лет',f2s:'На все товары',f3t:'Поддержка 24/7',f3s:'Напрямую в WhatsApp',f4t:'Бесплатный возврат',f4s:'В течение 14 дней',
+best:'Хиты продаж',view_all:'Смотреть все →',similar:'Похожие товары',crumb_home:'Главная',crumb_co:'Оформление',
+flt_t:'Фильтры',flt_cats:'Категории',flt_price:'Макс. цена',flt_color:'Цвет',flt_clear:'✕ Сбросить фильтры',
+sort_asc:'Цена: по возрастанию',sort_desc:'Цена: по убыванию',sort_new:'Новинки',
+count:'{n} из {m} товаров',no_res:'Нет товаров по этим фильтрам',
+color_lbl:'Цвет:',qty_lbl:'Количество:',add_cart:'В корзину',buy_now:'Купить сейчас',
+pf1:'Гарантия 5 лет на каркас и механизмы',pf2:'Доставка по всему Египту',pf3:'Возврат в течение 14 дней',
+reviews:'отзывов',badge:'-{p}%',
+cart_e1:'Корзина пуста',cart_e2:'Начните покупки!',grand:'Итого',co_btn:'Оформить заказ',color_word:'Цвет',
+co_t:'Данные доставки',l_name:'Полное имя',ph_name:'напр. Иван Иванов',e_name:'Введите имя',
+l_phone:'Телефон (WhatsApp)',e_phone:'Введите корректный номер (мин. 8 цифр)',e_phone2:'Некорректный номер',
+l_city:'Губернаторство / Город',ph_city:'Каир, Гиза, Александрия…',e_city:'Введите город',
+l_pay:'Способ оплаты',pay1:'Оплата при получении',pay2:'Vodafone Cash',pay3:'InstaPay',pay4:'Банковский перевод',
+l_addr:'Подробный адрес',ph_addr:'Район, улица, дом / квартира',e_addr:'Введите адрес',
+l_notes:'Примечания — необязательно',ph_notes:'напр. доставить после обеда…',
+sum_t:'Ваш заказ',ship:'Доставка',ship_free:'Бесплатно',ship_tbd:'Уточняется с поддержкой',
+wa_btn:'Подтвердить в WhatsApp',wa_note:'Откроется WhatsApp с деталями заказа —<br>просто нажмите «Отправить» ✓',
+cu_t:'Создайте своё кресло 🪑✨',cu_lead:'Наша мастерская изготовит кресло вашей мечты: ткань, цвет, размеры. Заполните форму — расчёт в WhatsApp в течение 24 часов.',
+cu_name:'Имя',cu_name_ph:'Ваше имя',cu_phone:'Телефон',cu_type:'Тип кресла',
+ct1:'Кресло для отдыха',ct2:'Офисное кресло',ct3:'Игровое кресло',ct4:'Обеденные стулья (набор)',ct5:'Другой дизайн',
+cu_dlbl:'Опишите ваш дизайн',cu_dph:'Ткань, цвет, размеры, фото-референс…',e_desc:'Опишите дизайн хотя бы одним предложением',
+cu_send:'Отправить в WhatsApp',cu_msg_t:'Заявка на дизайн — Artikaa',
+ab_t:'Artikaa — роскошь сидеть удобно',ab_lead:'Мы начали в Каире, а сегодня доставляем по всему Египту: офис, гейминг, отдых и столовая — плюс мастерская, которая воплотит любую идею.',
+ab1:'Довольных клиентов',ab2:'Губернаторств доставки',ab3:'Настоящая гарантия',ab_n3:'5 лет',
+ab_why:'Почему Artikaa?',ab_whyp:'Импортные проверенные материалы, обивка в собственной мастерской, контроль качества перед отправкой. Гарантия 5 лет и поддержка в WhatsApp всю неделю.',
+ab_shop:'Смотреть товары',ab_wa:'Написать в WhatsApp',
+h_t:'Центр помощи',hs_t:'🚚 Доставка',
+hs_p:'Доставляем по всему Египту за 2–5 рабочих дней. <b>Бесплатно</b> от 5000 EGP; иначе — по тарифу губернаторства (уточняем в WhatsApp). Простая сборка с иллюстрированной инструкцией.',
+hr_t:'↩️ Возврат',hr_p:'14 дней на возврат товара в исходном состоянии с полным возвратом денег. Заводской брак меняем сразу за наш счёт.',
+hf_t:'❓ Вопросы и ответы',
+q1:'Есть ли оплата при получении?',a1:'Да, везде. Также принимаем Vodafone Cash, InstaPay и перевод.',
+q2:'Кресла приходят в собранном виде?',a2:'Кресла для отдыха — готовые. Офисные и игровые — простая сборка за 10 минут, инструмент в комплекте.',
+q3:'Что покрывает гарантия?',a3:'Каркас, газлифт, колёса и механизмы — 5 лет. Обивка — 1 год от заводских дефектов.',
+q4:'Можно посмотреть товары вживую?',a4:'Мы работаем онлайн ради лучших цен — пришлём подробное видео в WhatsApp до покупки.',
+h_more:'Нужна помощь? Напишите нам',
+ft_about:'Первый адрес роскошных кресел в Египте — современный дизайн и качественная работа.',
+ft_shop:'Магазин',ft_co:'Компания',ft_help:'Помощь',ft_ship:'Доставка',ft_ret:'Возврат',ft_faq:'FAQ',b2b:'Опт B2B',contact:'Связаться',
+copy:'© 2026 Artikaa.com — Все права защищены',
+m_support:'Здравствуйте, Artikaa 👋 у меня вопрос',m_b2b:'Здравствуйте, Artikaa 👋 интересуют оптовые поставки',m_faq:'Здравствуйте, Artikaa 👋 не нашёл ответа на странице помощи',
+t_added:'Добавлено в корзину ✓',t_empty:'Корзина пуста — сначала добавьте товар',t_fill:'Заполните обязательные поля',t_ready:'Заказ готов — нажмите «Отправить» в WhatsApp ✓',t_ready2:'Заявка готова — нажмите «Отправить» в WhatsApp ✓',
+o_t:'Новый заказ — Artikaa.com',o_items:'Товары',o_total:'Итого',o_free:'(доставка бесплатно)',o_ship2:'(+ доставка по тарифу)',o_name:'Имя',o_phone:'Телефон',o_city:'Город',o_addr:'Адрес',o_pay:'Оплата',o_notes:'Примечания',
+s1h:'Роскошные кресла',s1p:'Современный дизайн и непревзойдённый комфорт — откройте нашу коллекцию.',s1b:'В магазин',
+s2h:'Элегантность начинается с кресла',s2p:'Скидки до 30% на офисные кресла.',s2b:'Офисные кресла',
+s3h:'Гейминг про-уровня',s3p:'Кресло Jupiter со скидкой 20%.',s3b:'Заказать',
+s4h:'Создайте своё кресло',s4p:'Мастерская воплотит любую идею — ткань, цвет, размеры.',s4b:'Начать',
+colors:{'أسود':'Чёрный','رمادي':'Серый','كحلي':'Тёмно-синий','أحمر':'Красный','بني':'Коричневый','بيج':'Бежевый','كريمي':'Кремовый','أخضر':'Зелёный','ذهبي':'Золотой'},
+p:{jupiter:['Игровое кресло Jupiter','Максимальный комфорт: премиум-кожа, регулируемые подлокотники, наклон 160°.'],
+titan:['Кресло Titan Sport','Широкая посадка, стальной каркас до 150 кг, подушки для шеи и поясницы.'],
+neon:['Игровое кресло Neon','Отличная цена: дышащая сетка, немецкий газлифт.'],
+alpha:['Кожаное кресло Alpha','Кресло руководителя из премиум-кожи с плотной набивкой.'],
+veden:['Кресло Veden Modern','Лёгкий дизайн с удобной сетчатой спинкой — для работы из дома.'],
+ergo:['Кресло Ergo Comfort','Регулируемая поясничная поддержка, подголовник, глубина сиденья.'],
+'pro-mesh':['Кресло Pro Mesh','Бестселлер для офиса — полностью сетчатое, лёгкое.'],
+lina:['Кресло Lina Executive','Итальянская кожа, полированное алюминиевое основание, тихий механизм.'],
+moja:['Кресло Moja','Компактное и стильное, ткань легко чистится.'],
+sahab:['Кресло Sahab','Роскошный тёмно-синий бархат — идеально для чтения.'],
+remal:['Кресло Remal','Кремовый лён, ножки из бука — скандинавское тепло.'],
+wisam:['Кресло Wisam','Классическое «ушастое» кресло, ткань с защитой от пятен.'],
+maeda:['Стул Maeda','Массив египетского бука, мягкое сиденье — скидка за набор.'],
+nouran:['Стул Nouran','Изогнутая спинка и бархат — элегантность за столом.']}},
+
+tr:{dir:'ltr',cur:'EGP',title_tag:'Lüks Sandalyeler',
+announce:'✦ 5000 EGP üzeri siparişlerde tüm Mısır’a ücretsiz kargo — %30’a varan indirimler ✦',
+nav_home:'Ana Sayfa',nav_products:'Ürünler',nav_custom:'Özel Tasarım',nav_about:'Hakkımızda',nav_help:'Yardım',cart_lbl:'Sepet',
+cat_all:'Tüm Ürünler',cat_office:'Ofis Koltukları',cat_gaming:'Oyuncu Koltukları',cat_lounge:'Dinlenme Koltukları',cat_dining:'Yemek Sandalyeleri',
+f1t:'Hızlı Teslimat',f1s:'Tüm illere',f2t:'5 Yıl Garanti',f2s:'Tüm ürünlerde',f3t:'7/24 Destek',f3s:'Doğrudan WhatsApp',f4t:'Ücretsiz İade',f4s:'14 gün içinde',
+best:'Çok Satanlar',view_all:'Tümünü gör →',similar:'Benzer Ürünler',crumb_home:'Ana Sayfa',crumb_co:'Ödeme',
+flt_t:'Filtrele',flt_cats:'Kategoriler',flt_price:'Maks. Fiyat',flt_color:'Renk',flt_clear:'✕ Filtreleri temizle',
+sort_asc:'Fiyat: artan',sort_desc:'Fiyat: azalan',sort_new:'En yeniler',
+count:'{m} üründen {n} tanesi',no_res:'Bu filtrelere uyan ürün yok',
+color_lbl:'Renk:',qty_lbl:'Adet:',add_cart:'Sepete Ekle',buy_now:'Hemen Al',
+pf1:'İskelet ve mekanizmalarda 5 yıl garanti',pf2:'Tüm Mısır’a teslimat',pf3:'14 gün içinde iade',
+reviews:'değerlendirme',badge:'-%{p}',
+cart_e1:'Sepetiniz boş',cart_e2:'Alışverişe başlayın!',grand:'Toplam',co_btn:'Siparişi Tamamla',color_word:'Renk',
+co_t:'Teslimat Bilgileri',l_name:'Ad Soyad',ph_name:'örn. Ahmet Yılmaz',e_name:'Lütfen adınızı yazın',
+l_phone:'Telefon (WhatsApp)',e_phone:'Geçerli numara girin (en az 8 hane)',e_phone2:'Geçerli numara girin',
+l_city:'İl / Şehir',ph_city:'Kahire, Giza, İskenderiye…',e_city:'Şehri yazın',
+l_pay:'Ödeme Yöntemi',pay1:'Kapıda ödeme',pay2:'Vodafone Cash',pay3:'InstaPay',pay4:'Banka havalesi',
+l_addr:'Detaylı Adres',ph_addr:'Mahalle, sokak, bina / daire no',e_addr:'Adresi yazın',
+l_notes:'Sipariş notu — isteğe bağlı',ph_notes:'örn. öğleden sonra teslim…',
+sum_t:'Sipariş Özeti',ship:'Kargo',ship_free:'Ücretsiz',ship_tbd:'Müşteri hizmetleriyle netleşir',
+wa_btn:'WhatsApp ile Onayla',wa_note:'WhatsApp, sipariş detaylarınızla açılır —<br>onaylamak için Gönder’e basın ✓',
+cu_t:'Kendi Sandalyeni Tasarla 🪑✨',cu_lead:'Kendi atölyemiz var — kumaş, renk ve ölçüyü seç, sana özel üretelim. Formu doldur, 24 saat içinde WhatsApp’tan fiyat verelim.',
+cu_name:'Ad',cu_name_ph:'Adınız',cu_phone:'Telefon',cu_type:'Sandalye Türü',
+ct1:'Dinlenme koltuğu',ct2:'Ofis koltuğu',ct3:'Oyuncu koltuğu',ct4:'Yemek sandalyesi (takım)',ct5:'Başka tasarım',
+cu_dlbl:'Tasarımını anlat',cu_dph:'Kumaş, renk, ölçü, referans fotoğraf…',e_desc:'Tek cümleyle bile olsa tasarımı anlatın',
+cu_send:'WhatsApp’tan Gönder',cu_msg_t:'Özel Tasarım Talebi — Artikaa',
+ab_t:'Artikaa — Oturmanın Lüksü',ab_lead:'Kahire’de başladık; bugün tüm Mısır’a teslim ediyoruz: ofis, oyun, dinlenme ve yemek — hayalindekini üreten özel atölyemizle.',
+ab1:'Mutlu müşteri',ab2:'Teslimat yapılan il',ab3:'Gerçek garanti',ab_n3:'5 Yıl',
+ab_why:'Neden Artikaa?',ab_whyp:'İthal ve test edilmiş malzemeler, kendi atölyemizde döşeme, sevkiyat öncesi kalite kontrol. 5 yıl garanti ve tüm hafta WhatsApp desteği.',
+ab_shop:'Ürünleri keşfet',ab_wa:'WhatsApp’tan yaz',
+h_t:'Yardım Merkezi',hs_t:'🚚 Kargo ve Teslimat',
+hs_p:'Tüm Mısır’a 2–5 iş gününde teslim. 5000 EGP üzeri <b>ücretsiz</b>; altında ile göre değişir (kargo öncesi WhatsApp’tan teyit edilir). Resimli kılavuzla kolay kurulum.',
+hr_t:'↩️ İade Politikası',hr_p:'Tesliminden itibaren 14 gün içinde orijinal haliyle iade edip paranızın tamamını alabilirsiniz. Fabrika hatasında değişim anında ve bizden.',
+hf_t:'❓ SSS',
+q1:'Kapıda ödeme var mı?',a1:'Evet, her yerde. Ayrıca Vodafone Cash, InstaPay ve havale kabul ediyoruz.',
+q2:'Sandalyeler kurulu mu gelir?',a2:'Dinlenme koltukları hazır gelir. Ofis ve oyuncu koltukları 10 dakikalık basit kurulum ister, alet dahil.',
+q3:'Garanti neleri kapsar?',a3:'İskelet, amortisör, tekerlekler ve mekanizmalar — 5 tam yıl. Döşemede üretim hatalarına karşı 1 yıl.',
+q4:'Ürünleri yerinde görebilir miyim?',a4:'En iyi fiyat için sadece online çalışıyoruz — satın almadan önce WhatsApp’tan detaylı video göndeririz.',
+h_more:'Hâlâ yardım mı lazım? Bize yazın',
+ft_about:'Mısır’da lüks sandalyenin ilk adresi — modern tasarım, özenli işçilik.',
+ft_shop:'Mağaza',ft_co:'Şirket',ft_help:'Yardım',ft_ship:'Kargo',ft_ret:'İade',ft_faq:'SSS',b2b:'B2B toptan',contact:'İletişim',
+copy:'© 2026 Artikaa.com — Tüm hakları saklıdır',
+m_support:'Merhaba Artikaa 👋 bir sorum var',m_b2b:'Merhaba Artikaa 👋 toptan satış hakkında bilgi istiyorum',m_faq:'Merhaba Artikaa 👋 yardım sayfasında cevabını bulamadım',
+t_added:'Sepete eklendi ✓',t_empty:'Sepet boş — önce ürün ekleyin',t_fill:'Zorunlu alanları doldurun',t_ready:'Sipariş hazır — WhatsApp’ta Gönder’e basın ✓',t_ready2:'Talep hazır — WhatsApp’ta Gönder’e basın ✓',
+o_t:'Yeni sipariş — Artikaa.com',o_items:'Ürünler',o_total:'Toplam',o_free:'(kargo ücretsiz)',o_ship2:'(+ ile göre kargo)',o_name:'Ad',o_phone:'Telefon',o_city:'Şehir',o_addr:'Adres',o_pay:'Ödeme',o_notes:'Not',
+s1h:'Lüks Oturma Keyfi',s1p:'Modern tasarım, eşsiz konfor — seçkin koleksiyonumuzu keşfedin.',s1b:'Alışverişe Başla',
+s2h:'Şıklık koltuğunuzla başlar',s2p:'Ofis koltuklarında %30’a varan indirim.',s2b:'Ofis Koltukları',
+s3h:'Profesyonel oyun deneyimi',s3p:'Jupiter oyuncu koltuğu %20 indirimli.',s3b:'Hemen Sipariş',
+s4h:'Kendi sandalyeni tasarla',s4p:'Atölyemiz hayalindekini üretir — kumaş, renk, ölçü.',s4b:'Tasarıma Başla',
+colors:{'أسود':'Siyah','رمادي':'Gri','كحلي':'Lacivert','أحمر':'Kırmızı','بني':'Kahverengi','بيج':'Bej','كريمي':'Krem','أخضر':'Yeşil','ذهبي':'Altın'},
+p:{jupiter:['Jupiter Oyuncu Koltuğu','Uzun seanslar için üstün konfor: premium deri, ayarlı kolçak, 160° yatma.'],
+titan:['Titan Sport Koltuk','Geniş oturum, 150 kg’a dayanıklı çelik iskelet, boyun ve bel yastıkları.'],
+neon:['Neon Oyuncu Koltuğu','Uygun fiyat: nefes alan file, Alman amortisör.'],
+alpha:['Alpha Deri Koltuk','Premium deri makam koltuğu, yoğun dolgu.'],
+veden:['Veden Modern Koltuk','Hafif tasarım, rahat file sırt — evden çalışma için ideal.'],
+ergo:['Ergo Konfor Koltuk','Ayarlı bel desteği, iki açılı başlık, oturum derinliği ayarı.'],
+'pro-mesh':['Pro File Koltuk','Ofiste en çok satan — komple file, hafif ve serin.'],
+lina:['Lina Makam Koltuğu','İtalyan deri, parlak alüminyum ayak, sessiz mekanizma.'],
+moja:['Moja Döner Koltuk','Küçük alanlar için kompakt ve şık, kolay temizlenen kumaş.'],
+sahab:['Sahab Dinlenme Koltuğu','Lüks lacivert kadife — okuma köşesi için mükemmel.'],
+remal:['Remal Dinlenme Koltuğu','Krem keten, doğal kayın ayaklar — İskandinav sıcaklığı.'],
+wisam:['Wisam Dinlenme Koltuğu','Modern dokunuşlu klasik berjer, leke tutmaz kumaş.'],
+maeda:['Maeda Yemek Sandalyesi','Masif Mısır kayını, döşemeli oturum — takımda ekstra indirim.'],
+nouran:['Nouran Yemek Sandalyesi','Kavisli rahat sırt ve kadife döşeme — sofranıza şıklık.']}},
+
+pl:{dir:'ltr',cur:'EGP',title_tag:'Luksusowe krzesła',
+announce:'✦ Darmowa dostawa w całym Egipcie od 5000 EGP — rabaty do 30% ✦',
+nav_home:'Start',nav_products:'Produkty',nav_custom:'Projekt na wymiar',nav_about:'O nas',nav_help:'Pomoc',cart_lbl:'Koszyk',
+cat_all:'Wszystkie produkty',cat_office:'Fotele biurowe',cat_gaming:'Fotele gamingowe',cat_lounge:'Fotele wypoczynkowe',cat_dining:'Krzesła do jadalni',
+f1t:'Szybka dostawa',f1s:'Do wszystkich prowincji',f2t:'5 lat gwarancji',f2s:'Na wszystkie produkty',f3t:'Wsparcie 24/7',f3s:'Bezpośrednio WhatsApp',f4t:'Darmowy zwrot',f4s:'Do 14 dni',
+best:'Bestsellery',view_all:'Zobacz wszystko →',similar:'Podobne produkty',crumb_home:'Start',crumb_co:'Zamówienie',
+flt_t:'Filtry',flt_cats:'Kategorie',flt_price:'Cena maks.',flt_color:'Kolor',flt_clear:'✕ Wyczyść filtry',
+sort_asc:'Cena: rosnąco',sort_desc:'Cena: malejąco',sort_new:'Najnowsze',
+count:'{n} z {m} produktów',no_res:'Brak produktów pasujących do filtrów',
+color_lbl:'Kolor:',qty_lbl:'Ilość:',add_cart:'Do koszyka',buy_now:'Kup teraz',
+pf1:'5 lat gwarancji na stelaż i mechanizmy',pf2:'Dostawa w całym Egipcie',pf3:'Zwrot do 14 dni',
+reviews:'opinii',badge:'-{p}%',
+cart_e1:'Twój koszyk jest pusty',cart_e2:'Zacznij zakupy!',grand:'Razem',co_btn:'Do kasy',color_word:'Kolor',
+co_t:'Dane dostawy',l_name:'Imię i nazwisko',ph_name:'np. Jan Kowalski',e_name:'Podaj imię i nazwisko',
+l_phone:'Telefon (WhatsApp)',e_phone:'Podaj poprawny numer (min. 8 cyfr)',e_phone2:'Niepoprawny numer',
+l_city:'Prowincja / Miasto',ph_city:'Kair, Giza, Aleksandria…',e_city:'Podaj miasto',
+l_pay:'Metoda płatności',pay1:'Płatność przy odbiorze',pay2:'Vodafone Cash',pay3:'InstaPay',pay4:'Przelew bankowy',
+l_addr:'Dokładny adres',ph_addr:'Dzielnica, ulica, budynek / mieszkanie',e_addr:'Podaj adres',
+l_notes:'Uwagi — opcjonalne',ph_notes:'np. dostawa po południu…',
+sum_t:'Podsumowanie',ship:'Dostawa',ship_free:'Darmowa',ship_tbd:'Potwierdzana z obsługą',
+wa_btn:'Potwierdź przez WhatsApp',wa_note:'Otworzy się WhatsApp ze szczegółami zamówienia —<br>naciśnij Wyślij, aby potwierdzić ✓',
+cu_t:'Zaprojektuj swoje krzesło 🪑✨',cu_lead:'Mamy własny warsztat — wybierz tkaninę, kolor i wymiary, a wykonamy krzesło marzeń. Wypełnij formularz — wycena na WhatsApp w 24 h.',
+cu_name:'Imię',cu_name_ph:'Twoje imię',cu_phone:'Telefon',cu_type:'Typ krzesła',
+ct1:'Fotel wypoczynkowy',ct2:'Fotel biurowy',ct3:'Fotel gamingowy',ct4:'Krzesła do jadalni (zestaw)',ct5:'Inny projekt',
+cu_dlbl:'Opisz swój projekt',cu_dph:'Tkanina, kolor, wymiary, zdjęcie referencyjne…',e_desc:'Opisz projekt, choćby jednym zdaniem',
+cu_send:'Wyślij na WhatsApp',cu_msg_t:'Zapytanie o projekt — Artikaa',
+ab_t:'Artikaa — luksus siedzenia',ab_lead:'Zaczynaliśmy w Kairze, dziś dostarczamy w całym Egipcie: biuro, gaming, wypoczynek i jadalnia — plus warsztat na wymiar, który zrealizuje Twój pomysł.',
+ab1:'Zadowolonych klientów',ab2:'Obsługiwanych prowincji',ab3:'Prawdziwa gwarancja',ab_n3:'5 lat',
+ab_why:'Dlaczego Artikaa?',ab_whyp:'Importowane, sprawdzone materiały; tapicerka we własnym warsztacie; kontrola jakości przed wysyłką. 5 lat gwarancji i obsługa na WhatsApp cały tydzień.',
+ab_shop:'Zobacz produkty',ab_wa:'Napisz na WhatsApp',
+h_t:'Centrum pomocy',hs_t:'🚚 Dostawa',
+hs_p:'Dostarczamy w całym Egipcie w 2–5 dni roboczych. <b>Za darmo</b> od 5000 EGP; poniżej — zależnie od prowincji (potwierdzamy na WhatsApp). Prosty montaż z ilustrowaną instrukcją.',
+hr_t:'↩️ Zwroty',hr_p:'Masz 14 dni na zwrot produktu w stanie oryginalnym z pełnym zwrotem pieniędzy. Wady fabryczne wymieniamy natychmiast na nasz koszt.',
+hf_t:'❓ FAQ',
+q1:'Czy jest płatność przy odbiorze?',a1:'Tak, wszędzie. Przyjmujemy też Vodafone Cash, InstaPay i przelew.',
+q2:'Czy krzesła przychodzą złożone?',a2:'Fotele wypoczynkowe — gotowe. Biurowe i gamingowe: prosty montaż 10 minut, narzędzie w zestawie.',
+q3:'Co obejmuje gwarancja?',a3:'Stelaż, siłownik, kółka i mechanizmy — 5 lat. Tapicerka: rok na wady fabryczne.',
+q4:'Czy mogę zobaczyć produkty na żywo?',a4:'Działamy tylko online dla lepszych cen — wyślemy szczegółowe wideo na WhatsApp przed zakupem.',
+h_more:'Potrzebujesz pomocy? Napisz',
+ft_about:'Pierwszy adres luksusowych krzeseł w Egipcie — nowoczesny design i solidne rzemiosło.',
+ft_shop:'Sklep',ft_co:'Firma',ft_help:'Pomoc',ft_ship:'Dostawa',ft_ret:'Zwroty',ft_faq:'FAQ',b2b:'Hurt B2B',contact:'Kontakt',
+copy:'© 2026 Artikaa.com — Wszelkie prawa zastrzeżone',
+m_support:'Cześć Artikaa 👋 mam pytanie',m_b2b:'Cześć Artikaa 👋 proszę o info o sprzedaży hurtowej',m_faq:'Cześć Artikaa 👋 nie znalazłem odpowiedzi w pomocy',
+t_added:'Dodano do koszyka ✓',t_empty:'Koszyk pusty — najpierw dodaj produkt',t_fill:'Uzupełnij wymagane pola',t_ready:'Zamówienie gotowe — naciśnij Wyślij w WhatsApp ✓',t_ready2:'Zapytanie gotowe — naciśnij Wyślij w WhatsApp ✓',
+o_t:'Nowe zamówienie — Artikaa.com',o_items:'Produkty',o_total:'Razem',o_free:'(dostawa gratis)',o_ship2:'(+ dostawa wg prowincji)',o_name:'Imię',o_phone:'Telefon',o_city:'Miasto',o_addr:'Adres',o_pay:'Płatność',o_notes:'Uwagi',
+s1h:'Luksusowe siedzenie',s1p:'Nowoczesny design, niezrównany komfort — poznaj naszą kolekcję.',s1b:'Kup teraz',
+s2h:'Elegancja zaczyna się od fotela',s2p:'Rabaty do 30% na fotele biurowe.',s2b:'Fotele biurowe',
+s3h:'Gaming na poziomie pro',s3p:'Fotel Jupiter z rabatem 20%.',s3b:'Zamów teraz',
+s4h:'Zaprojektuj swoje krzesło',s4p:'Nasz warsztat zrealizuje Twój pomysł.',s4b:'Zacznij projekt',
+colors:{'أسود':'Czarny','رمادي':'Szary','كحلي':'Granatowy','أحمر':'Czerwony','بني':'Brązowy','بيج':'Beżowy','كريمي':'Kremowy','أخضر':'Zielony','ذهبي':'Złoty'},
+p:{jupiter:['Fotel gamingowy Jupiter','Najwyższy komfort: skóra premium, regulowane podłokietniki, odchył 160°.'],
+titan:['Fotel Titan Sport','Szerokie siedzisko, stalowa rama do 150 kg, poduszki pod kark i lędźwie.'],
+neon:['Fotel gamingowy Neon','Świetna cena: oddychająca siatka, niemiecki siłownik.'],
+alpha:['Fotel skórzany Alpha','Fotel dyrektorski z premium skóry, gęste wypełnienie.'],
+veden:['Fotel Veden Modern','Lekki design, wygodne siatkowe oparcie — idealny do pracy zdalnej.'],
+ergo:['Fotel Ergo Comfort','Regulowane podparcie lędźwi, zagłówek, głębokość siedziska.'],
+'pro-mesh':['Fotel Pro Mesh','Biurowy bestseller — pełna siatka, lekki i przewiewny.'],
+lina:['Fotel Lina Executive','Włoska skóra, polerowana aluminiowa baza, cichy mechanizm.'],
+moja:['Fotel obrotowy Moja','Kompaktowy i stylowy, tkanina łatwa w czyszczeniu.'],
+sahab:['Fotel Sahab','Luksusowy granatowy aksamit — idealny do kącika czytelniczego.'],
+remal:['Fotel Remal','Kremowy len, nogi z buku — skandynawskie ciepło.'],
+wisam:['Fotel Wisam','Klasyczny uszak w nowoczesnym wydaniu, tkanina odporna na plamy.'],
+maeda:['Krzesło Maeda','Lity egipski buk, tapicerowane siedzisko — rabat za zestaw.'],
+nouran:['Krzesło Nouran','Wyprofilowane oparcie i aksamit — elegancja przy stole.']}},
+
+zh:{dir:'ltr',cur:'埃镑',title_tag:'豪华座椅',
+announce:'✦ 订单满 5000 埃镑埃及全境免运费 — 折扣高达 30% ✦',
+nav_home:'首页',nav_products:'产品',nav_custom:'定制设计',nav_about:'关于我们',nav_help:'帮助',cart_lbl:'购物车',
+cat_all:'全部产品',cat_office:'办公椅',cat_gaming:'电竞椅',cat_lounge:'休闲椅',cat_dining:'餐椅',
+f1t:'快速配送',f1s:'覆盖埃及全部省份',f2t:'5年质保',f2s:'所有产品',f3t:'24/7 客服',f3s:'WhatsApp 直连',f4t:'免费退货',f4s:'14天内',
+best:'热销产品',view_all:'查看全部 →',similar:'相似产品',crumb_home:'首页',crumb_co:'结算',
+flt_t:'筛选',flt_cats:'分类',flt_price:'最高价格',flt_color:'颜色',flt_clear:'✕ 清除筛选',
+sort_asc:'价格：从低到高',sort_desc:'价格：从高到低',sort_new:'最新上架',
+count:'显示 {n} / {m} 件产品',no_res:'没有符合条件的产品',
+color_lbl:'颜色：',qty_lbl:'数量：',add_cart:'加入购物车',buy_now:'立即购买',
+pf1:'框架与机构5年质保',pf2:'配送至埃及全境',pf3:'14天内可退货',
+reviews:'条评价',badge:'-{p}%',
+cart_e1:'购物车是空的',cart_e2:'开始选购喜欢的商品吧！',grand:'合计',co_btn:'去结算',color_word:'颜色',
+co_t:'配送信息',l_name:'姓名',ph_name:'例如：王小明',e_name:'请填写姓名',
+l_phone:'手机号（WhatsApp）',e_phone:'请填写有效号码（至少8位）',e_phone2:'号码无效',
+l_city:'省份 / 城市',ph_city:'开罗、吉萨、亚历山大…',e_city:'请填写城市',
+l_pay:'支付方式',pay1:'货到付款',pay2:'Vodafone Cash',pay3:'InstaPay',pay4:'银行转账',
+l_addr:'详细地址',ph_addr:'区、街道、楼号 / 门牌号',e_addr:'请填写地址',
+l_notes:'订单备注 — 选填',ph_notes:'例如：下午送货…',
+sum_t:'订单摘要',ship:'运费',ship_free:'免运费',ship_tbd:'客服确认',
+wa_btn:'通过 WhatsApp 确认订单',wa_note:'将打开 WhatsApp 并附上完整订单信息 —<br>点击发送即可确认 ✓',
+cu_t:'定制你的专属座椅 🪑✨',cu_lead:'我们拥有自己的工坊 — 选择面料、颜色和尺寸，为你打造独一无二的座椅。填写表单，24小时内 WhatsApp 报价。',
+cu_name:'姓名',cu_name_ph:'你的姓名',cu_phone:'手机号',cu_type:'座椅类型',
+ct1:'休闲椅',ct2:'办公椅',ct3:'电竞椅',ct4:'餐椅（套装）',ct5:'其他设计',
+cu_dlbl:'描述你的设计',cu_dph:'面料、颜色、尺寸，参考图可发到 WhatsApp…',e_desc:'请至少用一句话描述设计',
+cu_send:'通过 WhatsApp 发送',cu_msg_t:'定制设计申请 — Artikaa',
+ab_t:'Artikaa — 坐享奢华',ab_lead:'我们始于开罗，如今配送覆盖埃及全境：办公、电竞、休闲与餐厅座椅一应俱全，还有定制工坊实现你的任何想法。',
+ab1:'满意客户',ab2:'覆盖省份',ab3:'真实质保',ab_n3:'5年',
+ab_why:'为什么选择 Artikaa？',ab_whyp:'进口且经过检验的材料，工坊自制软包，发货前逐一质检。5年质保，WhatsApp 客服全周在线。',
+ab_shop:'浏览产品',ab_wa:'WhatsApp 联系我们',
+h_t:'帮助中心',hs_t:'🚚 物流配送',
+hs_p:'埃及全境 2–5 个工作日送达。满 5000 埃镑<b>免运费</b>；不满则按省份计费（发货前通过 WhatsApp 与你确认）。附图文说明书，安装简单。',
+hr_t:'↩️ 退货政策',hr_p:'收货后14天内可原状退货并全额退款。出厂缺陷立即免费换新 — 只需在 WhatsApp 发送照片。',
+hf_t:'❓ 常见问题',
+q1:'支持货到付款吗？',a1:'支持，全境可用。也接受 Vodafone Cash、InstaPay 和银行转账。',
+q2:'座椅是组装好的吗？',a2:'休闲椅到手即用。办公椅和电竞椅需10分钟简单安装，附带工具。',
+q3:'质保具体包括什么？',a3:'框架、气压杆、轮子和倾仰机构 — 整整5年。软包面料1年质保（出厂缺陷）。',
+q4:'可以线下看产品吗？',a4:'目前仅线上销售以保证最优价格 — 购买前可在 WhatsApp 索取产品详细视频。',
+h_more:'还需要帮助？联系我们',
+ft_about:'埃及豪华座椅首选之地 — 现代设计与精湛工艺兼备。',
+ft_shop:'选购',ft_co:'公司',ft_help:'帮助',ft_ship:'物流配送',ft_ret:'退货政策',ft_faq:'常见问题',b2b:'B2B 批发',contact:'联系我们',
+copy:'© 2026 Artikaa.com — 版权所有',
+m_support:'你好 Artikaa 👋 我有一个问题',m_b2b:'你好 Artikaa 👋 想了解批发合作',m_faq:'你好 Artikaa 👋 帮助页面没有解答我的问题',
+t_added:'已加入购物车 ✓',t_empty:'购物车为空 — 请先添加产品',t_fill:'请填写必填项',t_ready:'订单已生成 — 请在 WhatsApp 点击发送 ✓',t_ready2:'申请已生成 — 请在 WhatsApp 点击发送 ✓',
+o_t:'新订单 — Artikaa.com',o_items:'产品',o_total:'合计',o_free:'（免运费）',o_ship2:'（+ 按省份计运费）',o_name:'姓名',o_phone:'手机',o_city:'城市',o_addr:'地址',o_pay:'支付',o_notes:'备注',
+s1h:'奢华座椅',s1p:'现代设计，无与伦比的舒适 — 探索我们的精选系列。',s1b:'立即选购',
+s2h:'办公品味，从座椅开始',s2p:'办公椅低至7折。',s2b:'选购办公椅',
+s3h:'专业级电竞体验',s3p:'Jupiter 电竞椅8折优惠。',s3b:'立即下单',
+s4h:'定制你的座椅',s4p:'工坊按你的想法定制 — 面料、颜色、尺寸。',s4b:'开始定制',
+colors:{'أسود':'黑色','رمادي':'灰色','كحلي':'藏青','أحمر':'红色','بني':'棕色','بيج':'米色','كريمي':'奶油色','أخضر':'绿色','ذهبي':'金色'},
+p:{jupiter:['Jupiter 电竞椅','长时间使用依然舒适：高级皮革、可调扶手、160°后仰。'],
+titan:['Titan 运动椅','宽大坐感，钢架承重150公斤，附颈枕腰枕。'],
+neon:['Neon 电竞椅','高性价比：透气网布，德国气压杆。'],
+alpha:['Alpha 真皮椅','高级皮革行政椅，高密度软包。'],
+veden:['Veden 现代椅','轻盈设计，舒适网背 — 居家办公首选。'],
+ergo:['Ergo 舒适椅','可调腰托、双角度头枕、坐深调节。'],
+'pro-mesh':['Pro 网布椅','办公热销款 — 全网布，轻盈透气。'],
+lina:['Lina 行政椅','意大利皮革，抛光铝制底座，静音同步倾仰。'],
+moja:['Moja 转椅','小空间的紧凑之选，面料易清洁。'],
+sahab:['Sahab 休闲椅','奢华藏青丝绒 — 阅读角的完美之选。'],
+remal:['Remal 休闲椅','奶油色亚麻配天然榉木腿 — 北欧暖意。'],
+wisam:['Wisam 休闲椅','经典翼背椅的现代演绎，防污面料。'],
+maeda:['Maeda 餐椅','埃及实心榉木，软包坐垫 — 套装另有折扣。'],
+nouran:['Nouran 餐椅','弧形舒适靠背配丝绒 — 为餐桌增添优雅。']}}
+};
+
+/* ═══════════ محرك اللغة ═══════════ */
+let LANG = 'ar';
+function t(k){ const L = I18N[LANG] || {}; return (k in L) ? L[k] : (k in I18N.en ? I18N.en[k] : I18N.ar[k]); }
+function colName(n){ const c = t('colors'); return (c && c[n]) || n; }
+function pName(p){ const o = I18N[LANG].p; return (o && o[p.id]) ? o[p.id][0] : p.name; }
+function pDesc(p){ const o = I18N[LANG].p; return (o && o[p.id]) ? o[p.id][1] : p.desc; }
+function catName(c){ return t('cat_' + c); }
+function translatePage(){
+  document.querySelectorAll('[data-k]').forEach(el=>{
+    el.innerHTML = t(el.dataset.k) + (el.dataset.star ? ' <i>*</i>' : '');
+  });
+  document.querySelectorAll('[data-kp]').forEach(el=> el.placeholder = t(el.dataset.kp));
+  document.title = 'Artikaa.com — ' + t('title_tag');
+  const mn = document.getElementById('minPrice'); if(mn) mn.textContent = '500 ' + t('cur');
+}
+function setLang(l){
+  LANG = l;
+  document.documentElement.lang = l;
+  document.documentElement.dir = t('dir');
+  const sel = document.getElementById('langSel'); if(sel) sel.value = l;
+  translatePage();
+  document.getElementById('homeGrid').innerHTML = [...PRODUCTS].sort((a,b)=>b.rev-a.rev).slice(0,4).map(card).join('');
+  renderColorFilters();
+  applyFilters();
+  renderDots(); setSlide(slideIdx);
+  if(currentProduct) fillProduct();
+  updateCart();
+}
+
 
 /* ═══════════ رسم الكراسي ═══════════ */
 function officeChair(seat, accent, head=true){
@@ -752,7 +1428,6 @@ const PRODUCTS = [
    desc:'ظهر مقوس مريح وتنجيد قطيفة — أناقة تليق بسفرة العزومات.',
    colors:[{n:'كريمي',img:()=>diningChair('#E7DECB','#8a6b45')},{n:'كحلي',img:()=>diningChair('#25406B','#3b2f2f')}]},
 ];
-const CAT_NAMES = {all:'كل المنتجات', office:'كراسي مكتب', gaming:'كراسي ألعاب', lounge:'كراسي استرخاء', dining:'كراسي طعام'};
 const byId = id => PRODUCTS.find(p=>p.id===id);
 
 /* ═══════════ التنقل ═══════════ */
@@ -774,30 +1449,25 @@ function goHelp(anchor){
 function toggleFaq(btn){ btn.parentElement.classList.toggle('open'); }
 
 /* ═══════════ الهيرو (سلايدر حقيقي) ═══════════ */
-const SLIDES = [
-  {h:'كراسي جلوس فاخرة', p:'تصميم عصري. راحة لا تُضاهى. من الكلاسيكي إلى العصري، اكتشف مجموعتنا الراقية.', btn:'تسوق الآن', action:()=>showCat('all')},
-  {h:'أناقة مكتبك تبدأ من كرسيك', p:'خصومات حقيقية حتى 30% على كراسي المكتب — راحة تشتغل معاك طول اليوم.', btn:'تسوق كراسي المكتب', action:()=>showCat('office')},
-  {h:'جيمينج بمستوى احترافي', p:'كرسي جوبيتر للألعاب بخصم 20% — دعم كامل للظهر في أطول الجلسات.', btn:'اطلبه الآن', action:()=>openProduct('jupiter')},
-  {h:'صمّم كرسيك بنفسك', p:'ورشتنا تنفذ التصميم اللي في خيالك — اختار الخامة واللون والمقاس.', btn:'ابدأ التصميم', action:()=>go('custom')},
-];
+const SLIDE_ACTIONS = [()=>showCat('all'), ()=>showCat('office'), ()=>openProduct('jupiter'), ()=>go('custom')];
 let slideIdx = 0, slideTimer = null;
 function renderDots(){
-  document.getElementById('heroDots').innerHTML = SLIDES.map((_,i)=>`<span class="${i===slideIdx?'on':''}" onclick="setSlide(${i},true)"></span>`).join('');
+  document.getElementById('heroDots').innerHTML = SLIDE_ACTIONS.map((_,i)=>`<span class="${i===slideIdx?'on':''}" onclick="setSlide(${i},true)"></span>`).join('');
 }
 function setSlide(i, manual){
-  slideIdx = i % SLIDES.length;
-  const t = document.getElementById('heroText');
-  t.classList.add('fading');
+  slideIdx = i % SLIDE_ACTIONS.length;
+  const el = document.getElementById('heroText');
+  el.classList.add('fading');
   setTimeout(()=>{
-    document.getElementById('heroH1').textContent = SLIDES[slideIdx].h;
-    document.getElementById('heroP').textContent = SLIDES[slideIdx].p;
-    document.getElementById('heroBtn').textContent = SLIDES[slideIdx].btn;
-    t.classList.remove('fading');
+    document.getElementById('heroH1').textContent = t('s'+(slideIdx+1)+'h');
+    document.getElementById('heroP').textContent = t('s'+(slideIdx+1)+'p');
+    document.getElementById('heroBtn').textContent = t('s'+(slideIdx+1)+'b');
+    el.classList.remove('fading');
   }, 250);
   renderDots();
   if(manual) restartAuto();
 }
-function heroAction(){ SLIDES[slideIdx].action(); }
+function heroAction(){ SLIDE_ACTIONS[slideIdx](); }
 function restartAuto(){
   clearInterval(slideTimer);
   slideTimer = setInterval(()=>setSlide(slideIdx+1), 5500);
@@ -807,13 +1477,13 @@ function restartAuto(){
 function stars(p){ return `★★★★★ <span class="rev">(${p.rev})</span>`; }
 function card(p){
   return `<div class="card" onclick="openProduct('${p.id}')">
-    ${p.old?'<span class="badge-sale">خصم '+Math.round((1-p.price/p.old)*100)+'%</span>':''}
+    ${p.old?'<span class="badge-sale">'+t('badge').replace('{p}',Math.round((1-p.price/p.old)*100))+'</span>':''}
     <button class="heart" onclick="event.stopPropagation();this.classList.toggle('on');this.textContent=this.classList.contains('on')?'♥':'♡'">♡</button>
     <div class="thumb">${p.colors[0].img()}</div>
     <div class="info">
-      <div class="name">${p.name}</div>
+      <div class="name">${pName(p)}</div>
       <div class="stars">${stars(p)}</div>
-      <div class="price">${fmt(p.price)} <small>ج.م</small>${p.old?`<span class="old">${fmt(p.old)}</span>`:''}</div>
+      <div class="price">${fmt(p.price)} <small>${t('cur')}</small>${p.old?`<span class="old">${fmt(p.old)}</span>`:''}</div>
     </div>
   </div>`;
 }
@@ -822,7 +1492,7 @@ function card(p){
 let activeColor = null;
 function renderColorFilters(){
   document.getElementById('colorFilters').innerHTML = Object.entries(COLOR_HEX).map(([n,hex])=>
-    `<div class="sw ${activeColor===n?'on':''}" title="${n}" style="background:${hex}" onclick="setColorFilter('${n}')"></div>`).join('');
+    `<div class="sw ${activeColor===n?'on':''}" title="${colName(n)}" style="background:${hex}" onclick="setColorFilter('${n}')"></div>`).join('');
 }
 function setColorFilter(n){
   activeColor = (activeColor===n) ? null : n;
@@ -836,7 +1506,7 @@ function showCat(cat){
 function applyFilters(){
   const checked = [...document.querySelectorAll('.f-group input[type=checkbox]:checked')].map(c=>c.value);
   const maxP = Number(document.getElementById('priceRange').value);
-  document.getElementById('rv').textContent = fmt(maxP)+' ج.م';
+  document.getElementById('rv').textContent = fmt(maxP)+' '+t('cur');
   const sort = document.getElementById('sortSel').value;
 
   let list = PRODUCTS.filter(p =>
@@ -849,13 +1519,13 @@ function applyFilters(){
   else if(sort==='new') list.reverse();
   else list.sort((a,b)=>b.rev-a.rev);
 
-  const title = checked.length===1 ? CAT_NAMES[checked[0]] : 'كل المنتجات';
+  const title = checked.length===1 ? catName(checked[0]) : catName('all');
   document.getElementById('catTitle').textContent = title;
   document.getElementById('crumbCat').textContent = title;
-  document.getElementById('catCount').textContent = list.length ? `عرض ${list.length} من ${PRODUCTS.length} منتج` : '';
+  document.getElementById('catCount').textContent = list.length ? t('count').replace('{n}',list.length).replace('{m}',PRODUCTS.length) : '';
   document.getElementById('catGrid').innerHTML = list.length
     ? list.map(card).join('')
-    : `<div class="no-results" style="grid-column:1/-1"><div class="big">🔍</div>مفيش منتجات مطابقة للفلاتر دي<br><button class="btn-gold" style="margin-top:14px" onclick="clearFilters()">مسح الفلاتر</button></div>`;
+    : `<div class="no-results" style="grid-column:1/-1"><div class="big">🔍</div>${t('no_res')}<br><button class="btn-gold" style="margin-top:14px" onclick="clearFilters()">${t('flt_clear')}</button></div>`;
 }
 function clearFilters(){
   document.querySelectorAll('.f-group input[type=checkbox]').forEach(c=>c.checked=false);
@@ -869,27 +1539,29 @@ function clearFilters(){
 let currentProduct = null, colorIdx = 0, q = 1;
 function openProduct(id){
   currentProduct = byId(id); colorIdx = 0; q = 1;
+  fillProduct();
+  go('product');
+}
+function fillProduct(){
   const p = currentProduct;
-  document.getElementById('pName').textContent = p.name;
-  document.getElementById('crumbPName').textContent = p.name;
+  document.getElementById('pName').textContent = pName(p);
+  document.getElementById('crumbPName').textContent = pName(p);
   const cc = document.getElementById('crumbPCat');
-  cc.textContent = CAT_NAMES[p.cat];
+  cc.textContent = catName(p.cat);
   cc.onclick = ()=>{ showCat(p.cat); return false; };
-  document.getElementById('pStars').innerHTML = stars(p) + ' <span class="rev">تقييم</span>';
-  document.getElementById('pDesc').textContent = p.desc;
-  document.getElementById('pPrice').innerHTML = `${fmt(p.price)} <small>ج.م</small> ${p.old?`<span class="old">${fmt(p.old)} ج.م</span>`:''}`;
-  document.getElementById('qtyVal').textContent = 1;
+  document.getElementById('pStars').innerHTML = stars(p) + ' <span class="rev">' + t('reviews') + '</span>';
+  document.getElementById('pDesc').textContent = pDesc(p);
+  document.getElementById('pPrice').innerHTML = `${fmt(p.price)} <small>${t('cur')}</small> ${p.old?`<span class="old">${fmt(p.old)} ${t('cur')}</span>`:''}`;
+  document.getElementById('qtyVal').textContent = q;
   renderColors(); renderGallery();
-  // منتجات مشابهة: نفس الفئة أولاً
   const rel = PRODUCTS.filter(x=>x.id!==p.id).sort((a,b)=>(b.cat===p.cat)-(a.cat===p.cat)).slice(0,4);
   document.getElementById('relGrid').innerHTML = rel.map(card).join('');
-  go('product');
 }
 function renderColors(){
   const p = currentProduct;
   document.getElementById('pColors').innerHTML = p.colors.map((c,i)=>
-    `<div class="sw ${i===colorIdx?'on':''}" title="${c.n}" style="background:${COLOR_HEX[c.n]||'#999'}" onclick="setColor(${i})"></div>`).join('');
-  document.getElementById('pColorName').textContent = p.colors[colorIdx].n;
+    `<div class="sw ${i===colorIdx?'on':''}" title="${colName(c.n)}" style="background:${COLOR_HEX[c.n]||'#999'}" onclick="setColor(${i})"></div>`).join('');
+  document.getElementById('pColorName').textContent = colName(p.colors[colorIdx].n);
 }
 function setColor(i){ colorIdx = i; renderColors(); renderGallery(); }
 function renderGallery(){
@@ -910,7 +1582,7 @@ function addCart(silent){
   else cartItems.push({key, id:p.id, name:p.name, color:color.n, price:p.price, qty:q});
   q = 1; document.getElementById('qtyVal').textContent = 1;
   updateCart();
-  if(!silent){ toast('تمت الإضافة إلى السلة ✓'); openCart(); }
+  if(!silent){ toast(t('t_added')); openCart(); }
 }
 function buyNow(){ addCart(true); goCheckout(); }
 function itemImg(it){
@@ -930,26 +1602,26 @@ function updateCart(){
   document.getElementById('cartBadge').textContent = count;
   const box = document.getElementById('cartItems');
   if(!cartItems.length){
-    box.innerHTML = '<div class="cart-empty"><div class="big">🛒</div>سلتك فارغة<br>ابدأ التسوق وأضف ما يعجبك!</div>';
+    box.innerHTML = '<div class="cart-empty"><div class="big">🛒</div>'+t('cart_e1')+'<br>'+t('cart_e2')+'</div>';
     document.getElementById('cartFoot').style.display = 'none';
   } else {
     box.innerHTML = cartItems.map(i=>`
       <div class="c-item">
         <div class="c-img">${itemImg(i)}</div>
         <div class="c-info">
-          <div class="c-name">${i.name}</div>
-          <div class="c-color">اللون: ${i.color}</div>
+          <div class="c-name">${pName(byId(i.id))}</div>
+          <div class="c-color">${t('color_word')}: ${colName(i.color)}</div>
           <div style="display:flex;align-items:center;justify-content:space-between">
             <div class="c-qty">
               <button onclick="changeQty('${i.key}',1)">+</button><span>${i.qty}</span><button onclick="changeQty('${i.key}',-1)">−</button>
             </div>
-            <div class="c-price">${fmt(i.price*i.qty)} ج.م</div>
+            <div class="c-price">${fmt(i.price*i.qty)} ${t('cur')}</div>
           </div>
         </div>
         <button class="c-rm" onclick="removeItem('${i.key}')" title="حذف">🗑</button>
       </div>`).join('');
     document.getElementById('cartFoot').style.display = 'block';
-    document.getElementById('cartTotal').textContent = fmt(cartTotal())+' ج.م';
+    document.getElementById('cartTotal').textContent = fmt(cartTotal())+' '+t('cur');
   }
   renderSummary();
 }
@@ -965,21 +1637,21 @@ function closeCart(){
 /* ═══════════ إتمام الطلب ═══════════ */
 const FREE_SHIP = 5000;
 function goCheckout(){
-  if(!cartItems.length){ toast('سلتك فارغة — أضف منتجاً أولاً'); return; }
+  if(!cartItems.length){ toast(t('t_empty')); return; }
   closeCart(); go('checkout'); renderSummary();
 }
 function renderSummary(){
   const box = document.getElementById('coSummary');
   if(!box) return;
   const total = cartTotal();
-  const shipTxt = total >= FREE_SHIP ? '<b style="color:var(--gold-dark)">مجاني</b>' : '<b>يُحدد مع خدمة العملاء</b>';
-  box.innerHTML = cartItems.map(i=>`<div class="co-line"><span>${i.name} — ${i.color} ×${i.qty}</span><b>${fmt(i.price*i.qty)} ج.م</b></div>`).join('')
-    + `<div class="co-line"><span>الشحن</span>${shipTxt}</div>`;
-  document.getElementById('coGrand').textContent = fmt(total)+' ج.م';
+  const shipTxt = total >= FREE_SHIP ? '<b style="color:var(--gold-dark)">'+t('ship_free')+'</b>' : '<b>'+t('ship_tbd')+'</b>';
+  box.innerHTML = cartItems.map(i=>`<div class="co-line"><span>${pName(byId(i.id))} — ${colName(i.color)} ×${i.qty}</span><b>${fmt(i.price*i.qty)} ${t('cur')}</b></div>`).join('')
+    + `<div class="co-line"><span>${t('ship')}</span>${shipTxt}</div>`;
+  document.getElementById('coGrand').textContent = fmt(total)+' '+t('cur');
 }
 function markBad(id, bad){ document.getElementById(id).classList.toggle('bad', bad); return bad; }
 function sendWhatsApp(){
-  if(!cartItems.length){ toast('سلتك فارغة'); showCat('all'); return; }
+  if(!cartItems.length){ toast(t('t_empty')); showCat('all'); return; }
   const name  = document.getElementById('coName').value.trim();
   const phone = document.getElementById('coPhone').value.trim();
   const city  = document.getElementById('coCity').value.trim();
@@ -991,25 +1663,25 @@ function sendWhatsApp(){
   bad = markBad('cf-phone', phone.replace(/\D/g,'').length < 8) || bad;
   bad = markBad('cf-city', !city) || bad;
   bad = markBad('cf-addr', !addr) || bad;
-  if(bad){ toast('أكمل البيانات المطلوبة أولاً'); return; }
+  if(bad){ toast(t('t_fill')); return; }
 
   const total = cartTotal();
-  const lines = cartItems.map(i=>`• ${i.name} — ${i.color} ×${i.qty} = ${fmt(i.price*i.qty)} ج.م`).join('\n');
+  const lines = cartItems.map(i=>`• ${pName(byId(i.id))} — ${colName(i.color)} ×${i.qty} = ${fmt(i.price*i.qty)} ${t('cur')}`).join('\n');
   const msg =
-`🪑 *طلب جديد من Artikaa.com*
+`🪑 *${t('o_t')}*
 ━━━━━━━━━━━━━━
-📦 *المنتجات:*
+📦 *${t('o_items')}:*
 ${lines}
 ━━━━━━━━━━━━━━
-💰 *الإجمالي:* ${fmt(total)} ج.م ${total>=FREE_SHIP?'(شحن مجاني)':'(+ الشحن حسب المحافظة)'}
+💰 *${t('o_total')}:* ${fmt(total)} ${t('cur')} ${total>=FREE_SHIP?t('o_free'):t('o_ship2')}
 ━━━━━━━━━━━━━━
-👤 *الاسم:* ${name}
-📱 *الموبايل:* ${phone}
-🏙️ *المدينة:* ${city}
-📍 *العنوان:* ${addr}
-💳 *الدفع:* ${pay}${notes ? '\n📝 *ملاحظات:* '+notes : ''}`;
+👤 *${t('o_name')}:* ${name}
+📱 *${t('o_phone')}:* ${phone}
+🏙️ *${t('o_city')}:* ${city}
+📍 *${t('o_addr')}:* ${addr}
+💳 *${t('o_pay')}:* ${pay}${notes ? '\n📝 *'+t('o_notes')+':* '+notes : ''}`;
   openWa(msg);
-  toast('تم تجهيز طلبك — اضغط إرسال في واتساب ✓');
+  toast(t('t_ready'));
 }
 
 /* ═══════════ نموذج التصميم المخصص ═══════════ */
@@ -1022,13 +1694,13 @@ function sendCustom(){
   bad = markBad('cu-name', !name) || bad;
   bad = markBad('cu-phone', phone.replace(/\D/g,'').length < 8) || bad;
   bad = markBad('cu-desc', !desc) || bad;
-  if(bad){ toast('أكمل البيانات المطلوبة أولاً'); return; }
-  openWa(`🎨 *طلب تصميم مخصص — Artikaa*
-👤 الاسم: ${name}
-📱 الموبايل: ${phone}
-🪑 النوع: ${type}
-📝 الوصف: ${desc}`);
-  toast('تم تجهيز طلب التصميم — اضغط إرسال في واتساب ✓');
+  if(bad){ toast(t('t_fill')); return; }
+  openWa(`🎨 *${t('cu_msg_t')}*
+👤 ${t('o_name')}: ${name}
+📱 ${t('o_phone')}: ${phone}
+🪑 ${t('cu_type')}: ${type}
+📝 ${t('cu_dlbl')}: ${desc}`);
+  toast(t('t_ready2'));
 }
 
 /* ═══════════ التشغيل ═══════════ */
