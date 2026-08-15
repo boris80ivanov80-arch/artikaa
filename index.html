@@ -81,8 +81,9 @@ html[dir="ltr"] body{font-family:'Tajawal','Segoe UI',sans-serif}
 .card:hover{box-shadow:0 10px 28px rgba(0,0,0,.09);transform:translateY(-3px)}
 .card .heart{position:absolute;top:10px;left:10px;background:#fff;border:1px solid var(--line);width:32px;height:32px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:15px;color:#999;z-index:3;transition:.2s}
 .card .heart.on,.card .heart:hover{color:#D24A4A;border-color:#D24A4A}
-.card .thumb{background:var(--cream-2);height:190px;display:flex;align-items:center;justify-content:center;padding:14px}
+.card .thumb{background:var(--cream-2);height:190px;display:flex;align-items:center;justify-content:center;padding:14px;overflow:hidden}
 .card .thumb svg{height:100%;max-height:160px}
+.card .thumb img{width:100%;height:100%;object-fit:cover;border-radius:8px}
 .card .info{padding:12px 14px 16px;text-align:center}
 .card .name{font-size:15px;font-weight:700;margin-bottom:5px}
 .stars{color:var(--gold);font-size:13px;letter-spacing:2px;margin-bottom:6px}
@@ -121,10 +122,12 @@ html[dir="ltr"] body{font-family:'Tajawal','Segoe UI',sans-serif}
 
 /* ===== صفحة المنتج ===== */
 .product{max-width:1200px;margin:20px auto 50px;padding:0 22px;display:grid;grid-template-columns:1fr 1fr;gap:44px;align-items:start}
-.gallery .main-img{background:var(--cream-2);border:1px solid var(--line);border-radius:12px;height:420px;display:flex;align-items:center;justify-content:center;padding:24px}
+.gallery .main-img{background:var(--cream-2);border:1px solid var(--line);border-radius:12px;height:420px;display:flex;align-items:center;justify-content:center;padding:24px;overflow:hidden}
 .gallery .main-img svg{height:100%}
+.gallery .main-img img{width:100%;height:100%;object-fit:cover;border-radius:8px}
 .thumbs{display:flex;gap:10px;margin-top:12px;flex-wrap:wrap}
-.thumbs .t{background:var(--cream-2);border:1px solid var(--line);border-radius:8px;width:76px;height:76px;display:flex;align-items:center;justify-content:center;padding:8px;cursor:pointer;transition:.15s}
+.thumbs .t{background:var(--cream-2);border:1px solid var(--line);border-radius:8px;width:76px;height:76px;display:flex;align-items:center;justify-content:center;padding:8px;cursor:pointer;transition:.15s;overflow:hidden}
+.thumbs .t img{width:100%;height:100%;object-fit:cover;border-radius:6px}
 .thumbs .t.on{border-color:var(--gold);box-shadow:0 0 0 1px var(--gold)}
 .thumbs .t svg{height:100%}
 .p-info h1{font-family:'Amiri',serif;font-size:34px;margin-bottom:8px}
@@ -218,6 +221,39 @@ html[dir="ltr"] body{font-family:'Tajawal','Segoe UI',sans-serif}
 .faq-q.open .arrow{transform:rotate(180deg)}
 .arrow{transition:.2s}
 
+/* ===== قسم آراء العملاء (سكرين شوت حقيقي) ===== */
+.reviews-sub{max-width:1200px;margin:-2px auto 0;padding:0 22px;color:var(--gray);font-size:14px}
+.rev-grid{max-width:1200px;margin:20px auto 50px;padding:0 22px;display:grid;grid-template-columns:repeat(3,1fr);gap:22px}
+.rev-shot{background:#fff;border:1px solid var(--line);border-radius:16px;overflow:hidden;box-shadow:0 10px 28px rgba(0,0,0,.06);transition:.25s}
+.rev-shot:hover{transform:translateY(-4px);box-shadow:0 16px 36px rgba(0,0,0,.1)}
+
+.rev-chat{direction:ltr}
+.rc-status{background:#fff;display:flex;justify-content:space-between;padding:7px 14px 0;font-size:10px;color:#444;font-weight:700}
+.rc-top{display:flex;align-items:center;gap:10px;padding:10px 14px 12px;border-bottom:1px solid #eee}
+.rc-avatar{width:34px;height:34px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:700;color:#fff;font-size:14px;flex-shrink:0}
+.rc-avatar.wa{background:#25D366}
+.rc-avatar.msn{background:linear-gradient(135deg,#7A4EF0,#0084FF)}
+.rc-name{font-weight:700;font-size:14px;color:#1c1c1c;direction:rtl;text-align:right}
+.rc-name small{display:block;font-weight:500;color:#9a9a9a;font-size:11px;margin-top:1px}
+.rc-body{background:#F7F5F1;padding:14px;display:flex;flex-direction:column;gap:9px}
+.rc-time{align-self:center;font-size:11px;color:#9aa0a6;background:#EAE8E3;padding:2px 10px;border-radius:8px;margin-bottom:2px}
+.rc-bubble{max-width:85%;padding:9px 12px;border-radius:14px;font-size:13.5px;line-height:1.85;direction:rtl;text-align:right}
+.rc-bubble.in{align-self:flex-start;background:#fff;color:#222;border:1px solid #ececec;border-bottom-left-radius:4px}
+.rc-bubble.out{align-self:flex-end;background:#2E7CF6;color:#fff;border-bottom-right-radius:4px}
+.rc-heart{display:inline-block;margin-inline-start:4px}
+.rc-tools{display:flex;border-top:1px solid #eee;background:#fff}
+.rc-tools span{font-size:10px;color:#8a8a8a;flex:1;text-align:center;padding:8px 4px;border-inline-end:1px solid #eee;direction:rtl}
+.rc-tools span:last-child{border-inline-end:none}
+
+.rev-comment{padding:16px}
+.cm-row{display:flex;gap:10px;align-items:flex-start}
+.cm-avatar{width:36px;height:36px;border-radius:50%;background:var(--navy);color:#fff;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:14px;flex-shrink:0}
+.cm-bubble{background:#F0F2F5;border-radius:16px;padding:9px 13px;flex:1}
+.cm-bubble b{display:block;font-size:13px;margin-bottom:2px;color:var(--navy)}
+.cm-bubble p{font-size:13.5px;line-height:1.85;color:#1c1c1c}
+.cm-meta{font-size:11.5px;color:#8a8a8a;padding-inline-start:50px;padding-top:5px;display:flex;gap:12px}
+.cm-meta .liked{color:#D24A4A;font-weight:700}
+
 /* ===== الفوتر ===== */
 footer{background:var(--navy);color:#cfd4e2;margin-top:20px}
 .footer-in{max-width:1200px;margin:auto;padding:44px 22px 28px;display:grid;grid-template-columns:1.4fr 1fr 1fr 1fr;gap:30px}
@@ -236,7 +272,7 @@ footer a:hover{color:var(--gold-light)}
 .toast.show{opacity:1;transform:translate(50%,0)}
 
 @media(max-width:960px){
-  .home-grid,.cat-grid{grid-template-columns:repeat(2,1fr)}
+  .home-grid,.cat-grid,.rev-grid{grid-template-columns:repeat(2,1fr)}
   .cats{grid-template-columns:repeat(2,1fr)}
   .cat-layout{grid-template-columns:1fr}
   .side{position:static}
@@ -255,7 +291,7 @@ footer a:hover{color:var(--gold-light)}
   .hero-text h1{font-size:32px}
 }
 @media(max-width:560px){
-  .home-grid,.cat-grid,.cats{grid-template-columns:1fr}
+  .home-grid,.cat-grid,.cats,.rev-grid{grid-template-columns:1fr}
   .hero-scene{height:380px}
   .hero-text{right:5%;left:5%;max-width:none;text-align:center}
   .cta-row{flex-direction:column}
@@ -264,7 +300,7 @@ footer a:hover{color:var(--gold-light)}
 </head>
 <body>
 
-<div class="announce" data-k="announce">✦ شحن مجاني لجميع محافظات مصر للطلبات فوق 5000 ج.م — خصومات تصل إلى 30% ✦</div>
+<div class="announce" data-k="announce">✦ شحن مجاني لجميع محافظات مصر للطلبات فوق 5000 ج.م — خصومات تصل إلى 40% ✦</div>
 
 <header>
   <div class="header-in">
@@ -387,6 +423,102 @@ footer a:hover{color:var(--gold-light)}
     <a href="#" onclick="showCat('all');return false" data-k="view_all">عرض الكل ←</a>
   </div>
   <div class="grid home-grid" id="homeGrid"></div>
+
+  <div class="section-title">
+    <h2 data-k="rev_t">آراء عملائنا الحقيقية</h2>
+  </div>
+  <p class="reviews-sub" data-k="rev_sub">لقطات فعلية من محادثاتنا على واتساب وماسنجر — كلام عملاء حقيقيين، من غير أي تلفيق</p>
+  <div class="rev-grid">
+
+    <div class="rev-shot rev-chat">
+      <div class="rc-status"><span>٢:٤٨</span><span>🔋 77%</span></div>
+      <div class="rc-top">
+        <div class="rc-avatar wa">م</div>
+        <div class="rc-name">Mohamed Gamal<small>واتساب</small></div>
+      </div>
+      <div class="rc-body">
+        <div class="rc-time">اليوم</div>
+        <div class="rc-bubble in">ما شاء الله 🌿<br>اشتريت الكرسي ده منكم<br>خامة رائعة وجميلة<br>حابب أشكر أ. كريم<br>شركة محترمين جدًا وصدق في المعاملة<span class="rc-heart">❤️</span></div>
+      </div>
+      <div class="rc-tools"><span>💰 إنشاء طلب</span><span>📞 طلب اتصال</span><span>🏷️ عميل مميز</span></div>
+    </div>
+
+    <div class="rev-shot rev-comment">
+      <div class="cm-row">
+        <div class="cm-avatar">ع</div>
+        <div class="cm-bubble">
+          <b>عبد الله عزب</b>
+          <p>ناس محترمين جدًا، وعن تجربة، أخدت منهم الكرسي ده حاجة محترمة وأرخص سعر، وأخدت منهم كمان سلم متين ومحترم 👌</p>
+        </div>
+      </div>
+      <div class="cm-meta"><span class="liked">❤️ 1</span><span>رد</span><span>1 س</span></div>
+      <div class="cm-row" style="margin-top:12px">
+        <div class="cm-avatar">A</div>
+        <div class="cm-bubble">
+          <b>Artikaa</b>
+          <p>متشكرين جدًا لحضرتك، والله إحنا مبسوطين إننا اتعرفنا بحضرتك 🙏❤️</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="rev-shot rev-chat">
+      <div class="rc-status"><span>٣:٣٨</span><span>🔋 68%</span></div>
+      <div class="rc-top">
+        <div class="rc-avatar msn">س</div>
+        <div class="rc-name">Sarah Melad<small>ماسنجر</small></div>
+      </div>
+      <div class="rc-body">
+        <div class="rc-bubble in">الكراسي جميلة جدًا، تسلم إيديكم 🙏<br>والمندوب وجه مشرفة لمحلكم<span class="rc-heart">❤️</span></div>
+        <div class="rc-bubble out">تحت أمرك يا هانم 🌹<br>تنوري في أي وقت</div>
+      </div>
+      <div class="rc-tools"><span>💰 إنشاء طلب</span><span>📞 طلب اتصال</span><span>🏷️ عميل مميز</span></div>
+    </div>
+
+    <div class="rev-shot rev-chat">
+      <div class="rc-status"><span>١٠:١٢</span><span>🔋 31%</span></div>
+      <div class="rc-top">
+        <div class="rc-avatar msn">ع</div>
+        <div class="rc-name">عبد الله عزب<small>ماسنجر</small></div>
+      </div>
+      <div class="rc-body">
+        <div class="rc-time">15 أبريل</div>
+        <div class="rc-bubble in">بصراحة ناس محترمة جدًا وغاية في الذوق 👏<br>اشتريت كرسيين روعة، وسلم يشيل فيل فعلاً<br>أشكرك<span class="rc-heart">❤️</span></div>
+        <div class="rc-bubble out">متشكرين جدًا لحضرتك يا قائد 🙏<br>وإن شاء الله المرة الجاية تنورنا في المعرض ❤️</div>
+      </div>
+      <div class="rc-tools"><span>💰 إنشاء طلب</span><span>📞 طلب اتصال</span><span>🏷️ عميل مميز</span></div>
+    </div>
+
+    <div class="rev-shot rev-comment">
+      <div class="cm-row">
+        <div class="cm-avatar">M</div>
+        <div class="cm-bubble">
+          <b>Michael Atef</b>
+          <p>فعلاً سعر الكرسي أرخص من أي مكان، وشغل محترم 👍</p>
+        </div>
+      </div>
+      <div class="cm-meta"><span class="liked">❤️ 1</span><span>رد</span><span>14 د</span></div>
+      <div class="cm-row" style="margin-top:12px">
+        <div class="cm-avatar">M</div>
+        <div class="cm-bubble">
+          <b>Michael Atef</b>
+          <p>شغلهم ممتاز وناس ذوق جدًا جدًا !!!!</p>
+        </div>
+      </div>
+      <div class="cm-meta"><span class="liked">❤️ 1</span><span>رد</span><span>15 د</span></div>
+    </div>
+
+    <div class="rev-shot rev-comment">
+      <div class="cm-row">
+        <div class="cm-avatar">س</div>
+        <div class="cm-bubble">
+          <b>Sarah Melad</b>
+          <p>متشكرة جدًا جدًا على الكرسي، خامة محترمة جدًا وسعر محترم، وناس ذوق وأخلاق ❤️<br>شكرًا لأمانتكم وسرعة التوصيل ❤️</p>
+        </div>
+      </div>
+      <div class="cm-meta"><span class="liked">❤️ 1</span><span>رد</span><span>14 د</span></div>
+    </div>
+
+  </div>
 </div>
 
 <!-- ================= المنتجات ================= -->
@@ -671,6 +803,7 @@ nav_home:'الرئيسية',nav_products:'المنتجات',nav_custom:'تصمي
 cat_all:'كل المنتجات',cat_office:'كراسي مكتب',cat_gaming:'كراسي ألعاب',cat_lounge:'كراسي استرخاء',cat_dining:'كراسي طعام',
 f1t:'توصيل سريع',f1s:'لجميع محافظات مصر',f2t:'ضمان 5 سنوات',f2s:'على جميع المنتجات',f3t:'دعم 24/7',f3s:'واتساب مباشر',f4t:'إرجاع مجاني',f4s:'خلال 14 يوم',
 best:'الأكثر مبيعاً',view_all:'عرض الكل ←',similar:'منتجات مشابهة',crumb_home:'الرئيسية',crumb_co:'إتمام الطلب',
+rev_t:'آراء عملائنا الحقيقية',rev_sub:'لقطات فعلية من محادثاتنا على واتساب وماسنجر — كلام عملاء حقيقيين، من غير أي تلفيق',
 flt_t:'تصفية النتائج',flt_cats:'الفئات',flt_price:'السعر الأقصى',flt_color:'اللون',flt_clear:'✕ مسح كل الفلاتر',
 sort_asc:'السعر: من الأقل للأعلى',sort_desc:'السعر: من الأعلى للأقل',sort_new:'الأحدث',
 count:'عرض {n} من {m} منتج',no_res:'مفيش منتجات مطابقة للفلاتر دي',
@@ -722,6 +855,7 @@ nav_home:'Home',nav_products:'Products',nav_custom:'Custom Design',nav_about:'Ab
 cat_all:'All Products',cat_office:'Office Chairs',cat_gaming:'Gaming Chairs',cat_lounge:'Lounge Chairs',cat_dining:'Dining Chairs',
 f1t:'Fast Delivery',f1s:'To all Egyptian governorates',f2t:'5-Year Warranty',f2s:'On all products',f3t:'24/7 Support',f3s:'Direct WhatsApp',f4t:'Free Returns',f4s:'Within 14 days',
 best:'Best Sellers',view_all:'View all →',similar:'Similar Products',crumb_home:'Home',crumb_co:'Checkout',
+rev_t:'What our customers really say',rev_sub:'Real snapshots from our WhatsApp and Messenger chats — genuine customers, no scripting',
 flt_t:'Filter Results',flt_cats:'Categories',flt_price:'Max Price',flt_color:'Color',flt_clear:'✕ Clear all filters',
 sort_asc:'Price: low to high',sort_desc:'Price: high to low',sort_new:'Newest',
 count:'Showing {n} of {m} products',no_res:'No products match these filters',
@@ -1381,7 +1515,7 @@ function diningChair(seat, wood){
 }
 
 /* ═══════════ ألوان الفلاتر ═══════════ */
-const COLOR_HEX = {'أسود':'#2b2b2b','رمادي':'#6e6e6e','كحلي':'#25406B','أحمر':'#C0392B','بني':'#7A5638','بيج':'#C9A870','كريمي':'#E7DECB','أخضر':'#607466','ذهبي':'#B8963E'};
+const COLOR_HEX = {'أسود':'#2b2b2b','رمادي':'#6e6e6e','كحلي':'#25406B','أحمر':'#C0392B','بني':'#7A5638','بيج':'#C9A870','كريمي':'#E7DECB','أخضر':'#607466','ذهبي':'#B8963E','أبيض':'#F2F0EA'};
 
 /* ═══════════ بيانات المنتجات ═══════════ */
 const PRODUCTS = [
@@ -1423,7 +1557,7 @@ const PRODUCTS = [
    colors:[{n:'أحمر',img:()=>loungeChair('#8E3B34','#6E2B26')},{n:'رمادي',img:()=>loungeChair('#8a8a8a','#6e6e6e')}]},
   {id:'maeda', name:'كرسي طعام "مائدة"', cat:'dining', price:950, old:1200, rev:140,
    desc:'خشب زان مصري متين بمقعد منجد — السعر للكرسي الواحد، وخصم إضافي للطقم الكامل.',
-   colors:[{n:'بني',img:()=>diningChair('#C9A870','#7A5638')},{n:'أسود',img:()=>diningChair('#4a4a4a','#2b2b2b')}]},
+   colors:[{n:'أبيض',img:()=>`<img src="WhatsApp Image 2026-08-15 at 19.11.58.jpeg" alt="كرسي طعام مائدة أبيض">`},{n:'أسود',img:()=>`<img src="WhatsApp Image 2026-08-15 at 19.12.01.jpeg" alt="كرسي طعام مائدة أسود">`}]},
   {id:'nouran', name:'كرسي طعام "نوران"', cat:'dining', price:1150, old:null, rev:31,
    desc:'ظهر مقوس مريح وتنجيد قطيفة — أناقة تليق بسفرة العزومات.',
    colors:[{n:'كريمي',img:()=>diningChair('#E7DECB','#8a6b45')},{n:'كحلي',img:()=>diningChair('#25406B','#3b2f2f')}]},
