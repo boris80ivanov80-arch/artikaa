@@ -3,7 +3,6 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta name="robots" content="noindex, nofollow">
 <title>Artikaa — لوحة التحكم</title>
 <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800&family=Amiri:wght@700&display=swap" rel="stylesheet">
 <style>
@@ -148,22 +147,6 @@ tr:hover td{background:#FCFAF4}
 </head>
 <body>
 
-<!-- ============ تسجيل الدخول ============ -->
-<div class="overlay on" id="loginOverlay" style="z-index:300">
-  <div class="modal" style="max-width:380px">
-    <div class="modal-head"><h3>تسجيل الدخول</h3></div>
-    <div class="modal-body">
-      <div class="field"><label>البريد الإلكتروني</label><input id="loginEmail" type="email" autocomplete="username"></div>
-      <div class="field"><label>كلمة المرور</label><input id="loginPass" type="password" autocomplete="current-password"></div>
-      <div id="loginErr" style="color:var(--red);font-size:13px;display:none">بيانات الدخول غير صحيحة</div>
-    </div>
-    <div class="modal-foot">
-      <button class="btn btn-gold" id="loginBtn" onclick="doLogin()">دخول</button>
-    </div>
-  </div>
-</div>
-
-<div id="appRoot" style="display:none">
 <div class="announce">✦ شحن مجاني للطلبات فوق 5,000 ج.م — خصومات تصل إلى 30% ✦</div>
 
 <aside class="sidebar">
@@ -177,8 +160,8 @@ tr:hover td{background:#FCFAF4}
     <button data-tab="orders" onclick="tab('orders',this)"><span class="ico">📦</span><span class="txt">الطلبات</span></button>
     <button data-tab="prices" onclick="tab('prices',this)"><span class="ico">💰</span><span class="txt">الأسعار</span></button>
   </nav>
-  <div class="s-foot">Artikaa.com — لوحة الإدارة v2.0<br>
-    <a href="#" onclick="doLogout();return false" style="font-size:11px">⇦ تسجيل الخروج</a></div>
+  <div class="s-foot">Artikaa.com — لوحة الإدارة v1.1<br>
+    <a href="#" onclick="resetDB();return false" style="font-size:11px">↺ استعادة البيانات الافتراضية</a></div>
 </aside>
 
 <main class="main">
@@ -309,93 +292,48 @@ tr:hover td{background:#FCFAF4}
   </svg>
 </button>
 <div class="toast" id="toast"></div>
-</div><!-- /#appRoot -->
-
-<!-- ============ Firebase ============ -->
-<script type="module">
-  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
-  import {
-    getFirestore, collection, doc, addDoc, setDoc, updateDoc, deleteDoc,
-    onSnapshot, query, orderBy, writeBatch
-  } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
-  import {
-    getAuth, signInWithEmailAndPassword, onAuthStateChanged, signOut
-  } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
-
-  const firebaseConfig = {
-    apiKey: "AIzaSyDQr3TNuQH4R6Ois1tcXx3valqm_GBOLgI",
-    authDomain: "artikaa-22c34.firebaseapp.com",
-    projectId: "artikaa-22c34",
-    storageBucket: "artikaa-22c34.firebasestorage.app",
-    messagingSenderId: "945327387146",
-    appId: "1:945327387146:web:260c703c7d4e81b0c225f3"
-  };
-
-  const app = initializeApp(firebaseConfig);
-  window.__fb = {
-    db: getFirestore(app), auth: getAuth(app),
-    collection, doc, addDoc, setDoc, updateDoc, deleteDoc, onSnapshot, query, orderBy, writeBatch,
-    signInWithEmailAndPassword, onAuthStateChanged, signOut
-  };
-  window.dispatchEvent(new Event('fb-ready'));
-</script>
 
 <script>
-/* ================= البيانات (تُملأ من Firestore) ================= */
-let products = [];
-let orders = [];
-let editId = null, currentImg = null, currentImgChanged = false;
+/* ================= البيانات (في الذاكرة) ================= */
+let products = [
+  {id:1, name:'كرسي جوبيتر للألعاب', cat:'كراسي ألعاب', price:1899, old:2400, stock:14, img:null, desc:'راحة فائقة لجلسات اللعب الطويلة'},
+  {id:2, name:'كرسي "ألفا" جلدي', cat:'كراسي مكتب', price:3450, old:null, stock:8, img:null, desc:'جلد فاخر بتصميم تنفيذي'},
+  {id:3, name:'كرسي "فيدن" عصري', cat:'كراسي مكتب', price:2100, old:2450, stock:3, img:null, desc:'تصميم عصري خفيف'},
+  {id:4, name:'كرسي "أرغو" مريح', cat:'كراسي مكتب', price:3450, old:null, stock:0, img:null, desc:'دعم كامل للعمود الفقري'},
+  {id:5, name:'كرسي استرخاء "سحاب"', cat:'كراسي استرخاء', price:2950, old:3400, stock:6, img:null, desc:'مخمل كحلي فاخر'},
+  {id:6, name:'كرسي استرخاء "رمال"', cat:'كراسي استرخاء', price:2600, old:null, stock:11, img:null, desc:'كتان كريمي أنيق'},
+];
+let orders = [
+  {id:'ORD-1042', name:'أحمد سليم', phone:'01012345678', items:'كرسي جوبيتر ×1', total:1899, date:'2026-08-09', status:'new'},
+  {id:'ORD-1041', name:'سارة عبد الرحمن', phone:'01098765432', items:'كرسي ألفا ×2', total:6900, date:'2026-08-09', status:'prep'},
+  {id:'ORD-1040', name:'محمد فتحي', phone:'01034567890', items:'كرسي سحاب ×1، كرسي رمال ×1', total:5550, date:'2026-08-08', status:'ship'},
+  {id:'ORD-1039', name:'نورهان سامي', phone:'01076543210', items:'كرسي فيدن ×1', total:2100, date:'2026-08-07', status:'done'},
+  {id:'ORD-1038', name:'خالد الدسوقي', phone:'01022233440', items:'كرسي أرغو ×1', total:3450, date:'2026-08-06', status:'cancel'},
+];
+let nextId = 7, editId = null, currentImg = null;
 const statusNames = {new:'جديد', prep:'قيد التجهيز', ship:'تم الشحن', done:'مكتمل', cancel:'ملغي'};
 const fmt = n => Number(n).toLocaleString('en');
 
-/* ================= Firebase: مصادقة + بيانات حيّة ================= */
-let unsubProducts = null, unsubOrders = null;
-function whenFbReady(cb){
-  if(window.__fb) cb(window.__fb);
-  else window.addEventListener('fb-ready', ()=>cb(window.__fb), {once:true});
+/* ================= حفظ البيانات (localStorage) ================= */
+const DB_KEY = 'artikaa_admin_v1';
+function persist(){
+  try{
+    localStorage.setItem(DB_KEY, JSON.stringify({products, orders, nextId}));
+  }catch(e){
+    toast('⚠️ مساحة التخزين ممتلئة — قلّل حجم الصور');
+  }
 }
-function doLogin(){
-  const email = document.getElementById('loginEmail').value.trim();
-  const pass = document.getElementById('loginPass').value;
-  const btn = document.getElementById('loginBtn');
-  document.getElementById('loginErr').style.display = 'none';
-  btn.disabled = true; btn.textContent = 'جارٍ الدخول…';
-  whenFbReady(fb=>{
-    fb.signInWithEmailAndPassword(fb.auth, email, pass)
-      .catch(()=>{ document.getElementById('loginErr').style.display = 'block'; })
-      .finally(()=>{ btn.disabled = false; btn.textContent = 'دخول'; });
-  });
+function loadDB(){
+  try{
+    const d = JSON.parse(localStorage.getItem(DB_KEY));
+    if(d && d.products){ products = d.products; orders = d.orders; nextId = d.nextId || 100; }
+  }catch(e){}
 }
-function doLogout(){
-  whenFbReady(fb=> fb.signOut(fb.auth));
-}
-whenFbReady(fb=>{
-  fb.onAuthStateChanged(fb.auth, user=>{
-    if(user){
-      document.getElementById('loginOverlay').classList.remove('on');
-      document.getElementById('appRoot').style.display = '';
-      startSubscriptions(fb);
-    } else {
-      document.getElementById('loginOverlay').classList.add('on');
-      document.getElementById('appRoot').style.display = 'none';
-      if(unsubProducts){ unsubProducts(); unsubProducts = null; }
-      if(unsubOrders){ unsubOrders(); unsubOrders = null; }
-      products = []; orders = [];
-    }
-  });
-});
-function startSubscriptions(fb){
-  const { db, collection, query, orderBy, onSnapshot } = fb;
-  if(unsubProducts) unsubProducts();
-  if(unsubOrders) unsubOrders();
-  unsubProducts = onSnapshot(query(collection(db,'products'), orderBy('createdAt','desc')), snap=>{
-    products = snap.docs.map(d=>({id:d.id, ...d.data()}));
-    renderAll();
-  });
-  unsubOrders = onSnapshot(query(collection(db,'orders'), orderBy('createdAt','desc')), snap=>{
-    orders = snap.docs.map(d=>({id:d.id, ...d.data()}));
-    renderAll();
-  });
+function resetDB(){
+  if(confirm('استعادة البيانات الافتراضية؟ سيتم مسح كل التعديلات المحفوظة.')){
+    try{ localStorage.removeItem(DB_KEY); }catch(e){}
+    location.reload();
+  }
 }
 
 /* ================= التبويبات ================= */
@@ -431,26 +369,22 @@ function renderProducts(){
       <td>${p.stock}</td>
       <td>${stockChip(p.stock)}</td>
       <td style="white-space:nowrap">
-        <button class="icon-btn" title="تعديل" onclick="openModal('${p.id}')">✏️</button>
-        <button class="icon-btn del" title="حذف" onclick="delProduct('${p.id}')">🗑️</button>
+        <button class="icon-btn" title="تعديل" onclick="openModal(${p.id})">✏️</button>
+        <button class="icon-btn del" title="حذف" onclick="delProduct(${p.id})">🗑️</button>
       </td>
     </tr>`).join('');
 }
 function delProduct(id){
   const p = products.find(x=>x.id===id);
-  if(!confirm('حذف "'+p.name+'" نهائياً؟')) return;
-  whenFbReady(async fb=>{
-    const { db, doc, deleteDoc } = fb;
-    try{
-      await deleteDoc(doc(db,'products',id));
-      toast('تم حذف المنتج');
-    }catch(e){ toast('⚠️ فشل الحذف: '+e.message); }
-  });
+  if(confirm('حذف "'+p.name+'" نهائياً؟')){
+    products = products.filter(x=>x.id!==id);
+    renderAll(); persist(); toast('تم حذف المنتج');
+  }
 }
 
 /* ================= المودال ورفع الصور ================= */
 function openModal(id){
-  editId = id||null; currentImg = null; currentImgChanged = false;
+  editId = id||null; currentImg = null;
   const m = id ? products.find(p=>p.id===id) : null;
   document.getElementById('modalTitle').textContent = m ? 'تعديل المنتج' : 'إضافة منتج جديد';
   document.getElementById('saveBtn').textContent = m ? 'حفظ التعديلات' : 'حفظ المنتج';
@@ -477,23 +411,16 @@ function handleImage(file){
     const im = new Image();
     im.onload = () => {
       try{
-        let MAX = 500, quality = .75;
+        const MAX = 600;
+        const scale = Math.min(1, MAX / Math.max(im.width, im.height));
         const c = document.createElement('canvas');
-        let out;
-        for(let attempt=0; attempt<4; attempt++){
-          const scale = Math.min(1, MAX / Math.max(im.width, im.height));
-          c.width = Math.round(im.width*scale); c.height = Math.round(im.height*scale);
-          c.getContext('2d').drawImage(im, 0, 0, c.width, c.height);
-          out = c.toDataURL('image/jpeg', quality);
-          if(out.length < 700*1024) break;
-          MAX = Math.round(MAX*0.75); quality = Math.max(.4, quality-.15);
-        }
-        currentImg = out;
+        c.width = Math.round(im.width*scale); c.height = Math.round(im.height*scale);
+        c.getContext('2d').drawImage(im, 0, 0, c.width, c.height);
+        currentImg = c.toDataURL('image/jpeg', .82);
       }catch(err){ currentImg = e.target.result; }
-      currentImgChanged = true;
       showPreview(currentImg);
     };
-    im.onerror = () => { currentImg = e.target.result; currentImgChanged = true; showPreview(currentImg); };
+    im.onerror = () => { currentImg = e.target.result; showPreview(currentImg); };
     im.src = e.target.result;
   };
   r.readAsDataURL(file);
@@ -508,7 +435,7 @@ function hidePreview(){
   document.getElementById('drop').style.display = 'block';
   document.getElementById('preview').style.display = 'none';
 }
-function removeImage(){ currentImg = null; currentImgChanged = true; document.getElementById('imgInput').value=''; hidePreview(); }
+function removeImage(){ currentImg = null; document.getElementById('imgInput').value=''; hidePreview(); }
 
 /* سحب وإفلات */
 const drop = document.getElementById('drop');
@@ -526,30 +453,16 @@ function saveProduct(){
     stock: Number(document.getElementById('fStock').value)||0,
     price, old: Number(document.getElementById('fOld').value)||null,
     desc: document.getElementById('fDesc').value.trim(),
+    img: currentImg
   };
-  const saveBtn = document.getElementById('saveBtn');
-  saveBtn.disabled = true; saveBtn.textContent = 'جارٍ الحفظ…';
-  whenFbReady(async fb=>{
-    const { db, doc, setDoc, addDoc, collection } = fb;
-    try{
-      let imgUrl = editId ? ((products.find(p=>p.id===editId)||{}).img || null) : null;
-      if(currentImgChanged) imgUrl = currentImg || null;
-      data.img = imgUrl;
-      if(editId){
-        await setDoc(doc(db,'products',editId), data, {merge:true});
-        toast('تم تحديث المنتج ✓');
-      } else {
-        data.createdAt = Date.now();
-        await addDoc(collection(db,'products'), data);
-        toast('تمت إضافة المنتج ✓');
-      }
-      closeModal();
-    }catch(e){
-      toast('⚠️ حدث خطأ أثناء الحفظ: '+e.message);
-    }finally{
-      saveBtn.disabled = false; saveBtn.textContent = editId ? 'حفظ التعديلات' : 'حفظ المنتج';
-    }
-  });
+  if(editId){
+    const p = products.find(x=>x.id===editId); Object.assign(p, data);
+    toast('تم تحديث المنتج ✓');
+  } else {
+    products.unshift({id:nextId++, ...data});
+    toast('تمت إضافة المنتج ✓');
+  }
+  closeModal(); renderAll(); persist();
 }
 
 /* ================= الطلبات ================= */
@@ -560,7 +473,7 @@ function renderOrders(){
   if(!list.length){ tb.innerHTML='<tr><td colspan="8"><div class="empty">لا توجد طلبات بهذه الحالة</div></td></tr>'; return; }
   tb.innerHTML = list.map(o=>`
     <tr>
-      <td><b>${o.orderNo||o.id}</b></td>
+      <td><b>${o.id}</b></td>
       <td>${o.name}</td>
       <td dir="ltr" style="text-align:right">${o.phone}</td>
       <td class="order-items">${o.items}</td>
@@ -571,17 +484,12 @@ function renderOrders(){
           ${Object.keys(statusNames).map(s=>`<option value="${s}" ${s===o.status?'selected':''}>${statusNames[s]}</option>`).join('')}
         </select>
       </td>
-      <td><button class="icon-btn" title="طباعة الفاتورة" onclick="toast('جارٍ تجهيز فاتورة ${o.orderNo||o.id}…')">🖨️</button></td>
+      <td><button class="icon-btn" title="طباعة الفاتورة" onclick="toast('جارٍ تجهيز فاتورة ${o.id}…')">🖨️</button></td>
     </tr>`).join('');
 }
 function setStatus(id, s){
-  whenFbReady(async fb=>{
-    const { db, doc, updateDoc } = fb;
-    try{
-      await updateDoc(doc(db,'orders',id), {status:s});
-      toast('تم تحديث حالة الطلب إلى: '+statusNames[s]);
-    }catch(e){ toast('⚠️ فشل تحديث الحالة: '+e.message); }
-  });
+  orders.find(o=>o.id===id).status = s;
+  renderAll(); persist(); toast('تم تحديث حالة الطلب إلى: '+statusNames[s]);
 }
 
 /* ================= الأسعار ================= */
@@ -598,22 +506,16 @@ function renderPrices(){
   }).join('');
 }
 function savePrices(){
-  whenFbReady(async fb=>{
-    const { db, doc, writeBatch } = fb;
-    const batch = writeBatch(db);
-    document.querySelectorAll('#priceBody .price-input').forEach(inp=>{
-      const v = Number(inp.value)||null;
-      const ref_ = doc(db,'products',inp.dataset.id);
-      if(inp.dataset.k==='price'){ if(v) batch.update(ref_, {price:v}); }
-      else batch.update(ref_, {old:v});
-    });
-    try{
-      await batch.commit();
-      const h = document.getElementById('saveHint');
-      h.classList.add('show'); setTimeout(()=>h.classList.remove('show'), 2500);
-      toast('تم حفظ جميع الأسعار ✓');
-    }catch(e){ toast('⚠️ فشل حفظ الأسعار: '+e.message); }
+  document.querySelectorAll('#priceBody .price-input').forEach(inp=>{
+    const p = products.find(x=>x.id==inp.dataset.id);
+    const v = Number(inp.value)||null;
+    if(inp.dataset.k==='price'){ if(v) p.price = v; }
+    else p.old = v;
   });
+  renderAll(); persist();
+  const h = document.getElementById('saveHint');
+  h.classList.add('show'); setTimeout(()=>h.classList.remove('show'), 2500);
+  toast('تم حفظ جميع الأسعار ✓');
 }
 
 /* ================= الإحصائيات ================= */
@@ -624,7 +526,7 @@ function renderStats(){
   document.getElementById('stRevenue').textContent = fmt(rev);
   document.getElementById('stPending').textContent = orders.filter(o=>o.status==='new'||o.status==='prep').length;
   document.getElementById('dashOrders').innerHTML = orders.slice(0,4).map(o=>`
-    <tr><td><b>${o.orderNo||o.id}</b></td><td>${o.name}</td><td class="order-items">${o.items}</td>
+    <tr><td><b>${o.id}</b></td><td>${o.name}</td><td class="order-items">${o.items}</td>
     <td class="price-cell">${fmt(o.total)} <small>ج.م</small></td>
     <td><span class="chip ${o.status==='done'?'ok':o.status==='cancel'?'out':'low'}">${statusNames[o.status]}</span></td></tr>`).join('');
 }
@@ -636,7 +538,8 @@ function toast(msg){
   t.textContent = msg; t.classList.add('show');
   clearTimeout(tt); tt = setTimeout(()=>t.classList.remove('show'), 2200);
 }
-document.getElementById('loginPass').addEventListener('keydown', e=>{ if(e.key==='Enter') doLogin(); });
+loadDB();
+renderAll();
 </script>
 </body>
 </html>
