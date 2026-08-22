@@ -811,7 +811,7 @@ footer a:hover{color:var(--gold-light)}
   };
 
   const app = initializeApp(firebaseConfig);
-  window.__fb = { db: getFirestore(app), collection, addDoc, onSnapshot };
+  window.__fb = { db: getFirestore(app, 'default'), collection, addDoc, onSnapshot };
   window.dispatchEvent(new Event('fb-ready'));
 </script>
 

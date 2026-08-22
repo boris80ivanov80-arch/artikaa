@@ -333,7 +333,7 @@ tr:hover td{background:#FCFAF4}
 
   const app = initializeApp(firebaseConfig);
   window.__fb = {
-    db: getFirestore(app), auth: getAuth(app),
+    db: getFirestore(app, 'default'), auth: getAuth(app),
     collection, doc, addDoc, setDoc, updateDoc, deleteDoc, onSnapshot, query, orderBy, writeBatch,
     signInWithEmailAndPassword, onAuthStateChanged, signOut
   };
