@@ -794,27 +794,6 @@ footer a:hover{color:var(--gold-light)}
 </button>
 <div class="toast" id="toast"></div>
 
-<!-- ============ Firebase ============ -->
-<script type="module">
-  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
-  import {
-    getFirestore, collection, addDoc, onSnapshot
-  } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
-
-  const firebaseConfig = {
-    apiKey: "AIzaSyDQr3TNuQH4R6Ois1tcXx3valqm_GBOLgI",
-    authDomain: "artikaa-22c34.firebaseapp.com",
-    projectId: "artikaa-22c34",
-    storageBucket: "artikaa-22c34.firebasestorage.app",
-    messagingSenderId: "945327387146",
-    appId: "1:945327387146:web:260c703c7d4e81b0c225f3"
-  };
-
-  const app = initializeApp(firebaseConfig);
-  window.__fb = { db: getFirestore(app), collection, addDoc, onSnapshot };
-  window.dispatchEvent(new Event('fb-ready'));
-</script>
-
 <script>
 /* ═══════════ الإعدادات ═══════════ */
 const WHATSAPP_NUMBER = '201095983744';
@@ -1592,67 +1571,44 @@ const PRODUCTS = [
 ];
 const byId = id => PRODUCTS.find(p=>p.id===id);
 
-/* ═══════════ ربط لوحة التحكم (Firestore) ═══════════ */
+/* ═══════════ ربط لوحة التحكم (localStorage) ═══════════ */
+const ADMIN_DB_KEY = 'artikaa_admin_v1';
 const ADMIN_CAT_MAP = {'كراسي مكتب':'office','كراسي ألعاب':'gaming','كراسي استرخاء':'lounge','كراسي طعام':'dining'};
-function whenFbReady(cb){
-  if(window.__fb) cb(window.__fb);
-  else window.addEventListener('fb-ready', ()=>cb(window.__fb), {once:true});
+function readAdminDB(){
+  try{ return JSON.parse(localStorage.getItem(ADMIN_DB_KEY)); }catch(e){ return null; }
 }
-function mergeAdminProduct(ap){
-  const adminId = 'admin-'+ap.id;
-  const existing = PRODUCTS.find(p=>p.id===adminId || p.name===ap.name);
-  if(existing){
-    existing.price = ap.price;
-    existing.old = ap.old || null;
-    existing.stock = ap.stock;
-    if(ap.desc) existing.desc = ap.desc;
-    if(existing.id===adminId){
-      existing.colors = [{n:'', img: ()=> ap.img ? `<img src="${ap.img}" alt="${ap.name}">` : officeChair('#555','#9aa5b1')}];
-    }
-  } else {
-    PRODUCTS.push({
-      id: adminId,
-      name: ap.name,
-      cat: ADMIN_CAT_MAP[ap.cat] || 'office',
-      price: ap.price,
-      old: ap.old || null,
-      rev: 0,
-      stock: ap.stock,
-      desc: ap.desc || '',
-      colors: [{n:'', img: ()=> ap.img ? `<img src="${ap.img}" alt="${ap.name}">` : officeChair('#555','#9aa5b1')}]
-    });
-  }
-}
-function refreshVisibleUI(){
-  const homeGrid = document.getElementById('homeGrid');
-  if(homeGrid) homeGrid.innerHTML = [...PRODUCTS].sort((a,b)=>b.rev-a.rev).slice(0,4).map(card).join('');
-  if(document.getElementById('page-cat')?.classList.contains('active')) applyFilters();
-  if(currentProduct) fillProduct();
-}
-function subscribeAdminProducts(){
-  whenFbReady(fb=>{
-    const { db, collection, onSnapshot } = fb;
-    onSnapshot(collection(db,'products'), snap=>{
-      const seenAdminIds = new Set();
-      snap.docs.forEach(d=>{
-        const ap = {id:d.id, ...d.data()};
-        seenAdminIds.add('admin-'+ap.id);
-        mergeAdminProduct(ap);
+function applyAdminProducts(){
+  const db = readAdminDB();
+  if(!db || !Array.isArray(db.products)) return;
+  db.products.forEach(ap=>{
+    const match = PRODUCTS.find(p=>p.name===ap.name);
+    if(match){
+      match.price = ap.price;
+      match.old = ap.old || null;
+      match.stock = ap.stock;
+      if(ap.desc) match.desc = ap.desc;
+    } else {
+      PRODUCTS.push({
+        id: 'admin-'+ap.id,
+        name: ap.name,
+        cat: ADMIN_CAT_MAP[ap.cat] || 'office',
+        price: ap.price,
+        old: ap.old || null,
+        rev: 0,
+        stock: ap.stock,
+        desc: ap.desc || '',
+        colors: [{n:'', img: ()=> ap.img ? `<img src="${ap.img}" alt="${ap.name}">` : officeChair('#555','#9aa5b1')}]
       });
-      for(let i=PRODUCTS.length-1;i>=0;i--){
-        const p = PRODUCTS[i];
-        if(String(p.id).startsWith('admin-') && !seenAdminIds.has(p.id)) PRODUCTS.splice(i,1);
-      }
-      refreshVisibleUI();
-    });
+    }
   });
 }
-subscribeAdminProducts();
+applyAdminProducts();
 function pushOrderToAdmin(order){
-  whenFbReady(fb=>{
-    const { db, collection, addDoc } = fb;
-    addDoc(collection(db,'orders'), {...order, createdAt: Date.now()}).catch(()=>{});
-  });
+  let db = readAdminDB();
+  if(!db || typeof db!=='object') db = {};
+  if(!Array.isArray(db.orders)) db.orders = [];
+  db.orders.unshift(order);
+  try{ localStorage.setItem(ADMIN_DB_KEY, JSON.stringify(db)); }catch(e){}
 }
 
 /* ═══════════ التنقل ═══════════ */
@@ -1918,7 +1874,7 @@ ${lines}
 💳 *${t('o_pay')}:* ${pay}${notes ? '\n📝 *'+t('o_notes')+':* '+notes : ''}`;
   const itemsTxt = cartItems.map(i=>`${pName(byId(i.id))} ×${i.qty}`).join('، ');
   pushOrderToAdmin({
-    orderNo: 'ORD-'+Date.now().toString().slice(-6),
+    id: 'ORD-'+Date.now().toString().slice(-6),
     name, phone, items: itemsTxt, total,
     date: new Date().toISOString().slice(0,10),
     status: 'new'
