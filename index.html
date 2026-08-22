@@ -79,6 +79,7 @@ html[dir="ltr"] body{font-family:'Tajawal','Segoe UI',sans-serif}
 .home-grid{max-width:1200px;margin:14px auto 50px;padding:0 22px;grid-template-columns:repeat(4,1fr)}
 .card{background:#fff;border:1px solid var(--line);border-radius:10px;overflow:hidden;position:relative;transition:.25s;cursor:pointer}
 .card:hover{box-shadow:0 10px 28px rgba(0,0,0,.09);transform:translateY(-3px)}
+.card.out-of-stock .thumb{opacity:.5}
 .card .heart{position:absolute;top:10px;left:10px;background:#fff;border:1px solid var(--line);width:32px;height:32px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:15px;color:#999;z-index:3;transition:.2s}
 .card .heart.on,.card .heart:hover{color:#D24A4A;border-color:#D24A4A}
 .card .thumb{background:var(--cream-2);height:190px;display:flex;align-items:center;justify-content:center;padding:14px;overflow:hidden}
@@ -295,6 +296,11 @@ footer a:hover{color:var(--gold-light)}
   .hero-scene{height:380px}
   .hero-text{right:5%;left:5%;max-width:none;text-align:center}
   .cta-row{flex-direction:column}
+  .co-row{grid-template-columns:1fr}
+  .header-in{gap:10px}
+  .cart-btn span:not(.cart-badge){display:none}
+  .lang-sel{padding:6px 8px;font-size:0}
+  .lang-sel option{font-size:13px}
 }
 </style>
 </head>
@@ -574,6 +580,7 @@ footer a:hover{color:var(--gold-light)}
       <div class="stars" id="pStars"></div>
       <p class="p-desc" id="pDesc"></p>
       <div class="p-price" id="pPrice"></div>
+      <div id="pStock" style="margin-bottom:10px;font-size:14px"></div>
       <div class="p-label"><span data-k="color_lbl">اللون:</span> <span id="pColorName"></span></div>
       <div class="p-colors" id="pColors"></div>
       <div class="p-label" data-k="qty_lbl">الكمية:</div>
@@ -809,7 +816,7 @@ sort_asc:'السعر: من الأقل للأعلى',sort_desc:'السعر: من 
 count:'عرض {n} من {m} منتج',no_res:'مفيش منتجات مطابقة للفلاتر دي',
 color_lbl:'اللون:',qty_lbl:'الكمية:',add_cart:'أضف إلى السلة',buy_now:'شراء الآن',
 pf1:'ضمان 5 سنوات على الهيكل والآليات',pf2:'توصيل لجميع محافظات مصر',pf3:'إمكانية الإرجاع خلال 14 يوم',
-reviews:'تقييم',badge:'خصم {p}%',
+reviews:'تقييم',badge:'خصم {p}%',out_stock:'نفد المخزون',low_stock:'كمية محدودة',
 cart_e1:'سلتك فارغة',cart_e2:'ابدأ التسوق وأضف ما يعجبك!',grand:'الإجمالي',co_btn:'إتمام الطلب',color_word:'اللون',
 co_t:'بيانات التوصيل',l_name:'الاسم الكامل',ph_name:'مثال: أحمد محمد',e_name:'من فضلك اكتب الاسم',
 l_phone:'رقم الموبايل (واتساب)',e_phone:'اكتب رقم موبايل صحيح (٨ أرقام على الأقل)',e_phone2:'اكتب رقم صحيح',
@@ -861,7 +868,7 @@ sort_asc:'Price: low to high',sort_desc:'Price: high to low',sort_new:'Newest',
 count:'Showing {n} of {m} products',no_res:'No products match these filters',
 color_lbl:'Color:',qty_lbl:'Quantity:',add_cart:'Add to Cart',buy_now:'Buy Now',
 pf1:'5-year warranty on frame & mechanisms',pf2:'Delivery to all Egyptian governorates',pf3:'Returns within 14 days',
-reviews:'reviews',badge:'-{p}%',
+reviews:'reviews',badge:'-{p}%',out_stock:'Out of stock',low_stock:'Limited stock',
 cart_e1:'Your cart is empty',cart_e2:'Start shopping and add what you love!',grand:'Total',co_btn:'Checkout',color_word:'Color',
 co_t:'Delivery Details',l_name:'Full Name',ph_name:'e.g. John Smith',e_name:'Please enter your name',
 l_phone:'Mobile (WhatsApp)',e_phone:'Enter a valid mobile number (min 8 digits)',e_phone2:'Enter a valid number',
@@ -1564,6 +1571,46 @@ const PRODUCTS = [
 ];
 const byId = id => PRODUCTS.find(p=>p.id===id);
 
+/* ═══════════ ربط لوحة التحكم (localStorage) ═══════════ */
+const ADMIN_DB_KEY = 'artikaa_admin_v1';
+const ADMIN_CAT_MAP = {'كراسي مكتب':'office','كراسي ألعاب':'gaming','كراسي استرخاء':'lounge','كراسي طعام':'dining'};
+function readAdminDB(){
+  try{ return JSON.parse(localStorage.getItem(ADMIN_DB_KEY)); }catch(e){ return null; }
+}
+function applyAdminProducts(){
+  const db = readAdminDB();
+  if(!db || !Array.isArray(db.products)) return;
+  db.products.forEach(ap=>{
+    const match = PRODUCTS.find(p=>p.name===ap.name);
+    if(match){
+      match.price = ap.price;
+      match.old = ap.old || null;
+      match.stock = ap.stock;
+      if(ap.desc) match.desc = ap.desc;
+    } else {
+      PRODUCTS.push({
+        id: 'admin-'+ap.id,
+        name: ap.name,
+        cat: ADMIN_CAT_MAP[ap.cat] || 'office',
+        price: ap.price,
+        old: ap.old || null,
+        rev: 0,
+        stock: ap.stock,
+        desc: ap.desc || '',
+        colors: [{n:'', img: ()=> ap.img ? `<img src="${ap.img}" alt="${ap.name}">` : officeChair('#555','#9aa5b1')}]
+      });
+    }
+  });
+}
+applyAdminProducts();
+function pushOrderToAdmin(order){
+  let db = readAdminDB();
+  if(!db || typeof db!=='object') db = {};
+  if(!Array.isArray(db.orders)) db.orders = [];
+  db.orders.unshift(order);
+  try{ localStorage.setItem(ADMIN_DB_KEY, JSON.stringify(db)); }catch(e){}
+}
+
 /* ═══════════ التنقل ═══════════ */
 function go(p){
   document.querySelectorAll('.page').forEach(x=>x.classList.remove('active'));
@@ -1610,8 +1657,9 @@ function restartAuto(){
 /* ═══════════ كروت المنتجات ═══════════ */
 function stars(p){ return `★★★★★ <span class="rev">(${p.rev})</span>`; }
 function card(p){
-  return `<div class="card" onclick="openProduct('${p.id}')">
-    ${p.old?'<span class="badge-sale">'+t('badge').replace('{p}',Math.round((1-p.price/p.old)*100))+'</span>':''}
+  const out = p.stock===0;
+  return `<div class="card${out?' out-of-stock':''}" onclick="openProduct('${p.id}')">
+    ${out?'<span class="badge-sale" style="background:var(--red)">'+t('out_stock')+'</span>':(p.old?'<span class="badge-sale">'+t('badge').replace('{p}',Math.round((1-p.price/p.old)*100))+'</span>':'')}
     <button class="heart" onclick="event.stopPropagation();this.classList.toggle('on');this.textContent=this.classList.contains('on')?'♥':'♡'">♡</button>
     <div class="thumb">${p.colors[0].img()}</div>
     <div class="info">
@@ -1686,6 +1734,15 @@ function fillProduct(){
   document.getElementById('pStars').innerHTML = stars(p) + ' <span class="rev">' + t('reviews') + '</span>';
   document.getElementById('pDesc').textContent = pDesc(p);
   document.getElementById('pPrice').innerHTML = `${fmt(p.price)} <small>${t('cur')}</small> ${p.old?`<span class="old">${fmt(p.old)} ${t('cur')}</span>`:''}`;
+  const stockEl = document.getElementById('pStock');
+  const ctaRow = document.querySelector('.cta-row');
+  if(p.stock===0){
+    stockEl.innerHTML = `<b style="color:var(--red)">${t('out_stock')}</b>`;
+    ctaRow.style.display = 'none';
+  } else {
+    stockEl.innerHTML = (p.stock!=null && p.stock<=4) ? `<b style="color:var(--orange)">${t('low_stock')}</b>` : '';
+    ctaRow.style.display = 'flex';
+  }
   document.getElementById('qtyVal').textContent = q;
   renderColors(); renderGallery();
   const rel = PRODUCTS.filter(x=>x.id!==p.id).sort((a,b)=>(b.cat===p.cat)-(a.cat===p.cat)).slice(0,4);
@@ -1710,6 +1767,7 @@ function qty(d){ q = Math.max(1, q+d); document.getElementById('qtyVal').textCon
 let cartItems = [];
 function addCart(silent){
   const p = currentProduct, color = p.colors[colorIdx];
+  if(p.stock===0){ toast(t('out_stock')); return; }
   const key = p.id+'-'+color.n;
   const found = cartItems.find(i=>i.key===key);
   if(found) found.qty += q;
@@ -1814,6 +1872,13 @@ ${lines}
 🏙️ *${t('o_city')}:* ${city}
 📍 *${t('o_addr')}:* ${addr}
 💳 *${t('o_pay')}:* ${pay}${notes ? '\n📝 *'+t('o_notes')+':* '+notes : ''}`;
+  const itemsTxt = cartItems.map(i=>`${pName(byId(i.id))} ×${i.qty}`).join('، ');
+  pushOrderToAdmin({
+    id: 'ORD-'+Date.now().toString().slice(-6),
+    name, phone, items: itemsTxt, total,
+    date: new Date().toISOString().slice(0,10),
+    status: 'new'
+  });
   openWa(msg);
   toast(t('t_ready'));
 }
