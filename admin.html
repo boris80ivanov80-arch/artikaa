@@ -319,9 +319,6 @@ tr:hover td{background:#FCFAF4}
     onSnapshot, query, orderBy, writeBatch
   } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
   import {
-    getStorage, ref, uploadString, getDownloadURL, deleteObject
-  } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-storage.js";
-  import {
     getAuth, signInWithEmailAndPassword, onAuthStateChanged, signOut
   } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
 
@@ -336,9 +333,8 @@ tr:hover td{background:#FCFAF4}
 
   const app = initializeApp(firebaseConfig);
   window.__fb = {
-    db: getFirestore(app), storage: getStorage(app), auth: getAuth(app),
+    db: getFirestore(app), auth: getAuth(app),
     collection, doc, addDoc, setDoc, updateDoc, deleteDoc, onSnapshot, query, orderBy, writeBatch,
-    ref, uploadString, getDownloadURL, deleteObject,
     signInWithEmailAndPassword, onAuthStateChanged, signOut
   };
   window.dispatchEvent(new Event('fb-ready'));
@@ -444,10 +440,9 @@ function delProduct(id){
   const p = products.find(x=>x.id===id);
   if(!confirm('حذف "'+p.name+'" نهائياً؟')) return;
   whenFbReady(async fb=>{
-    const { db, storage, doc, deleteDoc, ref, deleteObject } = fb;
+    const { db, doc, deleteDoc } = fb;
     try{
       await deleteDoc(doc(db,'products',id));
-      if(p.img){ try{ await deleteObject(ref(storage, p.img)); }catch(e){} }
       toast('تم حذف المنتج');
     }catch(e){ toast('⚠️ فشل الحذف: '+e.message); }
   });
@@ -482,12 +477,18 @@ function handleImage(file){
     const im = new Image();
     im.onload = () => {
       try{
-        const MAX = 600;
-        const scale = Math.min(1, MAX / Math.max(im.width, im.height));
+        let MAX = 500, quality = .75;
         const c = document.createElement('canvas');
-        c.width = Math.round(im.width*scale); c.height = Math.round(im.height*scale);
-        c.getContext('2d').drawImage(im, 0, 0, c.width, c.height);
-        currentImg = c.toDataURL('image/jpeg', .82);
+        let out;
+        for(let attempt=0; attempt<4; attempt++){
+          const scale = Math.min(1, MAX / Math.max(im.width, im.height));
+          c.width = Math.round(im.width*scale); c.height = Math.round(im.height*scale);
+          c.getContext('2d').drawImage(im, 0, 0, c.width, c.height);
+          out = c.toDataURL('image/jpeg', quality);
+          if(out.length < 700*1024) break;
+          MAX = Math.round(MAX*0.75); quality = Math.max(.4, quality-.15);
+        }
+        currentImg = out;
       }catch(err){ currentImg = e.target.result; }
       currentImgChanged = true;
       showPreview(currentImg);
@@ -529,19 +530,10 @@ function saveProduct(){
   const saveBtn = document.getElementById('saveBtn');
   saveBtn.disabled = true; saveBtn.textContent = 'جارٍ الحفظ…';
   whenFbReady(async fb=>{
-    const { db, storage, doc, setDoc, addDoc, collection, ref, uploadString, getDownloadURL } = fb;
+    const { db, doc, setDoc, addDoc, collection } = fb;
     try{
       let imgUrl = editId ? ((products.find(p=>p.id===editId)||{}).img || null) : null;
-      if(currentImgChanged){
-        if(currentImg){
-          const path = `products/${editId || ('new-'+Date.now())}-${Date.now()}.jpg`;
-          const r = ref(storage, path);
-          await uploadString(r, currentImg, 'data_url');
-          imgUrl = await getDownloadURL(r);
-        } else {
-          imgUrl = null;
-        }
-      }
+      if(currentImgChanged) imgUrl = currentImg || null;
       data.img = imgUrl;
       if(editId){
         await setDoc(doc(db,'products',editId), data, {merge:true});
