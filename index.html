@@ -1591,6 +1591,7 @@ const PRODUCTS = [
    colors:[{n:'كريمي',img:()=>diningChair('#E7DECB','#8a6b45')},{n:'كحلي',img:()=>diningChair('#25406B','#3b2f2f')}]},
 ];
 const byId = id => PRODUCTS.find(p=>p.id===id);
+const BUILTIN_PRODUCT_IDS = new Set(PRODUCTS.map(p=>p.id));
 
 /* ═══════════ ربط لوحة التحكم (Firestore) ═══════════ */
 const ADMIN_CAT_MAP = {'كراسي مكتب':'office','كراسي ألعاب':'gaming','كراسي استرخاء':'lounge','كراسي طعام':'dining'};
@@ -1600,7 +1601,13 @@ function whenFbReady(cb){
 }
 function mergeAdminProduct(ap){
   const adminId = 'admin-'+ap.id;
-  const existing = PRODUCTS.find(p=>p.id===adminId || p.name===ap.name);
+  // Match by adminId first (this doc's own card, if already injected). Only fall back to
+  // matching by name against the ORIGINAL built-in catalog (to let admin override a stock
+  // product's price/stock) - never against another admin-added product, or two Firestore
+  // documents that happen to share a name (e.g. two products both called "كرسي") would
+  // collapse into a single card instead of showing separately.
+  const existing = PRODUCTS.find(p=>p.id===adminId) ||
+    PRODUCTS.find(p=>BUILTIN_PRODUCT_IDS.has(p.id) && p.name===ap.name);
   if(existing){
     existing.price = ap.price;
     existing.old = ap.old || null;
