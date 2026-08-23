@@ -385,15 +385,19 @@ whenFbReady(fb=>{
   });
 });
 function startSubscriptions(fb){
-  const { db, collection, query, orderBy, onSnapshot } = fb;
+  const { db, collection, onSnapshot } = fb;
   if(unsubProducts) unsubProducts();
   if(unsubOrders) unsubOrders();
-  unsubProducts = onSnapshot(query(collection(db,'products'), orderBy('createdAt','desc')), snap=>{
-    products = snap.docs.map(d=>({id:d.id, ...d.data()}));
+  // Sorting is done client-side (not via Firestore orderBy) because orderBy silently
+  // excludes any document missing that field, which would make products vanish instead
+  // of just sorting oddly - and any product saved before this field existed would have
+  // disappeared from the list entirely.
+  unsubProducts = onSnapshot(collection(db,'products'), snap=>{
+    products = snap.docs.map(d=>({id:d.id, ...d.data()})).sort((a,b)=>(b.createdAt||0)-(a.createdAt||0));
     renderAll();
   });
-  unsubOrders = onSnapshot(query(collection(db,'orders'), orderBy('createdAt','desc')), snap=>{
-    orders = snap.docs.map(d=>({id:d.id, ...d.data()}));
+  unsubOrders = onSnapshot(collection(db,'orders'), snap=>{
+    orders = snap.docs.map(d=>({id:d.id, ...d.data()})).sort((a,b)=>(b.createdAt||0)-(a.createdAt||0));
     renderAll();
   });
 }
