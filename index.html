@@ -1663,7 +1663,32 @@ function pushOrderToAdmin(order){
 }
 
 /* ═══════════ التنقل ═══════════ */
-function go(p){
+/* ═══════════ سجل المتصفح (زر الرجوع) ═══════════ */
+let __restoringNav = false;
+function pushNav(state){
+  if(__restoringNav) return;
+  history.pushState(state, '', location.pathname + location.search);
+}
+function applyNavState(state){
+  __restoringNav = true;
+  try{
+    const p = (state && state.page) || 'home';
+    go(p, false);
+    if(p==='cat'){
+      document.querySelectorAll('.f-group input[type=checkbox]').forEach(c=>c.checked = (state.cat && state.cat!=='all' && c.value===state.cat));
+      applyFilters();
+    } else if(p==='product' && state.productId){
+      const prod = byId(state.productId);
+      if(prod){ currentProduct = prod; colorIdx = 0; q = 1; fillProduct(); }
+    } else if(p==='help' && state.anchor){
+      const el = document.getElementById(state.anchor);
+      if(el) setTimeout(()=>el.scrollIntoView({behavior:'smooth', block:'start'}), 80);
+    }
+  } finally { __restoringNav = false; }
+}
+window.addEventListener('popstate', e=>{ applyNavState(e.state); });
+
+function go(p, push=true){
   document.querySelectorAll('.page').forEach(x=>x.classList.remove('active'));
   document.getElementById('page-'+p).classList.add('active');
   ['home','cat','custom','about','help'].forEach(n=>{
@@ -1672,11 +1697,13 @@ function go(p){
   });
   document.getElementById('mainNav').classList.remove('open');
   window.scrollTo({top:0});
+  if(push) pushNav({page:p});
 }
 function toggleMenu(){ document.getElementById('mainNav').classList.toggle('open'); }
 function goHelp(anchor){
-  go('help');
+  go('help', false);
   setTimeout(()=>{ const el=document.getElementById(anchor); if(el) el.scrollIntoView({behavior:'smooth', block:'start'}); }, 80);
+  pushNav({page:'help', anchor});
 }
 function toggleFaq(btn){ btn.parentElement.classList.toggle('open'); }
 
@@ -1732,9 +1759,10 @@ function setColorFilter(n){
   renderColorFilters(); applyFilters();
 }
 function showCat(cat){
-  go('cat');
+  go('cat', false);
   document.querySelectorAll('.f-group input[type=checkbox]').forEach(c=>c.checked = (cat!=='all' && c.value===cat));
   applyFilters();
+  pushNav({page:'cat', cat});
 }
 function applyFilters(){
   const checked = [...document.querySelectorAll('.f-group input[type=checkbox]:checked')].map(c=>c.value);
@@ -1773,7 +1801,8 @@ let currentProduct = null, colorIdx = 0, q = 1;
 function openProduct(id){
   currentProduct = byId(id); colorIdx = 0; q = 1;
   fillProduct();
-  go('product');
+  go('product', false);
+  pushNav({page:'product', productId:id});
 }
 function fillProduct(){
   const p = currentProduct;
@@ -1881,7 +1910,8 @@ function closeCart(){
 const FREE_SHIP = 5000;
 function goCheckout(){
   if(!cartItems.length){ toast(t('t_empty')); return; }
-  closeCart(); go('checkout'); renderSummary();
+  closeCart(); go('checkout', false); renderSummary();
+  pushNav({page:'checkout'});
 }
 function renderSummary(){
   const box = document.getElementById('coSummary');
@@ -1966,6 +1996,7 @@ renderColorFilters();
 applyFilters();
 renderDots(); setSlide(0); restartAuto();
 updateCart();
+history.replaceState({page:'home'}, '', location.pathname);
 </script>
 </body>
 </html>
