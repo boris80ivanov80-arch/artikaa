@@ -278,7 +278,35 @@ tr:hover td{background:#FCFAF4}
 
     <div class="panel">
       <div class="panel-head"><h2>شرائح البانر الرئيسي</h2></div>
-      <div class="modal-body" id="heroSlidesBody"></div>
+      <div class="modal-body">
+        <div class="field">
+          <label>صورة خلفية البانر — لو مش موجودة هيفضل الرسم الافتراضي</label>
+          <div class="drop" id="dropHero">
+            <input type="file" accept="image/*" id="imgInputHero" onchange="handleHeroImage(this.files[0])">
+            <div class="d-ico">🖼️</div>
+            <p>اسحب الصورة هنا أو <b>اضغط للاختيار</b><br>PNG / JPG / WEBP</p>
+          </div>
+          <div class="preview" id="previewHero">
+            <img id="previewImgHero" alt="">
+            <button class="rm" onclick="removeHeroImage()">✕</button>
+          </div>
+        </div>
+        <div id="heroSlidesBody"></div>
+      </div>
+    </div>
+
+    <div class="panel">
+      <div class="panel-head"><h2>أسماء الفئات (تظهر في الرئيسية، القائمة، الفلاتر، والفوتر)</h2></div>
+      <div class="modal-body">
+        <div class="row-2">
+          <div class="field"><label>كراسي مكتب</label><input id="cCatOffice"></div>
+          <div class="field"><label>كراسي ألعاب</label><input id="cCatGaming"></div>
+        </div>
+        <div class="row-2">
+          <div class="field"><label>كراسي استرخاء</label><input id="cCatLounge"></div>
+          <div class="field"><label>كراسي طعام</label><input id="cCatDining"></div>
+        </div>
+      </div>
     </div>
 
     <div class="panel">
@@ -364,6 +392,7 @@ tr:hover td{background:#FCFAF4}
         <div class="field"><label>السعر (ج.م)</label><input id="fPrice" type="number" min="0" placeholder="1899"></div>
         <div class="field"><label>السعر قبل الخصم — اختياري</label><input id="fOld" type="number" min="0" placeholder="2400"></div>
       </div>
+      <div class="field"><label>عدد التقييمات (يظهر بجانب النجوم ★★★★★)</label><input id="fRev" type="number" min="0" value="0"></div>
       <div class="field"><label>الوصف</label><textarea id="fDesc" rows="3" placeholder="وصف مختصر للمنتج…"></textarea></div>
     </div>
     <div class="modal-foot">
@@ -552,6 +581,7 @@ function openModal(id){
   document.getElementById('fStock').value = m?m.stock:10;
   document.getElementById('fPrice').value = m?m.price:'';
   document.getElementById('fOld').value = m&&m.old?m.old:'';
+  document.getElementById('fRev').value = m&&m.rev?m.rev:0;
   document.getElementById('fDesc').value = m?m.desc:'';
   document.getElementById('imgInput').value = '';
   if(m && m.img){ currentImg = m.img; showPreview(m.img); } else hidePreview();
@@ -560,7 +590,7 @@ function openModal(id){
 function closeModal(){ document.getElementById('overlay').classList.remove('on'); }
 document.getElementById('overlay').addEventListener('click', e=>{ if(e.target.id==='overlay') closeModal(); });
 
-function handleImage(file){
+function compressImageFile(file, maxDim, onDone){
   if(!file) return;
   if(!file.type.startsWith('image/')){ toast('الملف المختار ليس صورة'); return; }
   if(file.size > 8*1024*1024){ toast('حجم الصورة أكبر من 8 ميجا — اختر صورة أصغر'); return; }
@@ -569,10 +599,10 @@ function handleImage(file){
     // ضغط الصورة قبل الحفظ حتى لا تمتلئ مساحة التخزين
     const im = new Image();
     im.onload = () => {
+      let out;
       try{
-        let MAX = 500, quality = .75;
+        let MAX = maxDim, quality = .75;
         const c = document.createElement('canvas');
-        let out;
         for(let attempt=0; attempt<4; attempt++){
           const scale = Math.min(1, MAX / Math.max(im.width, im.height));
           c.width = Math.round(im.width*scale); c.height = Math.round(im.height*scale);
@@ -581,33 +611,58 @@ function handleImage(file){
           if(out.length < 700*1024) break;
           MAX = Math.round(MAX*0.75); quality = Math.max(.4, quality-.15);
         }
-        currentImg = out;
-      }catch(err){ currentImg = e.target.result; }
-      currentImgChanged = true;
-      showPreview(currentImg);
+      }catch(err){ out = e.target.result; }
+      onDone(out);
     };
-    im.onerror = () => { currentImg = e.target.result; currentImgChanged = true; showPreview(currentImg); };
+    im.onerror = () => onDone(e.target.result);
     im.src = e.target.result;
   };
   r.readAsDataURL(file);
 }
-function showPreview(src){
-  document.getElementById('drop').style.display = 'none';
-  document.getElementById('preview').style.display = 'block';
-  document.getElementById('previewImg').src = src;
-  document.getElementById('previewImg').alt = 'معاينة صورة المنتج';
+function showImgPreview(dropId, previewId, imgId, src, alt){
+  document.getElementById(dropId).style.display = 'none';
+  document.getElementById(previewId).style.display = 'block';
+  document.getElementById(imgId).src = src;
+  document.getElementById(imgId).alt = alt;
 }
-function hidePreview(){
-  document.getElementById('drop').style.display = 'block';
-  document.getElementById('preview').style.display = 'none';
+function hideImgPreview(dropId, previewId){
+  document.getElementById(dropId).style.display = 'block';
+  document.getElementById(previewId).style.display = 'none';
 }
+
+function handleImage(file){
+  compressImageFile(file, 500, out => {
+    currentImg = out; currentImgChanged = true;
+    showImgPreview('drop','preview','previewImg', currentImg, 'معاينة صورة المنتج');
+  });
+}
+function showPreview(src){ showImgPreview('drop','preview','previewImg', src, 'معاينة صورة المنتج'); }
+function hidePreview(){ hideImgPreview('drop','preview'); }
 function removeImage(){ currentImg = null; currentImgChanged = true; document.getElementById('imgInput').value=''; hidePreview(); }
 
-/* سحب وإفلات */
+/* سحب وإفلات — صورة المنتج */
 const drop = document.getElementById('drop');
 ['dragover','dragenter'].forEach(ev=>drop.addEventListener(ev, e=>{e.preventDefault(); drop.classList.add('drag');}));
 ['dragleave','drop'].forEach(ev=>drop.addEventListener(ev, e=>{e.preventDefault(); drop.classList.remove('drag');}));
 drop.addEventListener('drop', e=>handleImage(e.dataTransfer.files[0]));
+
+/* صورة خلفية البانر */
+let currentHeroImg = null, currentHeroImgChanged = false;
+function handleHeroImage(file){
+  compressImageFile(file, 1200, out => {
+    currentHeroImg = out; currentHeroImgChanged = true;
+    showImgPreview('dropHero','previewHero','previewImgHero', currentHeroImg, 'معاينة صورة البانر');
+  });
+}
+function removeHeroImage(){
+  currentHeroImg = null; currentHeroImgChanged = true;
+  document.getElementById('imgInputHero').value = '';
+  hideImgPreview('dropHero','previewHero');
+}
+const dropHero = document.getElementById('dropHero');
+['dragover','dragenter'].forEach(ev=>dropHero.addEventListener(ev, e=>{e.preventDefault(); dropHero.classList.add('drag');}));
+['dragleave','drop'].forEach(ev=>dropHero.addEventListener(ev, e=>{e.preventDefault(); dropHero.classList.remove('drag');}));
+dropHero.addEventListener('drop', e=>handleHeroImage(e.dataTransfer.files[0]));
 
 function saveProduct(){
   const name = document.getElementById('fName').value.trim();
@@ -618,6 +673,7 @@ function saveProduct(){
     name, cat: document.getElementById('fCat').value,
     stock: Number(document.getElementById('fStock').value)||0,
     price, old: Number(document.getElementById('fOld').value)||null,
+    rev: Number(document.getElementById('fRev').value)||0,
     desc: document.getElementById('fDesc').value.trim(),
   };
   const saveBtn = document.getElementById('saveBtn');
@@ -768,7 +824,15 @@ function loadContentIntoForm(){
   set('cShipP', c.shipP || 'بنوصّل لجميع محافظات مصر خلال 2–5 أيام عمل.');
   set('cReturnsH', c.returnsH || '↩️ سياسة الإرجاع');
   set('cReturnsP', c.returnsP || 'ليك 14 يوم من تاريخ الاستلام ترجّع المنتج بحالته الأصلية.');
+  set('cCatOffice', c.catOffice || 'كراسي مكتب');
+  set('cCatGaming', c.catGaming || 'كراسي ألعاب');
+  set('cCatLounge', c.catLounge || 'كراسي استرخاء');
+  set('cCatDining', c.catDining || 'كراسي طعام');
   renderHeroSlidesInputs();
+  currentHeroImgChanged = false;
+  if(c.heroImg){ currentHeroImg = c.heroImg; showImgPreview('dropHero','previewHero','previewImgHero', c.heroImg, 'معاينة صورة البانر'); }
+  else { currentHeroImg = null; hideImgPreview('dropHero','previewHero'); }
+  document.getElementById('imgInputHero').value = '';
   if(!faqDraft) faqDraft = JSON.parse(JSON.stringify((c.faq && c.faq.length) ? c.faq : FAQ_DEFAULTS));
   renderFaqEditor();
 }
@@ -778,7 +842,10 @@ function saveContent(){
     whatsapp: val('cWhatsapp').trim(),
     freeShip: Number(val('cFreeShip'))||0,
     announce: val('cAnnounce'),
+    heroImg: currentHeroImgChanged ? (currentHeroImg||null) : (siteContent.heroImg||null),
     hero: HERO_SLIDE_DEFAULTS.map((_,i)=>({ h: val('cHeroH'+i), p: val('cHeroP'+i), b: val('cHeroB'+i) })),
+    catOffice: val('cCatOffice'), catGaming: val('cCatGaming'),
+    catLounge: val('cCatLounge'), catDining: val('cCatDining'),
     aboutLead: val('cAboutLead'),
     stat1n: val('cStat1n'), stat1label: val('cStat1l'),
     stat2n: val('cStat2n'), stat2label: val('cStat2l'),

@@ -337,7 +337,8 @@ footer a:hover{color:var(--gold-light)}
 <div class="page active" id="page-home">
   <div class="hero">
     <div class="hero-scene">
-      <svg class="hero-art" viewBox="0 0 1160 440" preserveAspectRatio="xMidYMax slice">
+      <img class="hero-art" id="heroArtImg" style="display:none;width:100%;height:100%;object-fit:cover" alt="">
+      <svg class="hero-art" id="heroArtSvg" viewBox="0 0 1160 440" preserveAspectRatio="xMidYMax slice">
         <rect x="0" y="0" width="620" height="330" fill="#DCE6EC"/>
         <g fill="#B9C9D4">
           <rect x="40" y="120" width="34" height="210"/><rect x="86" y="70" width="26" height="260"/>
@@ -1609,6 +1610,7 @@ function mergeAdminProduct(ap){
     existing.price = ap.price;
     existing.old = ap.old || null;
     existing.stock = ap.stock;
+    existing.rev = ap.rev||0;
     if(ap.desc) existing.desc = ap.desc;
     if(existing.id===adminId){
       existing.colors = [{n:'', img: ()=> ap.img ? `<img src="${ap.img}" alt="${ap.name}">` : officeChair('#555','#9aa5b1')}];
@@ -1620,7 +1622,7 @@ function mergeAdminProduct(ap){
       cat: ADMIN_CAT_MAP[ap.cat] || 'office',
       price: ap.price,
       old: ap.old || null,
-      rev: 0,
+      rev: ap.rev||0,
       stock: ap.stock,
       desc: ap.desc || '',
       colors: [{n:'', img: ()=> ap.img ? `<img src="${ap.img}" alt="${ap.name}">` : officeChair('#555','#9aa5b1')}]
@@ -1683,7 +1685,16 @@ function applySiteContent(c){
   if(c.shipP) ar.hs_p = c.shipP;
   if(c.returnsH) ar.hr_t = c.returnsH;
   if(c.returnsP) ar.hr_p = c.returnsP;
+  if(c.catOffice) ar.cat_office = c.catOffice;
+  if(c.catGaming) ar.cat_gaming = c.catGaming;
+  if(c.catLounge) ar.cat_lounge = c.catLounge;
+  if(c.catDining) ar.cat_dining = c.catDining;
   if(Array.isArray(c.faq) && c.faq.length) FAQ_ITEMS = c.faq;
+  const heroImgEl = document.getElementById('heroArtImg'), heroSvgEl = document.getElementById('heroArtSvg');
+  if(heroImgEl && heroSvgEl){
+    if(c.heroImg){ heroImgEl.src = c.heroImg; heroImgEl.style.display = 'block'; heroSvgEl.style.display = 'none'; }
+    else { heroImgEl.style.display = 'none'; heroSvgEl.style.display = 'block'; }
+  }
   if(LANG==='ar') translatePage();
   renderFaq();
   if(document.getElementById('heroText')) setSlide(slideIdx);
