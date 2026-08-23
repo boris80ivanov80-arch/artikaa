@@ -1718,28 +1718,52 @@ function pushOrderToAdmin(order){
 /* ═══════════ التنقل ═══════════ */
 /* ═══════════ سجل المتصفح (زر الرجوع) ═══════════ */
 let __restoringNav = false;
+// رابط مباشر وقابل للمشاركة لكل صفحة - مثال: artikaa.com/#products/office
+function stateToHash(state){
+  const p = (state && state.page) || 'home';
+  if(p==='home') return '';
+  if(p==='cat') return (state.cat && state.cat!=='all') ? 'products/'+state.cat : 'products';
+  if(p==='product' && state.productId) return 'product/'+state.productId;
+  if(p==='help' && state.anchor) return 'help/'+state.anchor;
+  return p; // custom, about, help, checkout
+}
+function hashToState(hash){
+  const parts = String(hash||'').replace(/^#/,'').split('/').filter(Boolean);
+  if(!parts.length) return {page:'home'};
+  if(parts[0]==='products') return {page:'cat', cat: parts[1]||'all'};
+  if(parts[0]==='product' && parts[1]) return {page:'product', productId: parts[1]};
+  if(parts[0]==='help') return parts[1] ? {page:'help', anchor:parts[1]} : {page:'help'};
+  if(['custom','about','checkout'].includes(parts[0])) return {page:parts[0]};
+  return {page:'home'};
+}
 function pushNav(state){
   if(__restoringNav) return;
-  history.pushState(state, '', location.pathname + location.search);
+  const hash = stateToHash(state);
+  history.pushState(state, '', location.pathname + (hash ? '#'+hash : ''));
 }
 function applyNavState(state){
   __restoringNav = true;
   try{
     const p = (state && state.page) || 'home';
+    if(p==='product' && state.productId && !byId(state.productId)){
+      // مرتبط بمنتج اتحذف أو رقمه غلط - ارجع للرئيسية بدل ما تعلق الصفحة فاضية
+      go('home', false);
+      return;
+    }
     go(p, false);
     if(p==='cat'){
       document.querySelectorAll('.f-group input[type=checkbox]').forEach(c=>c.checked = (state.cat && state.cat!=='all' && c.value===state.cat));
       applyFilters();
     } else if(p==='product' && state.productId){
       const prod = byId(state.productId);
-      if(prod){ currentProduct = prod; colorIdx = 0; q = 1; fillProduct(); }
+      currentProduct = prod; colorIdx = 0; q = 1; fillProduct();
     } else if(p==='help' && state.anchor){
       const el = document.getElementById(state.anchor);
       if(el) setTimeout(()=>el.scrollIntoView({behavior:'smooth', block:'start'}), 80);
     }
   } finally { __restoringNav = false; }
 }
-window.addEventListener('popstate', e=>{ applyNavState(e.state); });
+window.addEventListener('popstate', e=>{ applyNavState(e.state || hashToState(location.hash)); });
 
 function go(p, push=true){
   document.querySelectorAll('.page').forEach(x=>x.classList.remove('active'));
@@ -2063,7 +2087,12 @@ applyFilters();
 renderDots(); setSlide(0); restartAuto();
 updateCart();
 renderFaq();
-history.replaceState({page:'home'}, '', location.pathname);
+(function initFromUrl(){
+  const initialState = hashToState(location.hash);
+  const hash = stateToHash(initialState);
+  history.replaceState(initialState, '', location.pathname + (hash ? '#'+hash : ''));
+  if(initialState.page !== 'home') applyNavState(initialState);
+})();
 </script>
 </body>
 </html>
