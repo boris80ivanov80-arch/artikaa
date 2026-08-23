@@ -176,6 +176,7 @@ tr:hover td{background:#FCFAF4}
     <button data-tab="products" onclick="tab('products',this)"><span class="ico">🪑</span><span class="txt">المنتجات</span></button>
     <button data-tab="orders" onclick="tab('orders',this)"><span class="ico">📦</span><span class="txt">الطلبات</span></button>
     <button data-tab="prices" onclick="tab('prices',this)"><span class="ico">💰</span><span class="txt">الأسعار</span></button>
+    <button data-tab="content" onclick="tab('content',this)"><span class="ico">📝</span><span class="txt">محتوى الموقع</span></button>
   </nav>
   <div class="s-foot">Artikaa.com — لوحة الإدارة v2.0<br>
     <a href="#" onclick="doLogout();return false" style="font-size:11px">⇦ تسجيل الخروج</a></div>
@@ -258,6 +259,75 @@ tr:hover td{background:#FCFAF4}
         <tbody id="priceBody"></tbody>
       </table>
     </div>
+  </div>
+
+  <!-- ============ محتوى الموقع ============ -->
+  <div class="tab" id="tab-content">
+    <div class="note">💡 التعديلات هنا بتظهر فوراً على الموقع لكل الزوار — وبتنطبق على النسخة العربية فقط (باقي اللغات بتفضل زي ما هي).</div>
+
+    <div class="panel">
+      <div class="panel-head"><h2>إعدادات عامة</h2><div class="tools"><button class="btn btn-navy" onclick="saveContent()">حفظ كل التعديلات</button></div></div>
+      <div class="modal-body">
+        <div class="row-2">
+          <div class="field"><label>رقم واتساب (بدون + أو مسافات)</label><input id="cWhatsapp" placeholder="201095983744"></div>
+          <div class="field"><label>حد الشحن المجاني (ج.م)</label><input id="cFreeShip" type="number" min="0"></div>
+        </div>
+        <div class="field"><label>شريط الإعلان العلوي</label><input id="cAnnounce"></div>
+      </div>
+    </div>
+
+    <div class="panel">
+      <div class="panel-head"><h2>شرائح البانر الرئيسي</h2></div>
+      <div class="modal-body" id="heroSlidesBody"></div>
+    </div>
+
+    <div class="panel">
+      <div class="panel-head"><h2>صفحة "من نحن"</h2></div>
+      <div class="modal-body">
+        <div class="field"><label>الفقرة التعريفية</label><textarea id="cAboutLead" rows="3"></textarea></div>
+        <div class="row-2">
+          <div class="field"><label>رقم الإحصائية الأولى</label><input id="cStat1n" placeholder="+5000"></div>
+          <div class="field"><label>وصف الإحصائية الأولى</label><input id="cStat1l" placeholder="عميل سعيد"></div>
+        </div>
+        <div class="row-2">
+          <div class="field"><label>رقم الإحصائية الثانية</label><input id="cStat2n" placeholder="27"></div>
+          <div class="field"><label>وصف الإحصائية الثانية</label><input id="cStat2l" placeholder="محافظة نوصّلها"></div>
+        </div>
+        <div class="row-2">
+          <div class="field"><label>رقم الإحصائية الثالثة</label><input id="cStat3n" placeholder="5 سنوات"></div>
+          <div class="field"><label>وصف الإحصائية الثالثة</label><input id="cStat3l" placeholder="ضمان حقيقي"></div>
+        </div>
+        <div class="field"><label>عنوان "ليه تختار Artikaa؟"</label><input id="cWhyH"></div>
+        <div class="field"><label>نص "ليه تختار Artikaa؟"</label><textarea id="cWhyP" rows="3"></textarea></div>
+      </div>
+    </div>
+
+    <div class="panel">
+      <div class="panel-head"><h2>الفوتر</h2></div>
+      <div class="modal-body">
+        <div class="field"><label>نص الفوتر التعريفي</label><textarea id="cFooterAbout" rows="2"></textarea></div>
+      </div>
+    </div>
+
+    <div class="panel">
+      <div class="panel-head"><h2>صفحة المساعدة</h2></div>
+      <div class="modal-body">
+        <div class="field"><label>عنوان الشحن والتوصيل</label><input id="cShipH"></div>
+        <div class="field"><label>نص الشحن والتوصيل</label><textarea id="cShipP" rows="3"></textarea></div>
+        <div class="field"><label>عنوان سياسة الإرجاع</label><input id="cReturnsH"></div>
+        <div class="field"><label>نص سياسة الإرجاع</label><textarea id="cReturnsP" rows="3"></textarea></div>
+      </div>
+    </div>
+
+    <div class="panel">
+      <div class="panel-head">
+        <h2>الأسئلة الشائعة</h2>
+        <div class="tools"><button class="btn btn-ghost" onclick="addFaqRow()">＋ إضافة سؤال</button></div>
+      </div>
+      <div class="modal-body" id="faqEditorBody"></div>
+    </div>
+
+    <div style="margin-bottom:30px"><button class="btn btn-navy" onclick="saveContent()">حفظ كل التعديلات</button> <span class="save-hint" id="contentSaveHint">✓ تم الحفظ</span></div>
   </div>
 </main>
 
@@ -344,12 +414,25 @@ tr:hover td{background:#FCFAF4}
 /* ================= البيانات (تُملأ من Firestore) ================= */
 let products = [];
 let orders = [];
+let siteContent = {};
 let editId = null, currentImg = null, currentImgChanged = false;
 const statusNames = {new:'جديد', prep:'قيد التجهيز', ship:'تم الشحن', done:'مكتمل', cancel:'ملغي'};
 const fmt = n => Number(n).toLocaleString('en');
+const HERO_SLIDE_DEFAULTS = [
+  {h:'كراسي جلوس فاخرة', p:'تصميم عصري. راحة لا تُضاهى. من الكلاسيكي إلى العصري، اكتشف مجموعتنا الراقية.', b:'تسوق الآن'},
+  {h:'أناقة مكتبك تبدأ من كرسيك', p:'خصومات حقيقية حتى 30% على كراسي المكتب — راحة تشتغل معاك طول اليوم.', b:'تسوق كراسي المكتب'},
+  {h:'جيمينج بمستوى احترافي', p:'كرسي جوبيتر للألعاب بخصم 20% — دعم كامل للظهر في أطول الجلسات.', b:'اطلبه الآن'},
+  {h:'صمّم كرسيك بنفسك', p:'ورشتنا تنفذ التصميم اللي في خيالك — اختار الخامة واللون والمقاس.', b:'ابدأ التصميم'}
+];
+const FAQ_DEFAULTS = [
+  {q:'هل الدفع عند الاستلام متاح؟', a:'أيوه، متاح لكل المحافظات. وكمان بنقبل فودافون كاش وانستاباي والتحويل البنكي.'},
+  {q:'الكراسي بتيجي متجمعة ولا محتاجة تركيب؟', a:'كراسي الاسترخاء بتوصل جاهزة. كراسي المكتب والألعاب محتاجة تركيب بسيط (10 دقايق) بمفك واحد مرفق مع الكرسي.'},
+  {q:'الضمان بيغطي إيه بالظبط؟', a:'الهيكل، المكبس الهيدروليكي، العجلات، وآليات الإمالة — 5 سنوات كاملة. التنجيد عليه ضمان سنة ضد عيوب الصناعة.'},
+  {q:'أقدر أشوف المنتجات على الطبيعة؟', a:'حالياً بنشتغل أونلاين بس عشان نوفرلك أفضل سعر — وبنوفر فيديو تفصيلي لأي منتج تطلبه على واتساب قبل الشراء.'}
+];
 
 /* ================= Firebase: مصادقة + بيانات حيّة ================= */
-let unsubProducts = null, unsubOrders = null;
+let unsubProducts = null, unsubOrders = null, unsubContent = null;
 function whenFbReady(cb){
   if(window.__fb) cb(window.__fb);
   else window.addEventListener('fb-ready', ()=>cb(window.__fb), {once:true});
@@ -380,14 +463,20 @@ whenFbReady(fb=>{
       document.getElementById('appRoot').style.display = 'none';
       if(unsubProducts){ unsubProducts(); unsubProducts = null; }
       if(unsubOrders){ unsubOrders(); unsubOrders = null; }
-      products = []; orders = [];
+      if(unsubContent){ unsubContent(); unsubContent = null; }
+      products = []; orders = []; siteContent = {};
     }
   });
 });
 function startSubscriptions(fb){
-  const { db, collection, onSnapshot } = fb;
+  const { db, collection, doc, onSnapshot } = fb;
   if(unsubProducts) unsubProducts();
   if(unsubOrders) unsubOrders();
+  if(unsubContent) unsubContent();
+  unsubContent = onSnapshot(doc(db,'content','site'), snap=>{
+    siteContent = snap.exists() ? snap.data() : {};
+    loadContentIntoForm();
+  });
   // Sorting is done client-side (not via Firestore orderBy) because orderBy silently
   // excludes any document missing that field, which would make products vanish instead
   // of just sorting oddly - and any product saved before this field existed would have
@@ -403,7 +492,7 @@ function startSubscriptions(fb){
 }
 
 /* ================= التبويبات ================= */
-const titles = {dash:'لوحة التحكم', products:'المنتجات', orders:'الطلبات', prices:'الأسعار'};
+const titles = {dash:'لوحة التحكم', products:'المنتجات', orders:'الطلبات', prices:'الأسعار', content:'محتوى الموقع'};
 function tab(t, btn){
   document.querySelectorAll('.tab').forEach(x=>x.classList.remove('on'));
   document.getElementById('tab-'+t).classList.add('on');
@@ -617,6 +706,97 @@ function savePrices(){
       h.classList.add('show'); setTimeout(()=>h.classList.remove('show'), 2500);
       toast('تم حفظ جميع الأسعار ✓');
     }catch(e){ toast('⚠️ فشل حفظ الأسعار: '+e.message); }
+  });
+}
+
+/* ================= محتوى الموقع ================= */
+let faqDraft = null; // working copy while editing, so typing doesn't fight the live Firestore listener
+function heroValue(i, field){
+  const fromContent = siteContent.hero && siteContent.hero[i] && siteContent.hero[i][field];
+  return fromContent || HERO_SLIDE_DEFAULTS[i][field];
+}
+function renderHeroSlidesInputs(){
+  const body = document.getElementById('heroSlidesBody');
+  if(!body) return;
+  body.innerHTML = HERO_SLIDE_DEFAULTS.map((_,i)=>`
+    <div class="field" style="border-top:1px solid var(--line);padding-top:14px;margin-top:${i?14:0}">
+      <label>الشريحة ${i+1} — العنوان</label><input id="cHeroH${i}" value="${heroValue(i,'h').replace(/"/g,'&quot;')}">
+      <label style="margin-top:8px">النص</label><textarea id="cHeroP${i}" rows="2">${heroValue(i,'p')}</textarea>
+      <label style="margin-top:8px">نص الزر</label><input id="cHeroB${i}" value="${heroValue(i,'b').replace(/"/g,'&quot;')}">
+    </div>`).join('');
+}
+function renderFaqEditor(){
+  const body = document.getElementById('faqEditorBody');
+  if(!body || !faqDraft) return;
+  if(!faqDraft.length){ body.innerHTML = '<div class="empty">مفيش أسئلة — دوس ＋ إضافة سؤال</div>'; return; }
+  body.innerHTML = faqDraft.map((item,i)=>`
+    <div class="field" style="border-top:1px solid var(--line);padding-top:14px;margin-top:${i?14:0};display:flex;gap:10px;align-items:flex-start">
+      <div style="flex:1">
+        <label>السؤال</label><input data-faq-i="${i}" data-faq-k="q" value="${(item.q||'').replace(/"/g,'&quot;')}" onchange="updateFaqDraft(this)">
+        <label style="margin-top:8px">الإجابة</label><textarea data-faq-i="${i}" data-faq-k="a" rows="2" onchange="updateFaqDraft(this)">${item.a||''}</textarea>
+      </div>
+      <button class="icon-btn del" title="حذف" onclick="removeFaqRow(${i})" style="margin-top:22px">🗑️</button>
+    </div>`).join('');
+}
+function updateFaqDraft(el){
+  const i = Number(el.dataset.faqI), k = el.dataset.faqK;
+  if(faqDraft[i]) faqDraft[i][k] = el.value;
+}
+function addFaqRow(){
+  if(!faqDraft) faqDraft = [];
+  faqDraft.push({q:'', a:''});
+  renderFaqEditor();
+}
+function removeFaqRow(i){
+  faqDraft.splice(i,1);
+  renderFaqEditor();
+}
+function loadContentIntoForm(){
+  const c = siteContent;
+  const set = (id, val) => { const el = document.getElementById(id); if(el) el.value = val; };
+  set('cWhatsapp', c.whatsapp || '201095983744');
+  set('cFreeShip', c.freeShip || 5000);
+  set('cAnnounce', c.announce || '✦ شحن مجاني لجميع محافظات مصر للطلبات فوق 5000 ج.م — خصومات تصل إلى 30% ✦');
+  set('cAboutLead', c.aboutLead || 'بدأنا في القاهرة بحلم بسيط: إن كل بيت ومكتب مصري يستاهل كرسي يجمع بين الشياكة والراحة والخامة اللي تعيش.');
+  set('cStat1n', c.stat1n || '+5000'); set('cStat1l', c.stat1label || 'عميل سعيد');
+  set('cStat2n', c.stat2n || '27'); set('cStat2l', c.stat2label || 'محافظة نوصّلها');
+  set('cStat3n', c.stat3n || '5 سنوات'); set('cStat3l', c.stat3label || 'ضمان حقيقي');
+  set('cWhyH', c.aboutWhyH || 'ليه تختار Artikaa؟');
+  set('cWhyP', c.aboutWhyP || 'خاماتنا مستوردة ومجربة، التنجيد بيتم في ورشتنا بإشراف مباشر.');
+  set('cFooterAbout', c.footerAbout || 'وجهتك الأولى للكراسي الفاخرة في مصر.');
+  set('cShipH', c.shipH || '🚚 الشحن والتوصيل');
+  set('cShipP', c.shipP || 'بنوصّل لجميع محافظات مصر خلال 2–5 أيام عمل.');
+  set('cReturnsH', c.returnsH || '↩️ سياسة الإرجاع');
+  set('cReturnsP', c.returnsP || 'ليك 14 يوم من تاريخ الاستلام ترجّع المنتج بحالته الأصلية.');
+  renderHeroSlidesInputs();
+  if(!faqDraft) faqDraft = JSON.parse(JSON.stringify((c.faq && c.faq.length) ? c.faq : FAQ_DEFAULTS));
+  renderFaqEditor();
+}
+function saveContent(){
+  const val = id => (document.getElementById(id)||{}).value || '';
+  const data = {
+    whatsapp: val('cWhatsapp').trim(),
+    freeShip: Number(val('cFreeShip'))||0,
+    announce: val('cAnnounce'),
+    hero: HERO_SLIDE_DEFAULTS.map((_,i)=>({ h: val('cHeroH'+i), p: val('cHeroP'+i), b: val('cHeroB'+i) })),
+    aboutLead: val('cAboutLead'),
+    stat1n: val('cStat1n'), stat1label: val('cStat1l'),
+    stat2n: val('cStat2n'), stat2label: val('cStat2l'),
+    stat3n: val('cStat3n'), stat3label: val('cStat3l'),
+    aboutWhyH: val('cWhyH'), aboutWhyP: val('cWhyP'),
+    footerAbout: val('cFooterAbout'),
+    shipH: val('cShipH'), shipP: val('cShipP'),
+    returnsH: val('cReturnsH'), returnsP: val('cReturnsP'),
+    faq: (faqDraft||[]).filter(item=>item.q.trim() || item.a.trim())
+  };
+  whenFbReady(async fb=>{
+    const { db, doc, setDoc } = fb;
+    try{
+      await setDoc(doc(db,'content','site'), data);
+      const h = document.getElementById('contentSaveHint');
+      h.classList.add('show'); setTimeout(()=>h.classList.remove('show'), 2500);
+      toast('تم حفظ محتوى الموقع ✓');
+    }catch(e){ toast('⚠️ فشل الحفظ: '+e.message); }
   });
 }
 

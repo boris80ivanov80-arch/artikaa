@@ -704,8 +704,8 @@ footer a:hover{color:var(--gold-light)}
     <h1 data-k="ab_t">Artikaa — فخامة الجلوس</h1>
     <p class="lead" data-k="ab_lead">بدأنا في القاهرة بحلم بسيط: إن كل بيت ومكتب مصري يستاهل كرسي يجمع بين الشياكة والراحة والخامة اللي تعيش. النهارده Artikaa بتوصّل لكل محافظات مصر، بتشكيلة تغطي المكتب والألعاب والاسترخاء والسفرة — وورشة تصميم مخصص تنفذ اللي في خيالك.</p>
     <div class="about-grid">
-      <div class="about-box"><div class="n">+5000</div><span data-k="ab1">عميل سعيد</span></div>
-      <div class="about-box"><div class="n">27</div><span data-k="ab2">محافظة نوصّلها</span></div>
+      <div class="about-box"><div class="n" data-k="ab_stat1n">+5000</div><span data-k="ab1">عميل سعيد</span></div>
+      <div class="about-box"><div class="n" data-k="ab_stat2n">27</div><span data-k="ab2">محافظة نوصّلها</span></div>
       <div class="about-box"><div class="n" data-k="ab_n3">5 سنوات</div><span data-k="ab3">ضمان حقيقي</span></div>
     </div>
     <div class="help-sec">
@@ -733,10 +733,7 @@ footer a:hover{color:var(--gold-light)}
     </div>
     <div class="help-sec">
       <h2 data-k="hf_t">❓ الأسئلة الشائعة</h2>
-      <div class="faq-q"><button class="q" onclick="toggleFaq(this)"><span data-k="q1">هل الدفع عند الاستلام متاح؟</span> <span class="arrow">▾</span></button><div class="a" data-k="a1">أيوه، متاح لكل المحافظات. وكمان بنقبل فودافون كاش وانستاباي والتحويل البنكي.</div></div>
-      <div class="faq-q"><button class="q" onclick="toggleFaq(this)"><span data-k="q2">الكراسي بتيجي متجمعة ولا محتاجة تركيب؟</span> <span class="arrow">▾</span></button><div class="a" data-k="a2">كراسي الاسترخاء بتوصل جاهزة. كراسي المكتب والألعاب محتاجة تركيب بسيط (10 دقايق) بمفك واحد مرفق مع الكرسي.</div></div>
-      <div class="faq-q"><button class="q" onclick="toggleFaq(this)"><span data-k="q3">الضمان بيغطي إيه بالظبط؟</span> <span class="arrow">▾</span></button><div class="a" data-k="a3">الهيكل، المكبس الهيدروليكي، العجلات، وآليات الإمالة — 5 سنوات كاملة. التنجيد عليه ضمان سنة ضد عيوب الصناعة.</div></div>
-      <div class="faq-q"><button class="q" onclick="toggleFaq(this)"><span data-k="q4">أقدر أشوف المنتجات على الطبيعة؟</span> <span class="arrow">▾</span></button><div class="a" data-k="a4">حالياً بنشتغل أونلاين بس عشان نوفرلك أفضل سعر — وبنوفر فيديو تفصيلي لأي منتج تطلبه على واتساب قبل الشراء.</div></div>
+      <div id="faqList"></div>
     </div>
     <button class="btn-wa" style="max-width:340px" onclick="openWa(t('m_faq'))">
       <svg viewBox="0 0 32 32"><path d="M16 3C9.4 3 4 8.4 4 15c0 2.3.7 4.5 1.9 6.4L4 29l7.8-1.8c1.8 1 3.9 1.6 6.2 1.6 6.6 0 12-5.4 12-12S22.6 3 16 3z"/></svg>
@@ -798,7 +795,7 @@ footer a:hover{color:var(--gold-light)}
 <script type="module">
   import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
   import {
-    getFirestore, collection, addDoc, onSnapshot
+    getFirestore, collection, doc, addDoc, onSnapshot
   } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
   const firebaseConfig = {
@@ -811,13 +808,13 @@ footer a:hover{color:var(--gold-light)}
   };
 
   const app = initializeApp(firebaseConfig);
-  window.__fb = { db: getFirestore(app, 'default'), collection, addDoc, onSnapshot };
+  window.__fb = { db: getFirestore(app, 'default'), collection, doc, addDoc, onSnapshot };
   window.dispatchEvent(new Event('fb-ready'));
 </script>
 
 <script>
 /* ═══════════ الإعدادات ═══════════ */
-const WHATSAPP_NUMBER = '201095983744';
+let WHATSAPP_NUMBER = '201095983744';
 const fmt = n => Number(n).toLocaleString('en');
 function openWa(msg){
   window.open('https://wa.me/'+WHATSAPP_NUMBER+'?text='+encodeURIComponent(msg), '_blank');
@@ -853,7 +850,7 @@ ct1:'كرسي استرخاء',ct2:'كرسي مكتب',ct3:'كرسي ألعاب',
 cu_dlbl:'وصف التصميم المطلوب',cu_dph:'الخامة، اللون، المقاس، أي صورة مرجعية هتبعتها لنا على واتساب…',e_desc:'اوصف التصميم ولو بجملة واحدة',
 cu_send:'إرسال الطلب على واتساب',cu_msg_t:'طلب تصميم مخصص — Artikaa',
 ab_t:'Artikaa — فخامة الجلوس',ab_lead:'بدأنا في القاهرة بحلم بسيط: إن كل بيت ومكتب مصري يستاهل كرسي يجمع بين الشياكة والراحة والخامة اللي تعيش. النهارده Artikaa بتوصّل لكل محافظات مصر، بتشكيلة تغطي المكتب والألعاب والاسترخاء والسفرة — وورشة تصميم مخصص تنفذ اللي في خيالك.',
-ab1:'عميل سعيد',ab2:'محافظة نوصّلها',ab3:'ضمان حقيقي',ab_n3:'5 سنوات',
+ab1:'عميل سعيد',ab2:'محافظة نوصّلها',ab3:'ضمان حقيقي',ab_n3:'5 سنوات',ab_stat1n:'+5000',ab_stat2n:'27',
 ab_why:'ليه تختار Artikaa؟',ab_whyp:'خاماتنا مستوردة ومجربة، التنجيد بيتم في ورشتنا بإشراف مباشر، وكل كرسي بيعدي فحص جودة قبل الشحن. ولو حصلت أي مشكلة — الضمان بيغطيك 5 سنين كاملة، وخدمة العملاء على واتساب طول الأسبوع.',
 ab_shop:'اكتشف منتجاتنا',ab_wa:'كلمنا على واتساب',
 h_t:'مركز المساعدة',hs_t:'🚚 الشحن والتوصيل',
@@ -1655,6 +1652,51 @@ function subscribeAdminProducts(){
   });
 }
 subscribeAdminProducts();
+
+/* ═══════════ محتوى الموقع القابل للتعديل من الأدمن (عربي فقط) ═══════════ */
+function applySiteContent(c){
+  if(!c) return;
+  if(c.whatsapp) WHATSAPP_NUMBER = c.whatsapp;
+  if(c.freeShip) FREE_SHIP = Number(c.freeShip);
+  const ar = I18N.ar;
+  if(c.announce) ar.announce = c.announce;
+  if(Array.isArray(c.hero)){
+    c.hero.forEach((slide,i)=>{
+      if(!slide) return;
+      const n = i+1;
+      if(slide.h) ar['s'+n+'h'] = slide.h;
+      if(slide.p) ar['s'+n+'p'] = slide.p;
+      if(slide.b) ar['s'+n+'b'] = slide.b;
+    });
+  }
+  if(c.aboutLead) ar.ab_lead = c.aboutLead;
+  if(c.stat1n) ar.ab_stat1n = c.stat1n;
+  if(c.stat1label) ar.ab1 = c.stat1label;
+  if(c.stat2n) ar.ab_stat2n = c.stat2n;
+  if(c.stat2label) ar.ab2 = c.stat2label;
+  if(c.stat3n) ar.ab_n3 = c.stat3n;
+  if(c.stat3label) ar.ab3 = c.stat3label;
+  if(c.aboutWhyH) ar.ab_why = c.aboutWhyH;
+  if(c.aboutWhyP) ar.ab_whyp = c.aboutWhyP;
+  if(c.footerAbout) ar.ft_about = c.footerAbout;
+  if(c.shipH) ar.hs_t = c.shipH;
+  if(c.shipP) ar.hs_p = c.shipP;
+  if(c.returnsH) ar.hr_t = c.returnsH;
+  if(c.returnsP) ar.hr_p = c.returnsP;
+  if(Array.isArray(c.faq) && c.faq.length) FAQ_ITEMS = c.faq;
+  if(LANG==='ar') translatePage();
+  renderFaq();
+  if(document.getElementById('heroText')) setSlide(slideIdx);
+}
+function subscribeSiteContent(){
+  whenFbReady(fb=>{
+    const { db, doc, onSnapshot } = fb;
+    onSnapshot(doc(db,'content','site'), snap=>{
+      if(snap.exists()) applySiteContent(snap.data());
+    });
+  });
+}
+subscribeSiteContent();
 function pushOrderToAdmin(order){
   whenFbReady(fb=>{
     const { db, collection, addDoc } = fb;
@@ -1706,6 +1748,19 @@ function goHelp(anchor){
   pushNav({page:'help', anchor});
 }
 function toggleFaq(btn){ btn.parentElement.classList.toggle('open'); }
+let FAQ_ITEMS = [
+  {q:'هل الدفع عند الاستلام متاح؟', a:'أيوه، متاح لكل المحافظات. وكمان بنقبل فودافون كاش وانستاباي والتحويل البنكي.'},
+  {q:'الكراسي بتيجي متجمعة ولا محتاجة تركيب؟', a:'كراسي الاسترخاء بتوصل جاهزة. كراسي المكتب والألعاب محتاجة تركيب بسيط (10 دقايق) بمفك واحد مرفق مع الكرسي.'},
+  {q:'الضمان بيغطي إيه بالظبط؟', a:'الهيكل، المكبس الهيدروليكي، العجلات، وآليات الإمالة — 5 سنوات كاملة. التنجيد عليه ضمان سنة ضد عيوب الصناعة.'},
+  {q:'أقدر أشوف المنتجات على الطبيعة؟', a:'حالياً بنشتغل أونلاين بس عشان نوفرلك أفضل سعر — وبنوفر فيديو تفصيلي لأي منتج تطلبه على واتساب قبل الشراء.'}
+];
+function renderFaq(){
+  const el = document.getElementById('faqList');
+  if(!el) return;
+  el.innerHTML = FAQ_ITEMS.map(item=>`
+    <div class="faq-q"><button class="q" onclick="toggleFaq(this)"><span>${item.q}</span> <span class="arrow">▾</span></button><div class="a">${item.a}</div></div>
+  `).join('');
+}
 
 /* ═══════════ الهيرو (سلايدر حقيقي) ═══════════ */
 const SLIDE_ACTIONS = [()=>showCat('all'), ()=>showCat('office'), ()=>openProduct('jupiter'), ()=>go('custom')];
@@ -1907,7 +1962,7 @@ function closeCart(){
 }
 
 /* ═══════════ إتمام الطلب ═══════════ */
-const FREE_SHIP = 5000;
+let FREE_SHIP = 5000;
 function goCheckout(){
   if(!cartItems.length){ toast(t('t_empty')); return; }
   closeCart(); go('checkout', false); renderSummary();
@@ -1996,6 +2051,7 @@ renderColorFilters();
 applyFilters();
 renderDots(); setSlide(0); restartAuto();
 updateCart();
+renderFaq();
 history.replaceState({page:'home'}, '', location.pathname);
 </script>
 </body>
