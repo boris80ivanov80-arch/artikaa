@@ -1544,50 +1544,7 @@ function diningChair(seat, wood){
 const COLOR_HEX = {'أسود':'#2b2b2b','رمادي':'#6e6e6e','كحلي':'#25406B','أحمر':'#C0392B','بني':'#7A5638','بيج':'#C9A870','كريمي':'#E7DECB','أخضر':'#607466','ذهبي':'#B8963E','أبيض':'#F2F0EA'};
 
 /* ═══════════ بيانات المنتجات ═══════════ */
-const PRODUCTS = [
-  {id:'jupiter', name:'كرسي جوبيتر للألعاب', cat:'gaming', price:1899, old:2400, rev:127,
-   desc:'راحة فائقة لجلسات اللعب الطويلة. تصميم مريح داعم للعمود الفقري، جلد فاخر مقاوم للاحتكاك، مساند ذراعين قابلة للتعديل، وآلية إمالة حتى 160 درجة.',
-   colors:[{n:'أسود',img:()=>gamingChair('#1c1c1c','#C0392B')},{n:'أحمر',img:()=>gamingChair('#C0392B','#1c1c1c')},{n:'ذهبي',img:()=>gamingChair('#1c1c1c','#B8963E')},{n:'كحلي',img:()=>gamingChair('#25406B','#8fa3c8')}]},
-  {id:'titan', name:'كرسي "تيتان" رياضي', cat:'gaming', price:2750, old:null, rev:64,
-   desc:'كرسي ألعاب بمقاس واسع وهيكل معدني مقوى يتحمل حتى 150 كجم، مع وسادتين للرقبة والظهر.',
-   colors:[{n:'أسود',img:()=>gamingChair('#2b2b2b','#B8963E')},{n:'كحلي',img:()=>gamingChair('#1c2b4a','#3E7A4E')}]},
-  {id:'neon', name:'كرسي "نيون" للألعاب', cat:'gaming', price:1650, old:1990, rev:41,
-   desc:'خيار اقتصادي بمواصفات قوية — قماش شبكي يسمح بالتهوية وآلية رفع هيدروليك ألماني.',
-   colors:[{n:'أخضر',img:()=>gamingChair('#1c2b1e','#4C8A5C')},{n:'أحمر',img:()=>gamingChair('#2b1c1c','#C0392B')}]},
-  {id:'alpha', name:'كرسي "ألفا" جلدي', cat:'office', price:3450, old:null, rev:98,
-   desc:'كرسي تنفيذي بجلد فاخر وحشوة قطيفة عالية الكثافة — فخامة المكاتب الرئاسية.',
-   colors:[{n:'أسود',img:()=>officeChair('#2b2b2b','#B8963E')},{n:'بني',img:()=>officeChair('#5a4030','#7A5638')},{n:'بيج',img:()=>officeChair('#C9A870','#E7DECB')}]},
-  {id:'veden', name:'كرسي "فيدن" عصري', cat:'office', price:2100, old:2450, rev:73,
-   desc:'تصميم عصري خفيف بظهر شبكي مريح ودعامة قطنية — مثالي للعمل الطويل من المنزل.',
-   colors:[{n:'رمادي',img:()=>officeChair('#4a4a4a','#8a8a8a')},{n:'أسود',img:()=>officeChair('#2b2b2b','#555')},{n:'كحلي',img:()=>officeChair('#33415C','#5C6E91')}]},
-  {id:'ergo', name:'كرسي "أرغو" مريح', cat:'office', price:3450, old:null, rev:55,
-   desc:'مصمم بإشراف أخصائيي بيئة عمل: دعم قطني متحرك، مسند رأس بزاويتين، ومقعد بعمق قابل للضبط.',
-   colors:[{n:'كحلي',img:()=>officeChair('#33415C','#5C6E91')},{n:'رمادي',img:()=>officeChair('#555','#9aa5b1')}]},
-  {id:'pro-mesh', name:'كرسي "برو" شبكي', cat:'office', price:1850, old:2200, rev:112,
-   desc:'الأكثر مبيعاً للمكاتب — شبك متين بالكامل للتهوية الصيفية وخفة الوزن.',
-   colors:[{n:'رمادي',img:()=>officeChair('#555','#9aa5b1',false)},{n:'أسود',img:()=>officeChair('#2b2b2b','#4a4a4a',false)}]},
-  {id:'lina', name:'كرسي "لينا" التنفيذي', cat:'office', price:4200, old:null, rev:37,
-   desc:'قمة الفخامة: جلد إيطالي، قاعدة ألومنيوم مصقول، وآلية إمالة متزامنة صامتة.',
-   colors:[{n:'بني',img:()=>officeChair('#3b2f2f','#7A5638')},{n:'أسود',img:()=>officeChair('#1f1f1f','#B8963E')}]},
-  {id:'moja', name:'كرسي "موجا" دوّار', cat:'office', price:1600, old:1900, rev:88,
-   desc:'كومباكت وأنيق للمساحات الصغيرة، بقماش ناعم سهل التنظيف.',
-   colors:[{n:'أخضر',img:()=>officeChair('#607466','#93A99A',false)},{n:'رمادي',img:()=>officeChair('#6e6e6e','#a5a5a5',false)}]},
-  {id:'sahab', name:'كرسي استرخاء "سحاب"', cat:'lounge', price:2950, old:3400, rev:59,
-   desc:'مخمل كحلي فاخر بحشوة ريش صناعي تحتضنك — قطعة تجمّل أي ركنة قراءة.',
-   colors:[{n:'كحلي',img:()=>loungeChair('#25406B','#1F3557')},{n:'أخضر',img:()=>loungeChair('#3E5C4A','#2E4438')}]},
-  {id:'remal', name:'كرسي استرخاء "رمال"', cat:'lounge', price:2600, old:null, rev:46,
-   desc:'كتان كريمي بأرجل خشب زان طبيعي — دفء اسكندنافي لغرفة معيشتك.',
-   colors:[{n:'كريمي',img:()=>loungeChair('#E7DECB','#DDD2BA')},{n:'بيج',img:()=>loungeChair('#C9A870','#B08D55')}]},
-  {id:'wisam', name:'كرسي استرخاء "وسام"', cat:'lounge', price:3200, old:3800, rev:22,
-   desc:'موديل مجنّح كلاسيكي بلمسة عصرية، بقماش شانيل مقاوم للبقع.',
-   colors:[{n:'أحمر',img:()=>loungeChair('#8E3B34','#6E2B26')},{n:'رمادي',img:()=>loungeChair('#8a8a8a','#6e6e6e')}]},
-  {id:'maeda', name:'كرسي طعام "مائدة"', cat:'dining', price:950, old:1200, rev:140,
-   desc:'خشب زان مصري متين بمقعد منجد — السعر للكرسي الواحد، وخصم إضافي للطقم الكامل.',
-   colors:[{n:'أبيض',img:()=>`<img src="WhatsApp Image 2026-08-15 at 19.11.58.jpeg" alt="كرسي طعام مائدة أبيض">`},{n:'أسود',img:()=>`<img src="WhatsApp Image 2026-08-15 at 19.12.01.jpeg" alt="كرسي طعام مائدة أسود">`}]},
-  {id:'nouran', name:'كرسي طعام "نوران"', cat:'dining', price:1150, old:null, rev:31,
-   desc:'ظهر مقوس مريح وتنجيد قطيفة — أناقة تليق بسفرة العزومات.',
-   colors:[{n:'كريمي',img:()=>diningChair('#E7DECB','#8a6b45')},{n:'كحلي',img:()=>diningChair('#25406B','#3b2f2f')}]},
-];
+const PRODUCTS = [];
 const byId = id => PRODUCTS.find(p=>p.id===id);
 const BUILTIN_PRODUCT_IDS = new Set(PRODUCTS.map(p=>p.id));
 
@@ -1629,10 +1586,21 @@ function mergeAdminProduct(ap){
     });
   }
 }
+let pendingProductId = null, productsEverLoaded = false;
 function refreshVisibleUI(){
   const homeGrid = document.getElementById('homeGrid');
   if(homeGrid) homeGrid.innerHTML = [...PRODUCTS].sort((a,b)=>b.rev-a.rev).slice(0,4).map(card).join('');
   if(document.getElementById('page-cat')?.classList.contains('active')) applyFilters();
+  if(pendingProductId){
+    // منتج جه من رابط مباشر قبل ما بيانات الأدمن توصل من Firestore - نجرب تاني كل ما البيانات تتحدث
+    const prod = byId(pendingProductId);
+    if(prod){ currentProduct = prod; colorIdx = 0; q = 1; fillProduct(); pendingProductId = null; }
+    else if(productsEverLoaded){
+      // البيانات وصلت فعلاً ومفيش منتج بالرقم ده - مش هيتلاقي أبداً، ارجع للرئيسية
+      pendingProductId = null;
+      go('home', false);
+    }
+  }
   if(currentProduct) fillProduct();
 }
 function subscribeAdminProducts(){
@@ -1649,6 +1617,7 @@ function subscribeAdminProducts(){
         const p = PRODUCTS[i];
         if(String(p.id).startsWith('admin-') && !seenAdminIds.has(p.id)) PRODUCTS.splice(i,1);
       }
+      productsEverLoaded = true;
       refreshVisibleUI();
     });
   });
@@ -1745,18 +1714,26 @@ function applyNavState(state){
   __restoringNav = true;
   try{
     const p = (state && state.page) || 'home';
-    if(p==='product' && state.productId && !byId(state.productId)){
-      // مرتبط بمنتج اتحذف أو رقمه غلط - ارجع للرئيسية بدل ما تعلق الصفحة فاضية
-      go('home', false);
+    if(p==='product' && state.productId){
+      const prod = byId(state.productId);
+      if(prod){
+        go(p, false);
+        currentProduct = prod; colorIdx = 0; q = 1; fillProduct();
+      } else if(!productsEverLoaded){
+        // لسه مستنيين أول رد من Firestore (مثلاً رابط منتج اتفتح مباشرة) - اعرض الصفحة وخلي
+        // refreshVisibleUI() يحاول تاني أول ما بيانات المنتجات توصل
+        pendingProductId = state.productId;
+        go(p, false);
+      } else {
+        // البيانات وصلت فعلاً والمنتج مش موجود - اتحذف أو الرابط غلط
+        go('home', false);
+      }
       return;
     }
     go(p, false);
     if(p==='cat'){
       document.querySelectorAll('.f-group input[type=checkbox]').forEach(c=>c.checked = (state.cat && state.cat!=='all' && c.value===state.cat));
       applyFilters();
-    } else if(p==='product' && state.productId){
-      const prod = byId(state.productId);
-      currentProduct = prod; colorIdx = 0; q = 1; fillProduct();
     } else if(p==='help' && state.anchor){
       const el = document.getElementById(state.anchor);
       if(el) setTimeout(()=>el.scrollIntoView({behavior:'smooth', block:'start'}), 80);
@@ -1798,7 +1775,7 @@ function renderFaq(){
 }
 
 /* ═══════════ الهيرو (سلايدر حقيقي) ═══════════ */
-const SLIDE_ACTIONS = [()=>showCat('all'), ()=>showCat('office'), ()=>openProduct('jupiter'), ()=>go('custom')];
+const SLIDE_ACTIONS = [()=>showCat('all'), ()=>showCat('office'), ()=>showCat('gaming'), ()=>go('custom')];
 let slideIdx = 0, slideTimer = null;
 function renderDots(){
   document.getElementById('heroDots').innerHTML = SLIDE_ACTIONS.map((_,i)=>`<span class="${i===slideIdx?'on':''}" onclick="setSlide(${i},true)"></span>`).join('');
@@ -1889,7 +1866,9 @@ function clearFilters(){
 /* ═══════════ صفحة المنتج ═══════════ */
 let currentProduct = null, colorIdx = 0, q = 1;
 function openProduct(id){
-  currentProduct = byId(id); colorIdx = 0; q = 1;
+  const p = byId(id);
+  if(!p){ showCat('all'); return; } // منتج محذوف أو رابط قديم - ارجع لصفحة المنتجات بدل ما تعلق الصفحة
+  currentProduct = p; colorIdx = 0; q = 1;
   fillProduct();
   go('product', false);
   pushNav({page:'product', productId:id});
