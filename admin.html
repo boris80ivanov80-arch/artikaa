@@ -486,6 +486,10 @@ whenFbReady(fb=>{
     if(user){
       document.getElementById('loginOverlay').classList.remove('on');
       document.getElementById('appRoot').style.display = '';
+      // Fill the content form with hardcoded defaults immediately, synchronously - before
+      // waiting on the network round-trip to Firestore. Otherwise saving right after login
+      // (before the real data has loaded) would save blank text into every untouched field.
+      loadContentIntoForm();
       startSubscriptions(fb);
     } else {
       document.getElementById('loginOverlay').classList.add('on');
@@ -493,7 +497,7 @@ whenFbReady(fb=>{
       if(unsubProducts){ unsubProducts(); unsubProducts = null; }
       if(unsubOrders){ unsubOrders(); unsubOrders = null; }
       if(unsubContent){ unsubContent(); unsubContent = null; }
-      products = []; orders = []; siteContent = {};
+      products = []; orders = []; siteContent = {}; faqDraft = null; contentServerLoaded = false;
     }
   });
 });
@@ -504,6 +508,11 @@ function startSubscriptions(fb){
   if(unsubContent) unsubContent();
   unsubContent = onSnapshot(doc(db,'content','site'), snap=>{
     siteContent = snap.exists() ? snap.data() : {};
+    // Force the FAQ editor to re-derive from the real server data the first time it
+    // arrives (the synchronous pre-fill above already set a draft from empty defaults).
+    // Later snapshot updates (e.g. right after this tab's own save) must NOT reset it,
+    // or in-progress edits on other fields would be lost.
+    if(!contentServerLoaded){ faqDraft = null; contentServerLoaded = true; }
     loadContentIntoForm();
   });
   // Sorting is done client-side (not via Firestore orderBy) because orderBy silently
@@ -767,6 +776,7 @@ function savePrices(){
 
 /* ================= محتوى الموقع ================= */
 let faqDraft = null; // working copy while editing, so typing doesn't fight the live Firestore listener
+let contentServerLoaded = false;
 function heroValue(i, field){
   const fromContent = siteContent.hero && siteContent.hero[i] && siteContent.hero[i][field];
   return fromContent || HERO_SLIDE_DEFAULTS[i][field];
