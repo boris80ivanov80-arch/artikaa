@@ -124,6 +124,11 @@ tr:hover td{background:#FCFAF4}
 .preview{display:none;position:relative;width:120px;margin:auto}
 .preview img{width:120px;height:120px;object-fit:cover;border-radius:10px;border:1px solid var(--line)}
 .preview .rm{position:absolute;top:-8px;left:-8px;background:var(--red);color:#fff;border:none;width:24px;height:24px;border-radius:50%;font-size:12px}
+.img-thumbs{display:flex;gap:12px;flex-wrap:wrap;margin-top:10px}
+.img-thumb{position:relative;width:90px;height:90px}
+.img-thumb img{width:100%;height:100%;object-fit:cover;border-radius:10px;border:1px solid var(--line)}
+.img-thumb .rm{position:absolute;top:-8px;left:-8px;background:var(--red);color:#fff;border:none;width:22px;height:22px;border-radius:50%;font-size:11px;cursor:pointer}
+.img-thumb .main-badge{position:absolute;bottom:2px;right:2px;background:var(--gold);color:#fff;font-size:9px;font-weight:700;padding:1px 6px;border-radius:8px}
 
 .empty{text-align:center;padding:40px;color:var(--gray)}
 .toast{position:fixed;bottom:26px;right:50%;transform:translate(50%,20px);background:var(--ink);color:#fff;padding:12px 26px;border-radius:30px;font-size:14px;opacity:0;pointer-events:none;transition:.3s;z-index:200}
@@ -368,16 +373,13 @@ tr:hover td{background:#FCFAF4}
     </div>
     <div class="modal-body">
       <div class="field">
-        <label>صورة المنتج</label>
+        <label>صور المنتج (حتى 3 صور — أول صورة هي الرئيسية)</label>
         <div class="drop" id="drop">
           <input type="file" accept="image/*" id="imgInput" onchange="handleImage(this.files[0])">
           <div class="d-ico">🖼️</div>
-          <p>اسحب الصورة هنا أو <b>اضغط للاختيار</b><br>PNG / JPG / WEBP</p>
+          <p id="dropHint">اسحب الصورة هنا أو <b>اضغط للاختيار</b><br>PNG / JPG / WEBP</p>
         </div>
-        <div class="preview" id="preview">
-          <img id="previewImg" alt="">
-          <button class="rm" onclick="removeImage()">✕</button>
-        </div>
+        <div class="img-thumbs" id="imgThumbs"></div>
       </div>
       <div class="field"><label>اسم المنتج</label><input id="fName" placeholder="مثال: كرسي ألفا جلدي"></div>
       <div class="row-2">
@@ -444,7 +446,8 @@ tr:hover td{background:#FCFAF4}
 let products = [];
 let orders = [];
 let siteContent = {};
-let editId = null, currentImg = null, currentImgChanged = false;
+let editId = null, currentImages = [];
+const MAX_PRODUCT_IMAGES = 3;
 const statusNames = {new:'جديد', prep:'قيد التجهيز', ship:'تم الشحن', done:'مكتمل', cancel:'ملغي'};
 const fmt = n => Number(n).toLocaleString('en');
 const HERO_SLIDE_DEFAULTS = [
@@ -546,7 +549,8 @@ function stockChip(s){
   return '<span class="chip ok">متوفر</span>';
 }
 function imgCell(p){
-  return p.img ? `<img class="p-img" src="${p.img}" alt="${p.name}">` : '<div class="p-img-ph">🪑</div>';
+  const src = (p.images && p.images[0]) || p.img;
+  return src ? `<img class="p-img" src="${src}" alt="${p.name}">` : '<div class="p-img-ph">🪑</div>';
 }
 function renderProducts(){
   const q = (document.getElementById('prodSearch').value||'').trim();
@@ -581,8 +585,9 @@ function delProduct(id){
 
 /* ================= المودال ورفع الصور ================= */
 function openModal(id){
-  editId = id||null; currentImg = null; currentImgChanged = false;
+  editId = id||null;
   const m = id ? products.find(p=>p.id===id) : null;
+  currentImages = m ? (m.images && m.images.length ? [...m.images] : (m.img ? [m.img] : [])) : [];
   document.getElementById('modalTitle').textContent = m ? 'تعديل المنتج' : 'إضافة منتج جديد';
   document.getElementById('saveBtn').textContent = m ? 'حفظ التعديلات' : 'حفظ المنتج';
   document.getElementById('fName').value = m?m.name:'';
@@ -593,16 +598,17 @@ function openModal(id){
   document.getElementById('fRev').value = m&&m.rev?m.rev:0;
   document.getElementById('fDesc').value = m?m.desc:'';
   document.getElementById('imgInput').value = '';
-  if(m && m.img){ currentImg = m.img; showPreview(m.img); } else hidePreview();
+  renderImgThumbs();
   document.getElementById('overlay').classList.add('on');
 }
 function closeModal(){ document.getElementById('overlay').classList.remove('on'); }
 document.getElementById('overlay').addEventListener('click', e=>{ if(e.target.id==='overlay') closeModal(); });
 
-function compressImageFile(file, maxDim, onDone){
+function compressImageFile(file, maxDim, onDone, maxBytes){
   if(!file) return;
   if(!file.type.startsWith('image/')){ toast('الملف المختار ليس صورة'); return; }
   if(file.size > 8*1024*1024){ toast('حجم الصورة أكبر من 8 ميجا — اختر صورة أصغر'); return; }
+  const budget = maxBytes || 700*1024;
   const r = new FileReader();
   r.onload = e => {
     // ضغط الصورة قبل الحفظ حتى لا تمتلئ مساحة التخزين
@@ -617,7 +623,7 @@ function compressImageFile(file, maxDim, onDone){
           c.width = Math.round(im.width*scale); c.height = Math.round(im.height*scale);
           c.getContext('2d').drawImage(im, 0, 0, c.width, c.height);
           out = c.toDataURL('image/jpeg', quality);
-          if(out.length < 700*1024) break;
+          if(out.length < budget) break;
           MAX = Math.round(MAX*0.75); quality = Math.max(.4, quality-.15);
         }
       }catch(err){ out = e.target.result; }
@@ -640,14 +646,33 @@ function hideImgPreview(dropId, previewId){
 }
 
 function handleImage(file){
+  if(currentImages.length >= MAX_PRODUCT_IMAGES){ toast('أقصى عدد صور للمنتج هو '+MAX_PRODUCT_IMAGES); return; }
+  // ميزانية أصغر للصورة الواحدة لأن لحد 3 صور لازم تتخزن مع بعض في مستند واحد بحد 1 ميجابايت في Firestore
   compressImageFile(file, 500, out => {
-    currentImg = out; currentImgChanged = true;
-    showImgPreview('drop','preview','previewImg', currentImg, 'معاينة صورة المنتج');
-  });
+    currentImages.push(out);
+    document.getElementById('imgInput').value = '';
+    renderImgThumbs();
+  }, 250*1024);
 }
-function showPreview(src){ showImgPreview('drop','preview','previewImg', src, 'معاينة صورة المنتج'); }
-function hidePreview(){ hideImgPreview('drop','preview'); }
-function removeImage(){ currentImg = null; currentImgChanged = true; document.getElementById('imgInput').value=''; hidePreview(); }
+function removeImageAt(i){ currentImages.splice(i,1); renderImgThumbs(); }
+function renderImgThumbs(){
+  const box = document.getElementById('imgThumbs');
+  box.innerHTML = currentImages.map((src,i)=>`
+    <div class="img-thumb">
+      <img src="${src}" alt="صورة ${i+1}">
+      ${i===0?'<span class="main-badge">رئيسية</span>':''}
+      <button class="rm" onclick="removeImageAt(${i})">✕</button>
+    </div>`).join('');
+  const drop = document.getElementById('drop');
+  const hint = document.getElementById('dropHint');
+  if(currentImages.length >= MAX_PRODUCT_IMAGES){
+    drop.style.opacity = '.5'; drop.style.pointerEvents = 'none';
+    hint.innerHTML = 'وصلت للحد الأقصى (3 صور) — احذف صورة عشان تضيف غيرها';
+  } else {
+    drop.style.opacity = ''; drop.style.pointerEvents = '';
+    hint.innerHTML = 'اسحب الصورة هنا أو <b>اضغط للاختيار</b><br>PNG / JPG / WEBP';
+  }
+}
 
 /* سحب وإفلات — صورة المنتج */
 const drop = document.getElementById('drop');
@@ -685,14 +710,15 @@ function saveProduct(){
     rev: Number(document.getElementById('fRev').value)||0,
     desc: document.getElementById('fDesc').value.trim(),
   };
+  data.images = currentImages;
+  data.img = currentImages[0] || null; // متروكة لأي كود قديم لسه بيقرا الحقل المفرد
+  const approxSize = JSON.stringify(data).length;
+  if(approxSize > 950*1024){ toast('⚠️ الصور كبيرة جداً مجتمعة — احذف صورة أو استخدم صور أصغر'); return; }
   const saveBtn = document.getElementById('saveBtn');
   saveBtn.disabled = true; saveBtn.textContent = 'جارٍ الحفظ…';
   whenFbReady(async fb=>{
     const { db, doc, setDoc, addDoc, collection } = fb;
     try{
-      let imgUrl = editId ? ((products.find(p=>p.id===editId)||{}).img || null) : null;
-      if(currentImgChanged) imgUrl = currentImg || null;
-      data.img = imgUrl;
       if(editId){
         await setDoc(doc(db,'products',editId), data, {merge:true});
         toast('تم تحديث المنتج ✓');

@@ -582,8 +582,10 @@ footer a:hover{color:var(--gold-light)}
       <p class="p-desc" id="pDesc"></p>
       <div class="p-price" id="pPrice"></div>
       <div id="pStock" style="margin-bottom:10px;font-size:14px"></div>
-      <div class="p-label"><span data-k="color_lbl">اللون:</span> <span id="pColorName"></span></div>
-      <div class="p-colors" id="pColors"></div>
+      <div id="colorSection">
+        <div class="p-label"><span data-k="color_lbl">اللون:</span> <span id="pColorName"></span></div>
+        <div class="p-colors" id="pColors"></div>
+      </div>
       <div class="p-label" data-k="qty_lbl">الكمية:</div>
       <div class="qty">
         <button onclick="qty(1)">+</button><span id="qtyVal">1</span><button onclick="qty(-1)">−</button>
@@ -1554,6 +1556,11 @@ function whenFbReady(cb){
   if(window.__fb) cb(window.__fb);
   else window.addEventListener('fb-ready', ()=>cb(window.__fb), {once:true});
 }
+function adminProductGallery(ap){
+  const imgs = (ap.images && ap.images.length) ? ap.images : (ap.img ? [ap.img] : []);
+  if(!imgs.length) return [{n:'', img: ()=> officeChair('#555','#9aa5b1')}];
+  return imgs.map(src => ({n:'', img: ()=> `<img src="${src}" alt="${ap.name}">`}));
+}
 function mergeAdminProduct(ap){
   const adminId = 'admin-'+ap.id;
   // Match by adminId first (this doc's own card, if already injected). Only fall back to
@@ -1570,7 +1577,7 @@ function mergeAdminProduct(ap){
     existing.rev = ap.rev||0;
     if(ap.desc) existing.desc = ap.desc;
     if(existing.id===adminId){
-      existing.colors = [{n:'', img: ()=> ap.img ? `<img src="${ap.img}" alt="${ap.name}">` : officeChair('#555','#9aa5b1')}];
+      existing.colors = adminProductGallery(ap);
     }
   } else {
     PRODUCTS.push({
@@ -1582,7 +1589,7 @@ function mergeAdminProduct(ap){
       rev: ap.rev||0,
       stock: ap.stock,
       desc: ap.desc || '',
-      colors: [{n:'', img: ()=> ap.img ? `<img src="${ap.img}" alt="${ap.name}">` : officeChair('#555','#9aa5b1')}]
+      colors: adminProductGallery(ap)
     });
   }
 }
@@ -1899,6 +1906,9 @@ function fillProduct(){
 }
 function renderColors(){
   const p = currentProduct;
+  const hasRealColors = p.colors.some(c=>c.n);
+  document.getElementById('colorSection').style.display = hasRealColors ? '' : 'none';
+  if(!hasRealColors) return;
   document.getElementById('pColors').innerHTML = p.colors.map((c,i)=>
     `<div class="sw ${i===colorIdx?'on':''}" title="${colName(c.n)}" style="background:${COLOR_HEX[c.n]||'#999'}" onclick="setColor(${i})"></div>`).join('');
   document.getElementById('pColorName').textContent = colName(p.colors[colorIdx].n);
