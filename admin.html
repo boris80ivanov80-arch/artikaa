@@ -384,9 +384,11 @@ tr:hover td{background:#FCFAF4}
       <div class="field"><label>اسم المنتج</label><input id="fName" placeholder="مثال: كرسي ألفا جلدي"></div>
       <div class="row-2">
         <div class="field"><label>الفئة</label>
-          <select id="fCat">
-            <option>كراسي مكتب</option><option>كراسي ألعاب</option><option>كراسي استرخاء</option><option>كراسي طعام</option>
-          </select>
+          <input id="fCat" list="fCatSuggestions" placeholder="اكتب اسم الفئة">
+          <datalist id="fCatSuggestions">
+            <option value="كراسي مكتب"></option><option value="كراسي ألعاب"></option><option value="كراسي استرخاء"></option><option value="كراسي طعام"></option>
+          </datalist>
+          <small style="color:var(--gray);display:block;margin-top:4px">أي اسم غير الأربعة دول هيتصنف تلقائياً تحت "كراسي مكتب" في فلاتر الموقع</small>
         </div>
         <div class="field"><label>المخزون</label><input id="fStock" type="number" min="0" value="10"></div>
       </div>
