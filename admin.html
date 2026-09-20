@@ -301,20 +301,6 @@ tr:hover td{background:#FCFAF4}
     </div>
 
     <div class="panel">
-      <div class="panel-head"><h2>أسماء الفئات (تظهر في الرئيسية، القائمة، الفلاتر، والفوتر)</h2></div>
-      <div class="modal-body">
-        <div class="row-2">
-          <div class="field"><label>كراسي مكتب</label><input id="cCatOffice"></div>
-          <div class="field"><label>كراسي ألعاب</label><input id="cCatGaming"></div>
-        </div>
-        <div class="row-2">
-          <div class="field"><label>كراسي استرخاء</label><input id="cCatLounge"></div>
-          <div class="field"><label>كراسي طعام</label><input id="cCatDining"></div>
-        </div>
-      </div>
-    </div>
-
-    <div class="panel">
       <div class="panel-head"><h2>صفحة "من نحن"</h2></div>
       <div class="modal-body">
         <div class="field"><label>الفقرة التعريفية</label><textarea id="cAboutLead" rows="3"></textarea></div>
@@ -862,10 +848,6 @@ function loadContentIntoForm(){
   set('cShipP', c.shipP || 'بنوصّل لجميع محافظات مصر خلال 2–5 أيام عمل.');
   set('cReturnsH', c.returnsH || '↩️ سياسة الإرجاع');
   set('cReturnsP', c.returnsP || 'ليك 14 يوم من تاريخ الاستلام ترجّع المنتج بحالته الأصلية.');
-  set('cCatOffice', c.catOffice || 'كراسي مكتب');
-  set('cCatGaming', c.catGaming || 'كراسي ألعاب');
-  set('cCatLounge', c.catLounge || 'كراسي استرخاء');
-  set('cCatDining', c.catDining || 'كراسي طعام');
   renderHeroSlidesInputs();
   currentHeroImgChanged = false;
   if(c.heroImg){ currentHeroImg = c.heroImg; showImgPreview('dropHero','previewHero','previewImgHero', c.heroImg, 'معاينة صورة البانر'); }
@@ -882,8 +864,6 @@ function saveContent(){
     announce: val('cAnnounce'),
     heroImg: currentHeroImgChanged ? (currentHeroImg||null) : (siteContent.heroImg||null),
     hero: HERO_SLIDE_DEFAULTS.map((_,i)=>({ h: val('cHeroH'+i), p: val('cHeroP'+i), b: val('cHeroB'+i) })),
-    catOffice: val('cCatOffice'), catGaming: val('cCatGaming'),
-    catLounge: val('cCatLounge'), catDining: val('cCatDining'),
     aboutLead: val('cAboutLead'),
     stat1n: val('cStat1n'), stat1label: val('cStat1l'),
     stat2n: val('cStat2n'), stat2label: val('cStat2l'),

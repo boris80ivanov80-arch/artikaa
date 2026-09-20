@@ -59,7 +59,7 @@ html[dir="ltr"] body{font-family:'Tajawal','Segoe UI',sans-serif}
 .hero-art{position:absolute;inset:0}
 
 /* ===== كروت الفئات ===== */
-.cats{max-width:1200px;margin:26px auto;display:grid;grid-template-columns:repeat(4,1fr);gap:16px;padding:0 22px}
+.cats{max-width:1200px;margin:26px auto;display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:16px;padding:0 22px}
 .cat-card{background:var(--cream);border:1px solid var(--line);border-radius:10px;padding:22px 14px;display:flex;align-items:center;justify-content:center;gap:12px;font-size:17px;font-weight:700;color:var(--ink);cursor:pointer;transition:.25s}
 .cat-card:hover{background:#fff;border-color:var(--gold);box-shadow:0 8px 24px rgba(184,150,62,.15);transform:translateY(-3px)}
 .cat-card svg{width:36px;height:36px}
@@ -397,24 +397,7 @@ footer a:hover{color:var(--gold-light)}
     </div>
   </div>
 
-  <div class="cats">
-    <div class="cat-card" onclick="showCat('lounge')">
-      <svg viewBox="0 0 48 48" fill="none" stroke="#B8963E" stroke-width="2.4" stroke-linecap="round"><path d="M8 26c0-4 3-6 6-6h14c6 0 10 4 10 10v6H12z"/><path d="M8 26v10h4M38 36v6M14 36v6"/></svg>
-      <span data-k="cat_lounge">كراسي استرخاء</span>
-    </div>
-    <div class="cat-card" onclick="showCat('office')">
-      <svg viewBox="0 0 48 48" fill="none" stroke="#B8963E" stroke-width="2.4" stroke-linecap="round"><rect x="16" y="8" width="16" height="18" rx="4"/><path d="M16 30h16M24 30v8M14 42h20M24 38l-8 4M24 38l8 4"/></svg>
-      <span data-k="cat_office">كراسي مكتب</span>
-    </div>
-    <div class="cat-card" onclick="showCat('gaming')">
-      <svg viewBox="0 0 48 48" fill="none" stroke="#B8963E" stroke-width="2.4" stroke-linecap="round"><rect x="14" y="6" width="20" height="22" rx="6"/><path d="M18 12v10M14 32h20M24 32v8M14 44h20M24 40l-8 4M24 40l8 4"/></svg>
-      <span data-k="cat_gaming">كراسي ألعاب</span>
-    </div>
-    <div class="cat-card" onclick="showCat('dining')">
-      <svg viewBox="0 0 48 48" fill="none" stroke="#B8963E" stroke-width="2.4" stroke-linecap="round"><path d="M16 6v18M32 6v18M16 14h16M14 24h20v4H14zM16 28v14M32 28v14"/></svg>
-      <span data-k="cat_dining">كراسي طعام</span>
-    </div>
-  </div>
+  <div class="cats" id="catsRow"></div>
 
   <div class="feats">
     <div class="feats-in">
@@ -536,10 +519,7 @@ footer a:hover{color:var(--gold-light)}
       <h3 data-k="flt_t">تصفية النتائج</h3>
       <div class="f-group">
         <h4 data-k="flt_cats">الفئات</h4>
-        <label><input type="checkbox" value="office" onchange="applyFilters()"> <span data-k="cat_office">كراسي مكتب</span></label>
-        <label><input type="checkbox" value="gaming" onchange="applyFilters()"> <span data-k="cat_gaming">كراسي ألعاب</span></label>
-        <label><input type="checkbox" value="lounge" onchange="applyFilters()"> <span data-k="cat_lounge">كراسي استرخاء</span></label>
-        <label><input type="checkbox" value="dining" onchange="applyFilters()"> <span data-k="cat_dining">كراسي طعام</span></label>
+        <div id="catCheckboxes"></div>
       </div>
       <div class="f-group">
         <h4 data-k="flt_price">السعر الأقصى</h4>
@@ -769,10 +749,7 @@ footer a:hover{color:var(--gold-light)}
       <p class="f-about" data-k="ft_about">وجهتك الأولى للكراسي الفاخرة في مصر. نجمع بين التصميم العصري والحرفية العالية لنمنحك جلسة تليق بك — في المنزل والمكتب.</p>
     </div>
     <div><h4 data-k="ft_shop">تسوق</h4>
-      <a onclick="showCat('office')" data-k="cat_office">كراسي مكتب</a>
-      <a onclick="showCat('gaming')" data-k="cat_gaming">كراسي ألعاب</a>
-      <a onclick="showCat('lounge')" data-k="cat_lounge">كراسي استرخاء</a>
-      <a onclick="showCat('dining')" data-k="cat_dining">كراسي طعام</a>
+      <div id="footerCatLinks"></div>
     </div>
     <div><h4 data-k="ft_co">الشركة</h4>
       <a onclick="go('about')" data-k="nav_about">من نحن</a>
@@ -1470,7 +1447,7 @@ function t(k){ const L = I18N[LANG] || {}; return (k in L) ? L[k] : (k in I18N.e
 function colName(n){ const c = t('colors'); return (c && c[n]) || n; }
 function pName(p){ const o = I18N[LANG].p; return (o && o[p.id]) ? o[p.id][0] : p.name; }
 function pDesc(p){ const o = I18N[LANG].p; return (o && o[p.id]) ? o[p.id][1] : p.desc; }
-function catName(c){ return t('cat_' + c); }
+function catName(c){ return c==='all' ? t('cat_all') : c; }
 function translatePage(){
   document.querySelectorAll('[data-k]').forEach(el=>{
     el.innerHTML = t(el.dataset.k) + (el.dataset.star ? ' <i>*</i>' : '');
@@ -1551,7 +1528,15 @@ const byId = id => PRODUCTS.find(p=>p.id===id);
 const BUILTIN_PRODUCT_IDS = new Set(PRODUCTS.map(p=>p.id));
 
 /* ═══════════ ربط لوحة التحكم (Firestore) ═══════════ */
-const ADMIN_CAT_MAP = {'كراسي مكتب':'office','كراسي ألعاب':'gaming','كراسي استرخاء':'lounge','كراسي طعام':'dining'};
+// أيقونات جاهزة للفئات المعروفة، وأي فئة تانية بتاخد أيقونة عامة تلقائياً
+const CAT_ICONS = {
+  'كراسي مكتب': '<rect x="16" y="8" width="16" height="18" rx="4"/><path d="M16 30h16M24 30v8M14 42h20M24 38l-8 4M24 38l8 4"/>',
+  'كراسي ألعاب': '<rect x="14" y="6" width="20" height="22" rx="6"/><path d="M18 12v10M14 32h20M24 32v8M14 44h20M24 40l-8 4M24 40l8 4"/>',
+  'كراسي استرخاء': '<path d="M8 26c0-4 3-6 6-6h14c6 0 10 4 10 10v6H12z"/><path d="M8 26v10h4M38 36v6M14 36v6"/>',
+  'كراسي طعام': '<path d="M16 6v18M32 6v18M16 14h16M14 24h20v4H14zM16 28v14M32 28v14"/>'
+};
+const CAT_ICON_DEFAULT = '<circle cx="24" cy="18" r="10"/><path d="M10 42c0-8 6-14 14-14s14 6 14 14"/>';
+function catIcon(cat){ return CAT_ICONS[cat] || CAT_ICON_DEFAULT; }
 function whenFbReady(cb){
   if(window.__fb) cb(window.__fb);
   else window.addEventListener('fb-ready', ()=>cb(window.__fb), {once:true});
@@ -1577,13 +1562,14 @@ function mergeAdminProduct(ap){
     existing.rev = ap.rev||0;
     if(ap.desc) existing.desc = ap.desc;
     if(existing.id===adminId){
+      existing.cat = ap.cat || 'كراسي مكتب';
       existing.colors = adminProductGallery(ap);
     }
   } else {
     PRODUCTS.push({
       id: adminId,
       name: ap.name,
-      cat: ADMIN_CAT_MAP[ap.cat] || 'office',
+      cat: ap.cat || 'كراسي مكتب',
       price: ap.price,
       old: ap.old || null,
       rev: ap.rev||0,
@@ -1593,8 +1579,41 @@ function mergeAdminProduct(ap){
     });
   }
 }
+/* ═══════════ فئات ديناميكية (كل فئة استخدمها الأدمن بتظهر تلقائياً هنا) ═══════════ */
+function getAllCategories(){
+  return [...new Set(PRODUCTS.map(p=>p.cat).filter(Boolean))].sort((a,b)=>a.localeCompare(b,'ar'));
+}
+function esc(s){ return String(s).replace(/"/g,'&quot;'); }
+function renderCategoryCards(){
+  const box = document.getElementById('catsRow');
+  if(!box) return;
+  box.innerHTML = getAllCategories().map(cat => `
+    <div class="cat-card" onclick="showCat('${esc(cat)}')">
+      <svg viewBox="0 0 48 48" fill="none" stroke="#B8963E" stroke-width="2.4" stroke-linecap="round">${catIcon(cat)}</svg>
+      <span>${cat}</span>
+    </div>`).join('');
+}
+// الفئة المطلوب عرضها حالياً - بنحتفظ بيها بشكل مستقل عن الـ DOM عشان لو صفحة اتفتحت
+// من رابط مباشر لفئة معينة قبل ما بيانات الأدمن توصل من Firestore، أول ما القوائم
+// تتبني (renderCategoryFilters) بتتعلم عليها صح، بدل ما تفضل من غير أي فئة متعلّمة.
+let currentCatFilter = null; // null = مش في صفحة الفئات، 'all' = كل الفئات، أو اسم فئة محدد
+function renderCategoryFilters(){
+  const box = document.getElementById('catCheckboxes');
+  if(!box) return;
+  box.innerHTML = getAllCategories().map(cat => `
+    <label><input type="checkbox" value="${esc(cat)}" onchange="applyFilters()" ${currentCatFilter===cat?'checked':''}> <span>${cat}</span></label>`).join('');
+}
+function renderFooterCatLinks(){
+  const box = document.getElementById('footerCatLinks');
+  if(!box) return;
+  box.innerHTML = getAllCategories().map(cat => `<a onclick="showCat('${esc(cat)}')">${cat}</a>`).join('');
+}
+
 let pendingProductId = null, productsEverLoaded = false;
 function refreshVisibleUI(){
+  renderCategoryCards();
+  renderCategoryFilters();
+  renderFooterCatLinks();
   const homeGrid = document.getElementById('homeGrid');
   if(homeGrid) homeGrid.innerHTML = [...PRODUCTS].sort((a,b)=>b.rev-a.rev).slice(0,4).map(card).join('');
   if(document.getElementById('page-cat')?.classList.contains('active')) applyFilters();
@@ -1661,10 +1680,6 @@ function applySiteContent(c){
   if(c.shipP) ar.hs_p = c.shipP;
   if(c.returnsH) ar.hr_t = c.returnsH;
   if(c.returnsP) ar.hr_p = c.returnsP;
-  if(c.catOffice) ar.cat_office = c.catOffice;
-  if(c.catGaming) ar.cat_gaming = c.catGaming;
-  if(c.catLounge) ar.cat_lounge = c.catLounge;
-  if(c.catDining) ar.cat_dining = c.catDining;
   if(Array.isArray(c.faq) && c.faq.length) FAQ_ITEMS = c.faq;
   const heroImgEl = document.getElementById('heroArtImg'), heroSvgEl = document.getElementById('heroArtSvg');
   if(heroImgEl && heroSvgEl){
@@ -1698,13 +1713,15 @@ let __restoringNav = false;
 function stateToHash(state){
   const p = (state && state.page) || 'home';
   if(p==='home') return '';
-  if(p==='cat') return (state.cat && state.cat!=='all') ? 'products/'+state.cat : 'products';
-  if(p==='product' && state.productId) return 'product/'+state.productId;
-  if(p==='help' && state.anchor) return 'help/'+state.anchor;
+  if(p==='cat') return (state.cat && state.cat!=='all') ? 'products/'+encodeURIComponent(state.cat) : 'products';
+  if(p==='product' && state.productId) return 'product/'+encodeURIComponent(state.productId);
+  if(p==='help' && state.anchor) return 'help/'+encodeURIComponent(state.anchor);
   return p; // custom, about, help, checkout
 }
 function hashToState(hash){
-  const parts = String(hash||'').replace(/^#/,'').split('/').filter(Boolean);
+  const parts = String(hash||'').replace(/^#/,'').split('/').filter(Boolean).map(s=>{
+    try{ return decodeURIComponent(s); }catch(e){ return s; }
+  });
   if(!parts.length) return {page:'home'};
   if(parts[0]==='products') return {page:'cat', cat: parts[1]||'all'};
   if(parts[0]==='product' && parts[1]) return {page:'product', productId: parts[1]};
@@ -1739,6 +1756,7 @@ function applyNavState(state){
     }
     go(p, false);
     if(p==='cat'){
+      currentCatFilter = state.cat || 'all';
       document.querySelectorAll('.f-group input[type=checkbox]').forEach(c=>c.checked = (state.cat && state.cat!=='all' && c.value===state.cat));
       applyFilters();
     } else if(p==='help' && state.anchor){
@@ -1782,7 +1800,7 @@ function renderFaq(){
 }
 
 /* ═══════════ الهيرو (سلايدر حقيقي) ═══════════ */
-const SLIDE_ACTIONS = [()=>showCat('all'), ()=>showCat('office'), ()=>showCat('gaming'), ()=>go('custom')];
+const SLIDE_ACTIONS = [()=>showCat('all'), ()=>showCat('كراسي مكتب'), ()=>showCat('كراسي ألعاب'), ()=>go('custom')];
 let slideIdx = 0, slideTimer = null;
 function renderDots(){
   document.getElementById('heroDots').innerHTML = SLIDE_ACTIONS.map((_,i)=>`<span class="${i===slideIdx?'on':''}" onclick="setSlide(${i},true)"></span>`).join('');
@@ -1833,6 +1851,7 @@ function setColorFilter(n){
   renderColorFilters(); applyFilters();
 }
 function showCat(cat){
+  currentCatFilter = cat;
   go('cat', false);
   document.querySelectorAll('.f-group input[type=checkbox]').forEach(c=>c.checked = (cat!=='all' && c.value===cat));
   applyFilters();
@@ -1863,6 +1882,7 @@ function applyFilters(){
     : `<div class="no-results" style="grid-column:1/-1"><div class="big">🔍</div>${t('no_res')}<br><button class="btn-gold" style="margin-top:14px" onclick="clearFilters()">${t('flt_clear')}</button></div>`;
 }
 function clearFilters(){
+  currentCatFilter = 'all';
   document.querySelectorAll('.f-group input[type=checkbox]').forEach(c=>c.checked=false);
   document.getElementById('priceRange').value = 5000;
   document.getElementById('sortSel').value = 'featured';
